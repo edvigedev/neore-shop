@@ -1,7 +1,6 @@
-import './App.css'
+import './App.css';
 
 function App() {
-
   return (
     <>
       <div className="container">
@@ -10,7 +9,7 @@ function App() {
         <button>Shop Now</button>
       </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
