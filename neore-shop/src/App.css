@@ -3,49 +3,20 @@ body{
   padding: 0;
 }
 
-.nav-bar{
+.home-page-container{
   display: flex;
-  justify-content: space-between;
-  width: 93%;
-  margin: 1em;
-  padding: 1.5em;
-  position: fixed;
-  top: 0;
-}
-
-.nav-bar-links{
-  display: flex;
-  justify-content: space-around;
+  flex-direction: column;
   align-items: center;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  gap: 1.5em;
+  justify-content: center;
 }
 
-.nav-bar-links li{
-  font-size: 0.8em;
-  font-family: "Inter", sans-serif;
-}
-
-.cart-button{
-  background-color: #C444FF;
-  border: none;
-  cursor: pointer;
-  padding: 0.5em;
-}
-
-.cart-button img{
-  width: 1.8em;
-  height: 1.5em;
-}
-
-.neore-logo{
-  font-size: 1.5em;
-  font-weight: bold;
-  color: #C444FF;
-  font-family: "Newsreader", serif;
-  font-weight: 500;
+.home-page-title-aside-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 50%;
 }
 
 .home-page-title{
@@ -54,7 +25,50 @@ body{
   font-weight: 400;
   margin-left: 20%;
   margin-right: 20%;
-  margin-bottom: 15%;
+  margin-top: 2%;
   text-align: center;
 
 }
+
+.home-page-aside{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  text-align: center;
+  font-size: 1em;
+  font-family: "Inter", sans-serif;
+  margin-left: 10%;
+  margin-right: 10%;
+  font-weight: 400;
+}
+
+.home-page-aside h3{
+  color: #C444FF;
+  font-family: "Inter", sans-serif;
+  font-size: 0.7em;
+  font-weight: 400;
+}
+
+.home-page-aside p{
+  color: #F5F5F5;
+  font-family: "Inter", sans-serif;
+  font-size: 0.7em;
+  font-weight: 300;
+}
+
+.home-page-horizontal-divider{
+  width: 75%;
+  height: 3px;
+  border-radius: 10px;
+  background-color: #C444FF;
+  margin-top: 2%;
+  margin-bottom: 2%;
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+}
+
+
+
