@@ -1,4 +1,5 @@
 import './Card.css';
+import addToCartImage from '../../assets/add-to-cart.png';
 
 interface Product {
   thumbnail: string;
@@ -14,7 +15,7 @@ export default function Card({ product }: { product: Product }) {
       <div className="card-image-section">
         <img src={product.thumbnail} alt={product.title} />
         <a href={`/cart`} className="add-to-cart">
-          +
+          <img src={addToCartImage} alt="Add to Cart" />
         </a>
       </div>
       <div className="card-info">

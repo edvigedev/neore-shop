@@ -30,19 +30,15 @@
 
 .add-to-cart {
   position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 0.8em;
-  width: 20px;
+  top: -15px;
+  right: -15px;
   background-color: transparent;
-  color: #000000;
-  font-weight: 900;
-  text-align: center;
-  border-color: #000000;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 5px;
   cursor: pointer;
+}
+
+.add-to-cart img {
+  width: 3em;
+  height: 3em;
 }
 
 .card-info {

@@ -1,4 +1,6 @@
 import './NavBar.css';
+import cartImage from '../../assets/cart.png';
+
 export default function NavBar() {
   return (
     <nav className="nav-bar">
@@ -8,7 +10,7 @@ export default function NavBar() {
         <li>Logout</li>
         <li>
           <button className="cart-button">
-            <img src="./src/assets/cart.png" alt="Cart" />
+            <img src={cartImage} alt="Cart" />
           </button>
         </li>
       </ul>
