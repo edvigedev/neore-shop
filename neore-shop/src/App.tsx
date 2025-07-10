@@ -1,12 +1,11 @@
 import './App.css';
+import HomePage from './pages/Homepage/HomePage';
 
 function App() {
   return (
     <>
       <div className="container">
-        <h1>Neore Shop</h1>
-        <p>Welcome to Neore Shop</p>
-        <button>Shop Now</button>
+        <HomePage />
       </div>
     </>
   );
