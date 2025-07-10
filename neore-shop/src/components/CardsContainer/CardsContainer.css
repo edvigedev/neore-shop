@@ -1,0 +1,21 @@
+.cards-container {
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-top: 2%;
+  display: flex;
+  justify-content: center;
+}
+
+.cards-container-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: 80%;
+}
+
+.cards-container-list li {
+  list-style: none;
+}
