@@ -1,0 +1,24 @@
+.fetching-error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  border: 1px solid #c444ff;
+}
+
+.fetching-error-content {
+  text-align: center;
+}
+.fetching-error h1 {
+  font-size: 1.5em;
+  margin-top: 0em;
+}
+
+.fetching-error p {
+  font-size: 0.8em;
+  font-weight: 200;
+  color: rgb(64, 63, 63);
+  margin-top: 0em;
+}
