@@ -1,3 +1,12 @@
+.no-underline-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.card:hover {
+  box-shadow: 0 0 20px #c444ff;
+}
+
 .card {
   display: flex;
   align-items: center;
@@ -26,6 +35,11 @@
   width: 120px;
   height: 100px;
   object-fit: cover;
+}
+
+.card-buttons-section {
+  display: flex;
+  flex-direction: column;
 }
 
 .add-to-cart {
@@ -69,4 +83,34 @@
   font-weight: 200;
   color: rgb(64, 63, 63);
   margin-top: 0em;
+}
+
+.favorite-btn {
+  position: absolute;
+  top: 0;
+  right: 100px;
+  background: rgb(212, 130, 250);
+  border: none;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  transition: all 0.2s ease;
+}
+
+.favorite-btn:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: scale(1.1);
+}
+
+.favorite-btn.favorited:hover {
+  background: #c444ff;
+}
+
+.card-image-section {
+  position: relative;
 }

@@ -1,46 +1,41 @@
 import { useState, useEffect } from 'react';
+import type { Product } from '../types';
 
-interface Product {
-  id: number;
-  thumbnail: string;
-  title: string;
-  price: number;
-  discountPercentage: number;
-  description: string;
-}
+const FAVORITES_KEY = 'neoreShopFavorites';
 
 export const useFavorites = () => {
-  const [favorites, setFavorites] = useState<Product[]>([]);
+  const [favorites, setFavorites] = useState<Product[]>(() => {
+    //When my app starts, look in the browser's storage for a drawer labeled neoreShopFavorites.
+    // If you find it, take out the contents, turn it back into a list, and that's our starting list of favorites.
+    const savedNote = window.localStorage.getItem(FAVORITES_KEY);
+    return savedNote ? JSON.parse(savedNote) : [];
+  });
 
   useEffect(() => {
-    const saved = localStorage.getItem('favorites');
-    if (saved) {
-      try {
-        setFavorites(JSON.parse(saved));
-      } catch {
-        localStorage.removeItem('favorites');
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('favorites', JSON.stringify(favorites));
+    window.localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
   }, [favorites]);
 
-  const toggleFavorite = (product: Product) => {
-    setFavorites((prev) => {
-      const exists = prev.some((fav) => fav.id === product.id);
-      if (exists) {
-        return prev.filter((fav) => fav.id !== product.id);
-      } else {
-        return [...prev, product];
-      }
+  const addFavorite = (productToAdd: Product) => {
+    setFavorites((currentFavorites) => {
+      return [...currentFavorites, productToAdd];
     });
   };
 
-  const isFavorite = (productId: number) => {
-    return favorites.some((fav) => fav.id === productId);
+  const removeFavorite = (productToRemove: Product) => {
+    setFavorites((currentFavorites) =>
+      currentFavorites.filter((product) => product.id !== productToRemove.id)
+    );
   };
 
-  return { favorites, toggleFavorite, isFavorite };
+  const isFavorite = (productId: number): boolean => {
+    // ---- START of temporary debug
+
+    const result = favorites.some((fav) => {
+      return fav.id === productId;
+    });
+
+    return result;
+  };
+
+  return { favorites, addFavorite, removeFavorite, isFavorite };
 };
