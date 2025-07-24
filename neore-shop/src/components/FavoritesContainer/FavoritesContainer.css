@@ -1,0 +1,25 @@
+.favorites-cards-container {
+  margin-left: 20%;
+  margin-right: 20%;
+  margin-top: 4%;
+  display: flex;
+  justify-content: center;
+}
+
+.favorites-cards-container p {
+  color: #c444ff;
+}
+
+.favorites-cards-container-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: 80%;
+}
+
+.favorites-cards-container-list li {
+  list-style: none;
+}

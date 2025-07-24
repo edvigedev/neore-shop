@@ -28,8 +28,6 @@ export const useFavorites = () => {
   };
 
   const isFavorite = (productId: number): boolean => {
-    // ---- START of temporary debug
-
     const result = favorites.some((fav) => {
       return fav.id === productId;
     });
