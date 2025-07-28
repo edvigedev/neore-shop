@@ -114,7 +114,7 @@ export interface Hair {
 }
 
 // Interface for the user's bank details
-interface Bank {
+export interface Bank {
   cardExpire: string;
   cardNumber: string;
   cardType: string;
