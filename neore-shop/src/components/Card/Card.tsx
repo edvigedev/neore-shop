@@ -13,8 +13,6 @@ interface CardProps {
 export default function Card({ product, addFavorite, removeFavorite, isFavorite }: CardProps) {
   const isCurrentFavorite = isFavorite(product.id);
 
-  console.log(`Rendering Card: ${product.title}. Is it a favorite? ${isCurrentFavorite}`);
-
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation
     e.stopPropagation(); // Prevent event bubbling

@@ -1,13 +1,13 @@
 .loading-spinner-container {
   margin-left: 40%;
   margin-right: 40%;
-  margin-top: 2%;
+  margin-top: 10%;
   display: flex;
   justify-content: center;
 }
 
 .loading-spinner {
-  --loading-spinner-size: 300px;
+  --loading-spinner-size: 150px;
   --spinner-color: #c444ff;
 
   height: var(--loading-spinner-size);
@@ -18,18 +18,6 @@
   box-sizing: border-box;
   animation: loading 0.75s ease infinite;
   margin: 20px;
-}
-
-.loading-spinner.small {
-  --loading-spinner-size: 100px;
-}
-
-.loading-spinner.medium {
-  --loading-spinner-size: 200px;
-}
-
-.loading-spinner.large {
-  --loading-spinner-size: 300px;
 }
 
 @keyframes loading {

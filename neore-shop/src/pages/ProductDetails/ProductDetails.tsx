@@ -4,16 +4,7 @@ import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import FetchingError from '../../components/FetchingError/FetchingError';
 import './ProductDetails.css';
 import NavBar from '../../components/Navbar/NavBar';
-
-interface Product {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  discountPercentage: number;
-  rating: number;
-  images: string[];
-}
+import type { Product } from '../../types';
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -78,7 +69,6 @@ export default function ProductDetails() {
     <div>
       <NavBar />
       <div className="product-details-page-container">
-        <hr className="product-details-horizontal-divider" />
         <img src={data.images[0]} alt={data.title} />
         <section className="product-details-introduction-section">
           <h1 className="product-details-page-title">{data.title}</h1>

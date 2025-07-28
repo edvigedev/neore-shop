@@ -27,7 +27,7 @@ export const useFavorites = () => {
     );
   };
 
-  const isFavorite = (productId: number): boolean => {
+  const isFavorite = (productId: number) => {
     const result = favorites.some((fav) => {
       return fav.id === productId;
     });

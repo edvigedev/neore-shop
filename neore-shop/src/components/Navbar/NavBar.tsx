@@ -17,6 +17,11 @@ export default function NavBar() {
           </Link>
         </li>
         <li>
+          <Link to="/users" className="no-underline-link">
+            Users
+          </Link>
+        </li>
+        <li>
           <button className="cart-button">
             <img src={cartImage} alt="Cart" />
           </button>
