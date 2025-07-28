@@ -1,119 +1,114 @@
-  .no-underline-link {
-    text-decoration: none;
-    color: inherit;
-  }
+.no-underline-link {
+  text-decoration: none;
+  color: inherit;
+}
 
-  .card:hover {
-    box-shadow: 0 0 20px #c444ff;
-  }
+.card:hover {
+  box-shadow: 0 0 20px #c444ff;
+}
 
-  .card {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 150px;
-    height: 180px;
-    background-color: #f5f5f5;
-    border-radius: 1em;
-    padding: 1em;
-    margin: 1em;
-    text-align: center;
-    flex-direction: column;
-    font-family: 'Inter', sans-serif;
-    font-weight: 400;
-    color: #000000;
-    transition: all 0.3s ease;
-  }
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 180px;
+  background-color: #f5f5f5;
+  border-radius: 1em;
+  padding: 1em;
+  margin: 1em;
+  text-align: center;
+  flex-direction: column;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  color: #000000;
+  transition: all 0.3s ease;
+}
 
-  .card-image-section {
-    display: flex;
-    position: relative;
-    margin: 1em;
-  }
+.card-image-section {
+  display: flex;
+  position: relative;
+  margin: 1em;
+}
 
-  .card img {
-    width: 120px;
-    height: 100px;
-    object-fit: cover;
-  }
+.card img {
+  width: 120px;
+  height: 100px;
+  object-fit: cover;
+}
 
-  .card-buttons-section {
-    display: flex;
-    flex-direction: column;
-  }
+.card-buttons-section {
+  display: flex;
+  flex-direction: column;
+}
 
-  .add-to-cart {
-    position: absolute;
-    top: -15px;
-    right: -15px;
-    background-color: transparent;
-    cursor: pointer;
-  }
+.add-to-cart {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  background-color: transparent;
+  cursor: pointer;
+}
 
-  .add-to-cart img {
-    width: 3em;
-    height: 3em;
-  }
+.add-to-cart img {
+  width: 3em;
+  height: 3em;
+}
 
-  .card-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
-    width: 100%;
-    height: 40%;
-  }
+.card-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  height: 40%;
+}
 
-  .card h3 {
-    font-size: 0.6em;
-    margin-top: 0em;
-  }
+.card h3 {
+  font-size: 0.6em;
+  margin-top: 0em;
+}
 
-  .card-price {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
-    gap: 0.3em;
-    color: #c444ff;
-  }
+.card-price {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  gap: 0.3em;
+  color: #c444ff;
+}
 
-  .card p {
-    font-size: 0.4em;
-    font-weight: 200;
-    color: rgb(64, 63, 63);
-    margin-top: 0em;
-  }
+.card p {
+  font-size: 0.4em;
+  font-weight: 200;
+  color: rgb(64, 63, 63);
+  margin-top: 0em;
+}
 
-  .favorite-btn {
-    position: absolute;
-    top: 0;
-    right: 100px;
-    background: rgb(212, 130, 250);
-    border: none;
-    border-radius: 50%;
-    width: 25px;
-    height: 25px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    transition: all 0.2s ease;
-  }
+.favorite-btn {
+  position: absolute;
+  top: 0;
+  right: 100px;
+  background: rgb(212, 130, 250);
+  border: none;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  transition: all 0.2s ease;
+}
 
-  .favorite-btn:hover {
-    background: rgba(255, 255, 255, 0.9);
-    transform: scale(1.1);
-  }
+.favorite-btn:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: scale(1.1);
+}
 
-  .favorite-btn.favorited:hover {
-    background: #c444ff;
-  }
-
-  .card-image-section {
-    position: relative;
-  }
+.favorite-btn.favorited:hover {
+  background: #c444ff;
 }
 
 @media (max-width: 979px) {
@@ -144,12 +139,6 @@
     transition: all 0.3s ease;
   }
 
-  .card-image-section {
-    display: flex;
-    position: relative;
-    margin: 1em;
-  }
-
   .card img {
     width: 120px;
     height: 100px;
@@ -229,8 +218,4 @@
   .favorite-btn.favorited:hover {
     background: #c444ff;
   }
-
-  .card-image-section {
-    position: relative;
-  }
-
+}
