@@ -5,6 +5,23 @@
   justify-content: center;
 }
 
+.product-details-add-to-cart {
+  position: absolute;
+  top: 2%;
+  right: 35%;
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
+  width: 200px;
+  height: 200px;
+  transition: all 0.2s ease;
+  margin-top: 1%;
+}
+
+.product-details-add-to-cart:hover {
+  transform: scale(1.1);
+}
+
 .product-details-page-container img {
   width: 30%;
   height: 25%;

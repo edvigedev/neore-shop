@@ -5,12 +5,15 @@ import FetchingError from '../../components/FetchingError/FetchingError';
 import './ProductDetails.css';
 import NavBar from '../../components/Navbar/NavBar';
 import type { Product } from '../../types';
+import { useCart } from '../../hooks/useCart';
+import addToCartImage from '../../assets/add-to-cart.png';
 
 export default function ProductDetails() {
   const { id } = useParams();
   const [data, setData] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,6 +72,9 @@ export default function ProductDetails() {
     <div>
       <NavBar />
       <div className="product-details-page-container">
+        <button onClick={() => addToCart(data, 1)} className="product-details-add-to-cart">
+          <img src={addToCartImage} alt="Add to Cart" />
+        </button>
         <img src={data.images[0]} alt={data.title} />
         <section className="product-details-introduction-section">
           <h1 className="product-details-page-title">{data.title}</h1>
