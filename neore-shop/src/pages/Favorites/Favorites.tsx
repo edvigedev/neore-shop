@@ -8,9 +8,9 @@ export default function Favorites() {
       <NavBar />
       <div className="favorites-container">
         <h1 className="favorites-title">Your Favorites</h1>
+        <hr className="favorites-horizontal-divider" />
+        <FavoritesContainer />
       </div>
-      <hr className="favorites-horizontal-divider" />
-      <FavoritesContainer />
     </div>
   );
 }

@@ -1,10 +1,8 @@
-/* Default styles for screens larger than 980px */
 .favorites-cards-container {
-  margin-left: 20%;
-  margin-right: 20%;
   margin-top: 2%;
   display: flex;
   justify-content: center;
+  width: 80%;
 }
 
 .favorites-cards-container p {
@@ -23,13 +21,14 @@
 
 .favorites-cards-container-list li {
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 /* Responsive styles for screens smaller than 980px */
 @media (max-width: 979px) {
   .favorites-cards-container {
-    margin-left: 10%;
-    margin-right: 10%;
+    width: 90%;
     margin-top: 3%;
   }
 }
