@@ -1,10 +1,12 @@
 /* Screens larger than 980px */
 .cards-container {
-  margin-left: 20%;
-  margin-right: 20%;
   margin-top: 2%;
   display: flex;
   justify-content: center;
+  margin-top: 2%;
+  display: flex;
+  justify-content: center;
+  width: 80%;
 }
 
 .cards-container-list {
