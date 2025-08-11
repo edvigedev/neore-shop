@@ -40,7 +40,13 @@
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
   width: 3em;
   height: 2.5em;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
+}
+
+.cart-button:hover {
+  background-color: rgb(212, 130, 250);
+  color: #c444ff;
+  border: 1px solid #c444ff;
 }
 
 .cart-button img {
