@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import './LoadingSpinner.css';
 
 interface LoadingSpinnerProps {
@@ -12,7 +13,7 @@ export default function LoadingSpinner({
   return (
     <div className="loading-spinner-container">
       <div
-        className={`loading-spinner ${size}`}
+        className={clsx('loading-spinner', size)}
         style={{ '--spinner-color': color } as React.CSSProperties}
       ></div>
     </div>

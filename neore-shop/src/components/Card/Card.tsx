@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import './Card.css';
 import addToCartImage from '../../assets/add-to-cart.png';
 import { Link } from 'react-router';
@@ -34,11 +35,11 @@ export default function Card({ product, addFavorite, removeFavorite, isFavorite 
               <img src={addToCartImage} alt="Add to Cart" />
             </Link>
             <button
-              className={`favorite-btn ${isFavorite(product.id) ? 'favorited' : ''}`}
+              className={clsx('favorite-btn', { favorited: isCurrentFavorite })}
               onClick={handleFavoriteClick}
-              aria-label={isFavorite(product.id) ? 'Remove from favorites' : 'Add to favorites'}
+              aria-label={isCurrentFavorite ? 'Remove from favorites' : 'Add to favorites'}
             >
-              {isFavorite(product.id) ? '💜' : '🤍'}
+              {isCurrentFavorite ? '💜' : '🤍'}
             </button>
           </section>
         </div>
