@@ -22,9 +22,11 @@ export default function NavBar() {
           </Link>
         </li>
         <li>
-          <button className="cart-button">
-            <img src={cartImage} alt="Cart" />
-          </button>
+          <Link to="/cart" className="no-underline-link">
+            <button className="cart-button">
+              <img src={cartImage} alt="Cart" />
+            </button>
+          </Link>
         </li>
       </ul>
     </nav>

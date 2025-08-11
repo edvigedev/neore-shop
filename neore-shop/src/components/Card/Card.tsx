@@ -3,6 +3,7 @@ import './Card.css';
 import addToCartImage from '../../assets/add-to-cart.png';
 import { Link } from 'react-router';
 import type { Product } from '../../types';
+import { useCart } from '../../hooks/useCart';
 
 interface CardProps {
   product: Product;
@@ -12,6 +13,7 @@ interface CardProps {
 }
 
 export default function Card({ product, addFavorite, removeFavorite, isFavorite }: CardProps) {
+  const { addToCart } = useCart();
   const isCurrentFavorite = isFavorite(product.id);
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
@@ -25,15 +27,21 @@ export default function Card({ product, addFavorite, removeFavorite, isFavorite 
     }
   };
 
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation
+    e.stopPropagation(); // Prevent event bubbling
+    addToCart(product, 1);
+  };
+
   return (
     <Link to={`/products/${product.id}`} className="no-underline-link">
       <div className="card">
         <div className="card-image-section">
           <img src={product.thumbnail} alt={product.title} />
           <section className="card-buttons-section">
-            <Link to={`/cart`} className="add-to-cart no-underline-link">
+            <button onClick={handleAddToCart} className="add-to-cart">
               <img src={addToCartImage} alt="Add to Cart" />
-            </Link>
+            </button>
             <button
               className={clsx('favorite-btn', { favorited: isCurrentFavorite })}
               onClick={handleFavoriteClick}
