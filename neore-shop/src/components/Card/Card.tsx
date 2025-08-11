@@ -55,9 +55,9 @@ export default function Card({ product, addFavorite, removeFavorite, isFavorite 
           <h3>{product.title}</h3>
           <div className="card-price">
             <h3>€{product.price}</h3>
-            <h3>-{Math.round(product.discountPercentage)}%</h3>
+            <h3>-{Math.round(product.discountPercentage)}% applies!</h3>
           </div>
-          <p className="card-description">{product.description.substring(0, 50)}...</p>
+          <p className="card-description">{product.description.substring(0, 40)}...</p>
         </div>
       </div>
     </Link>

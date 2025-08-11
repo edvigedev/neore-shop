@@ -11,8 +11,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 150px;
-  height: 180px;
+  width: 200px;
+  height: 240px;
   background-color: #f5f5f5;
   border-radius: 1em;
   padding: 1em;
@@ -76,7 +76,7 @@
 }
 
 .card h3 {
-  font-size: 0.6em;
+  font-size: 1em;
   margin-top: 0em;
 }
 
@@ -85,12 +85,12 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
-  gap: 0.3em;
+  gap: 0.4em;
   color: #c444ff;
 }
 
 .card p {
-  font-size: 0.4em;
+  font-size: 0.6em;
   font-weight: 200;
   color: rgb(64, 63, 63);
   margin-top: 0em;
