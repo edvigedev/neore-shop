@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import { type Product, type CartItem } from '../types';
+import { type Product, type CartItem } from '../../types';
 
 interface AppContextType {
   // Cart-related state and functions

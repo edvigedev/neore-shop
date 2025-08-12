@@ -3,7 +3,7 @@ import './Card.css';
 import addToCartImage from '../../assets/add-to-cart.png';
 import { Link } from 'react-router';
 import type { Product } from '../../types';
-import { useAppContext } from '../../context/AppContext';
+import { useAppContext } from '../../context/AppContext/AppContext';
 
 interface CardProps {
   product: Product;

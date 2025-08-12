@@ -1,3 +1,5 @@
+import './FetchingError.css';
+
 export default function FetchingError() {
   return (
     <div className="fetching-error-container">

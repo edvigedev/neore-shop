@@ -3,21 +3,22 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  width: 100vw;
+  margin-top: 10em;
 }
 
 .fetching-error-content {
   text-align: center;
 }
-.fetching-error h1 {
-  font-size: 1.5em;
+.fetching-error-content h1 {
+  font-size: 2em;
   margin-top: 0em;
+  color: #c444ff;
+  font-weight: 600;
 }
 
-.fetching-error p {
-  font-size: 0.8em;
+.fetching-error-content p {
+  font-size: 1em;
   font-weight: 200;
-  color: rgb(64, 63, 63);
+  color: #c444ff;
   margin-top: 0em;
 }

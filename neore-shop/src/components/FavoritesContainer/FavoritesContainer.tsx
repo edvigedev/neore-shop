@@ -1,4 +1,4 @@
-import { useAppContext } from '../../context/AppContext';
+import { useAppContext } from '../../context/AppContext/AppContext';
 import Card from '../Card/Card';
 import './FavoritesContainer.css';
 

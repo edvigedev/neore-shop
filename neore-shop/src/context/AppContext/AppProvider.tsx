@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import { AppContext } from './AppContext';
-import { useCart } from '../hooks/useCart';
-import { useFavorites } from '../hooks/useFavorites';
+import { useCart } from '../../hooks/useCart';
+import { useFavorites } from '../../hooks/useFavorites';
 
 /**
  * Props for the AppProvider component
