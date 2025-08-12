@@ -1,9 +1,9 @@
-import { useFavorites } from '../../hooks/useFavorites';
+import { useAppContext } from '../../context/AppContext';
 import Card from '../Card/Card';
 import './FavoritesContainer.css';
 
 export default function FavoritesContainer() {
-  const { addFavorite, isFavorite, favorites, removeFavorite } = useFavorites();
+  const { favorites } = useAppContext();
 
   return (
     <section className="favorites-cards-container">
@@ -13,12 +13,7 @@ export default function FavoritesContainer() {
         <ul className="favorites-cards-container-list">
           {favorites.map((product) => (
             <li key={product.id}>
-              <Card
-                product={product}
-                addFavorite={addFavorite}
-                isFavorite={isFavorite}
-                removeFavorite={removeFavorite}
-              />
+              <Card product={product} />
             </li>
           ))}
         </ul>

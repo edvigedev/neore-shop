@@ -184,3 +184,8 @@ export interface Cart {
   totalProducts: number;
   totalQuantity: number;
 }
+
+export interface CartItem {
+  product: Product;
+  quantity: number;
+}

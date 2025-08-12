@@ -1,10 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import type { Product } from '../types';
-
-interface CartItem {
-  product: Product;
-  quantity: number;
-}
+import type { Product, CartItem } from '../types';
 
 const CART_KEY = 'neoreShopCart';
 

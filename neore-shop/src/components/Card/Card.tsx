@@ -3,17 +3,14 @@ import './Card.css';
 import addToCartImage from '../../assets/add-to-cart.png';
 import { Link } from 'react-router';
 import type { Product } from '../../types';
-import { useCart } from '../../hooks/useCart';
+import { useAppContext } from '../../context/AppContext';
 
 interface CardProps {
   product: Product;
-  addFavorite: (product: Product) => void;
-  removeFavorite: (product: Product) => void;
-  isFavorite: (productId: number) => boolean;
 }
 
-export default function Card({ product, addFavorite, removeFavorite, isFavorite }: CardProps) {
-  const { addToCart } = useCart();
+export default function Card({ product }: CardProps) {
+  const { addToCart, addFavorite, removeFavorite, isFavorite } = useAppContext();
   const isCurrentFavorite = isFavorite(product.id);
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
