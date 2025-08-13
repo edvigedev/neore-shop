@@ -32,6 +32,8 @@ export default function NavBar() {
               Users
             </Link>
           )}
+        </li>
+        <li>
           {user?.role === 'admin' && (
             <Link to="/admin" className="no-underline-link">
               Admin Dashboard
