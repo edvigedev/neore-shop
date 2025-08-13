@@ -39,15 +39,18 @@ export default function Users() {
   return (
     <div>
       <h1 className="users-page-title"> All users </h1>
-      <ul className="users-list-container">
-        {data?.users.map((user: User) => (
-          <li key={user.id} className="users-list-links">
-            <Link to={`/admin/users/${user.id}`} className="users-no-underline-link">
-              {user.id}. {user.firstName} {user.lastName};
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <hr className="users-horizontal-divider" />
+      <section className="users-list-section">
+        <ul className="users-list-container">
+          {data?.users.map((user: User) => (
+            <li key={user.id} className="users-list-items">
+              <Link to={`/admin/users/${user.id}`} className="users-no-underline-link">
+                {user.id}. {user.firstName} {user.lastName};
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
   );
 }

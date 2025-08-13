@@ -1,4 +1,4 @@
-.users-page-title {
+.admin-page-title {
   font-size: 3em;
   font-family: Newsreader, serif;
   font-weight: 400;
@@ -9,7 +9,16 @@
   color: #f5f5f5;
 }
 
-.users-horizontal-divider {
+.admin-page-description {
+  font-size: 1.2em;
+  font-family: Newsreader, serif;
+  font-weight: 400;
+  text-align: center;
+  color: #f5f5f5;
+  margin-bottom: 2%;
+}
+
+.admin-page-horizontal-divider {
   width: 70%;
   height: 3px;
   border-radius: 10px;
@@ -21,46 +30,55 @@
   border: none;
 }
 
-.users-list-section {
+.admin-page-products-section {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.users-list-container {
+.admin-page-products-list {
   display: flex;
   flex-direction: column;
   list-style: none;
   gap: 0.5em;
   margin-top: 2%;
   margin-right: 3%;
-  align-items: start;
 }
 
-.users-no-underline-link {
+.admin-page-products-list-item {
   text-decoration: none;
   font-size: 1.3em;
   font-family: 'Inter', sans-serif;
   color: #f5f5f5;
 }
 
-.users-no-underline-link:hover {
+.admin-page-products-list-item:hover {
   color: rgb(212, 130, 250);
 }
 
 @media (max-width: 768px) {
-  .users-page-title {
+  .admin-page-title {
     font-size: 2em;
     margin-top: 5%;
   }
+  .admin-page-description {
+    font-size: 1em;
+    margin-bottom: 5%;
+  }
+  .admin-page-products-title {
+    font-size: 1.5em;
+  }
 
-  .users-no-underline-link {
+  .admin-page-products-list {align}
+
+  .admin-page-products-list-item {
     font-size: 1em;
   }
-  .users-horizontal-divider {
+  .admin-page-horizontal-divider {
     width: 90%;
   }
-  .users-list-section {
-    margin-top: 10%;
+  .admin-page-products-list {
+    margin-right: 0;
+    margin-top:10%;
   }
 }
