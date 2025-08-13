@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 export default function NavBar() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -27,9 +27,16 @@ export default function NavBar() {
           </Link>
         </li>
         <li>
-          <Link to="/users" className="no-underline-link">
-            Users
-          </Link>
+          {user?.role === 'admin' && (
+            <Link to="/admin/users" className="no-underline-link">
+              Users
+            </Link>
+          )}
+          {user?.role === 'admin' && (
+            <Link to="/admin" className="no-underline-link">
+              Admin Dashboard
+            </Link>
+          )}
         </li>
         <li>
           <Link to="/cart" className="no-underline-link">

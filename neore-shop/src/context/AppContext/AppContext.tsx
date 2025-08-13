@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react';
 import { type Product, type CartItem } from '../../types';
+import type { User } from '../../types';
 
 interface AppContextType {
   // Cart-related state and functions
@@ -17,10 +18,9 @@ interface AppContextType {
   removeFavorite: (product: Product) => void;
   isFavorite: (productId: number) => boolean;
 
-  // Future: User authentication state
-  // user: User | null;
-  // login: (credentials: LoginCredentials) => Promise<void>;
-  // logout: () => void;
+  user: User | null;
+  login: (token: string) => void;
+  logout: () => void;
 
   // Future: Product wishlist state
   // wishlist: Product[];

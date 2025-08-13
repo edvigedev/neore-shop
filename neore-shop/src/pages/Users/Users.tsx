@@ -44,7 +44,7 @@ export default function Users() {
       <ul className="users-list-container">
         {data?.users.map((user: User) => (
           <li key={user.id} className="users-list-links">
-            <Link to={`/users/${user.id}`} className="users-no-underline-link">
+            <Link to={`/admin/users/${user.id}`} className="users-no-underline-link">
               {user.id}. {user.firstName} {user.lastName};
             </Link>
           </li>

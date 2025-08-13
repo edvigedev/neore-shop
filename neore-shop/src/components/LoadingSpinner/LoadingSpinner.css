@@ -40,3 +40,19 @@
     transform: rotate(1turn);
   }
 }
+
+@media (max-width: 979px) {
+  .loading-spinner-container {
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-top: 10%;
+  }
+
+  .loading-spinner {
+    --loading-spinner-size: 100px;
+  }
+
+  .loading-spinner.small {
+    --loading-spinner-size: 50px;
+  }
+}
