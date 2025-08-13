@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 export default function NavBar() {
-  const { logout, user } = useAuth();
+  const { logout, user, token } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -20,7 +20,8 @@ export default function NavBar() {
       </Link>
       <ul className="nav-bar-links">
         <li>My Profile</li>
-        <li onClick={handleLogout}>Logout</li>
+
+        <li onClick={handleLogout}>{token ? 'Logout' : 'Login'}</li>
         <li>
           <Link to="/favorites" className="no-underline-link">
             Favorites

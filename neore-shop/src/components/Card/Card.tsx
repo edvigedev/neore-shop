@@ -4,6 +4,7 @@ import addToCartImage from '../../assets/add-to-cart.png';
 import { Link } from 'react-router';
 import type { Product } from '../../types';
 import { useAppContext } from '../../context/AppContext/AppContext';
+import { useAuth } from '../../context/AuthContext/AuthContext';
 
 interface CardProps {
   product: Product;
@@ -11,6 +12,7 @@ interface CardProps {
 
 export default function Card({ product }: CardProps) {
   const { addToCart, addFavorite, removeFavorite, isFavorite } = useAppContext();
+  const { token } = useAuth();
   const isCurrentFavorite = isFavorite(product.id);
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
@@ -40,6 +42,7 @@ export default function Card({ product }: CardProps) {
               <img src={addToCartImage} alt="Add to Cart" />
             </button>
             <button
+              disabled={!token}
               className={clsx('favorite-btn', { favorited: isCurrentFavorite })}
               onClick={handleFavoriteClick}
               aria-label={isCurrentFavorite ? 'Remove from favorites' : 'Add to favorites'}
