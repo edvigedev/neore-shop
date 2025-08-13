@@ -4,7 +4,6 @@ import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import FetchingError from '../../components/FetchingError/FetchingError';
 import { Link } from 'react-router';
 import './Users.css';
-import NavBar from '../../components/Navbar/NavBar';
 
 export default function Users() {
   const [data, setData] = useState<UsersResponse>();
@@ -39,7 +38,6 @@ export default function Users() {
 
   return (
     <div>
-      <NavBar />
       <h1 className="users-page-title"> All users </h1>
       <ul className="users-list-container">
         {data?.users.map((user: User) => (

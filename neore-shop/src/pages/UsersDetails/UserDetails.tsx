@@ -3,7 +3,6 @@ import { useParams } from 'react-router';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import FetchingError from '../../components/FetchingError/FetchingError';
 import './UserDetails.css';
-import NavBar from '../../components/Navbar/NavBar';
 import type { UserDetails, Carts, Product, Cart } from '../../types';
 
 export default function UserDetails() {
@@ -53,8 +52,6 @@ export default function UserDetails() {
 
   return (
     <div>
-      <NavBar />
-
       <div className="user-details-page-container">
         <section className="user-details-introduction-section">
           <h1 className="user-details-page-title">
