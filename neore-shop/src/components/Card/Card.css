@@ -89,6 +89,17 @@
   color: #c444ff;
 }
 
+.card-initial-price {
+  text-decoration: line-through;
+  font-size: 0.7em;
+  color: rgb(128, 128, 128);
+}
+
+.card-discounted-price {
+  color: #c444ff;
+  font-size: 0.9em;
+}
+
 .card p {
   font-size: 0.6em;
   font-weight: 200;

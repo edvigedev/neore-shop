@@ -68,6 +68,18 @@ export default function ProductDetails() {
 
   const finalRating = getStarRating(rating);
 
+  const calculateDiscountedPrice = () => {
+    const price = parseFloat(String(data?.price).replace(',', '.') || '0');
+    const discount = parseFloat(String(data?.discountPercentage).replace(',', '.') || '0');
+
+    if (price > 0 && discount > 0) {
+      const finalPrice = price - price * (discount / 100);
+      return finalPrice.toFixed(2);
+    }
+
+    return price.toFixed(2);
+  };
+
   return (
     <div>
       <NavBar />
@@ -85,8 +97,11 @@ export default function ProductDetails() {
           <p>{data.description}</p>
         </section>
         <section className="product-details-price-section">
-          <h2>€{data.price}</h2>
-          <h3>-{Math.round(data.discountPercentage)}% IS APPLIED</h3>
+          <h2 className="product-details-initial-price">€{data.price}</h2>
+          <h2 className="product-details-discounted-price">
+            Now it&apos;s €{calculateDiscountedPrice()}!
+          </h2>
+          <h3>-{Math.round(data.discountPercentage)}% DISCOUNT!</h3>
         </section>
       </div>
     </div>

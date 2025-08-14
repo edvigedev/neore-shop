@@ -32,6 +32,18 @@ export default function Card({ product }: CardProps) {
     addToCart(product, 1);
   };
 
+  const calculateDiscountedPrice = () => {
+    const price = parseFloat(String(product?.price).replace(',', '.') || '0');
+    const discount = parseFloat(String(product?.discountPercentage).replace(',', '.') || '0');
+
+    if (price > 0 && discount > 0) {
+      const finalPrice = price - price * (discount / 100);
+      return finalPrice.toFixed(2);
+    }
+
+    return price.toFixed(2);
+  };
+
   return (
     <Link to={`/products/${product.id}`} className="no-underline-link">
       <div className="card">
@@ -54,8 +66,9 @@ export default function Card({ product }: CardProps) {
         <div className="card-info">
           <h3>{product.title}</h3>
           <div className="card-price">
-            <h3>€{product.price}</h3>
-            <h3>-{Math.round(product.discountPercentage)}% applies!</h3>
+            <h3 className="card-initial-price">€{product.price}</h3>
+            <h3 className="card-discounted-price">€{calculateDiscountedPrice()}</h3>
+            <h3>-{Math.round(product.discountPercentage)}%</h3>
           </div>
           <p className="card-description">{product.description.substring(0, 40)}...</p>
         </div>

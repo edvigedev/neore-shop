@@ -89,6 +89,15 @@
   font-style: italic;
 }
 
+.product-details-initial-price {
+  color: #f5f5f5;
+  text-decoration: line-through;
+}
+
+.product-details-discounted-price {
+  color: #c444ff;
+}
+
 @media (max-width: 979px) {
   .product-details-page-container img {
     width: 40%;
