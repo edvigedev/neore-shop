@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { Product } from '../../types';
 import './AdminPage.css';
-
+import { Link } from 'react-router-dom';
 export default function AdminPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,7 +43,9 @@ export default function AdminPage() {
           <ul className="admin-page-products-list">
             {products.map((product: Product) => (
               <li key={product.id} className="admin-page-products-list-item">
-                {product.id}. {product.title}
+                <Link to={`/admin/products/${product.id}`} className="admin-page-no-underline-link">
+                  {product.id}. {product.title}
+                </Link>
               </li>
             ))}
           </ul>
