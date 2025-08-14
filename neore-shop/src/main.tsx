@@ -15,6 +15,7 @@ import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute.tsx';
 import ProtectedLayout from './components/ProtectedRoute/ProtectedLayout.tsx';
 import AdminGuard from './components/ProtectedRoute/AdminGuard.tsx';
 import AdminPage from './pages/AdminPage/AdminPage.tsx';
+import EditProductPage from './pages/EditProductPage/EditProductPage.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -49,6 +50,7 @@ createRoot(document.getElementById('root')!).render(
               <Route index element={<AdminPage />} />
               <Route path="users" element={<Users />} />
               <Route path="users/:id" element={<UserDetails />} />
+              <Route path="products/:id" element={<EditProductPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

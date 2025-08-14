@@ -1,0 +1,170 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap');
+
+:root {
+  --primary-bg-color: #c444ff --secondary-bg-color: #807182;
+  --form-bg-color: rgb(212, 130, 250);
+  --font-color: rgb(64, 63, 63);
+  --font-family: 'Inter', sans-serif;
+}
+
+/* --- Main Form Container --- */
+.product-form {
+  background: var(--form-bg-color);
+  padding: 40px;
+  max-width: 600px;
+  margin: 40px auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgb(64, 63, 63);
+  font-family: var(--font-family);
+}
+
+/* --- General Styles for Input Groups --- */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  color: var(--font-color);
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.form-group input[type='file'] {
+  display: block;
+  padding: 10px;
+  font-family: var(--font-family);
+  font-size: 14px;
+  color: var(--font-color);
+  line-height: 1.5;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.form-group input[type='file']:focus {
+  outline: none;
+  border-color: var(--secondary-bg-color);
+}
+
+/* --- Input and Textarea Styling --- */
+.product-form input[type='text'],
+.product-form input[type='number'],
+.product-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--form-border-color);
+  border-radius: 4px;
+  font-family: var(--font-family);
+  font-size: 14px;
+  color: var(--font-color);
+  line-height: 1.5;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.product-form input:focus,
+.product-form textarea:focus {
+  outline: none;
+  border-color: var(--secondary-bg-color);
+}
+
+.product-form textarea {
+  resize: vertical; /* Allow vertical resizing */
+  min-height: 80px;
+}
+
+/* --- Price Section Layout --- */
+.price-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns */
+  gap: 20px; /* Space between columns */
+  align-items: flex-end;
+}
+
+/* Making the calculated price stand out */
+.calculated-price {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--font-color);
+  padding-bottom: 10px; /* Aligns better with input fields */
+}
+
+.calculated-price strong {
+  font-family: var(--font-family);
+}
+
+/* --- Action Buttons Container --- */
+.form-actions {
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
+  gap: 15px;
+  padding-top: 20px;
+  border-top: 1px solid var(--form-border-color);
+  margin-top: 20px;
+}
+
+/* --- General Button Styling --- */
+.form-actions button {
+  height: 38px;
+  line-height: 38px;
+  padding: 0 25px;
+  border-radius: 19px;
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+/* --- Specific Button Styles (Adapted from #next, #back) --- */
+/* Primary action button (Confirm/Create) */
+.form-actions button[type='submit'] {
+  background: var(--secondary-bg-color);
+  border: 1px solid transparent;
+  color: #fff;
+}
+
+.form-actions button[type='submit']:hover {
+  background: rgb(64, 63, 63);
+}
+
+/* Secondary action button (Cancel) */
+.form-actions button[type='button'] {
+  background: #fff;
+  border: 1px solid rgb(64, 63, 63);
+  color: var(--font-color);
+}
+
+.form-actions button[type='button']:hover {
+  background: rgb(64, 63, 63);
+  color: white;
+}
+
+/* Delete button */
+.form-actions .delete-button {
+  background-color: #d9534f; /* A standard 'danger' red */
+  color: white;
+  border: 1px solid transparent;
+}
+
+.form-actions .delete-button:hover {
+  background-color: #c9302c;
+}
+
+/* Disabled state for all buttons */
+.form-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- Error Message --- */
+.form-error {
+  color: #c9302c;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+@media (max-width: 979px) {
+  .product-form {
+    max-width: 70%;
+  }
+}

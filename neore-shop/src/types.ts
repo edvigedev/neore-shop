@@ -5,8 +5,10 @@ export interface Product {
   price: number;
   discountPercentage: number;
   description: string;
-  images: [string];
+  images: string[];
   rating: number;
+  category: string;
+  stock: number;
 }
 
 // User-related interfaces for API responses
