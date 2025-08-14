@@ -5,7 +5,7 @@ import FetchingError from '../../components/FetchingError/FetchingError';
 import './ProductDetails.css';
 import NavBar from '../../components/Navbar/NavBar';
 import type { Product } from '../../types';
-import { useCart } from '../../hooks/useCart';
+import { useCart } from '../../context/CartContext/CartContext';
 import addToCartImage from '../../assets/add-to-cart.png';
 
 export default function ProductDetails() {

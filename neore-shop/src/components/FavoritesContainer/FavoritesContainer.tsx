@@ -1,9 +1,9 @@
-import { useAppContext } from '../../context/AppContext/AppContext';
+import { useFavorites } from '../../context/FavoriteContext/FavoriteContext';
 import Card from '../Card/Card';
 import './FavoritesContainer.css';
 
 export default function FavoritesContainer() {
-  const { favorites } = useAppContext();
+  const { favorites } = useFavorites();
 
   return (
     <section className="favorites-cards-container">

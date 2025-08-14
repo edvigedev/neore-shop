@@ -3,7 +3,6 @@ import Card from '../Card/Card';
 import './CardsContainer.css';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import FetchingError from '../FetchingError/FetchingError';
-import { useFavorites } from '../../hooks/useFavorites';
 import type { Product } from '../../types';
 
 interface ProductsResponse {
@@ -14,8 +13,6 @@ export default function CardsContainer() {
   const [data, setData] = useState<ProductsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,12 +45,7 @@ export default function CardsContainer() {
       <ul className="cards-container-list">
         {data?.products.map((product: Product) => (
           <li key={product.id}>
-            <Card
-              product={product}
-              addFavorite={addFavorite}
-              removeFavorite={removeFavorite}
-              isFavorite={isFavorite}
-            />
+            <Card product={product} />
           </li>
         ))}
       </ul>

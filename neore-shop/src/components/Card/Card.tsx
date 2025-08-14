@@ -3,7 +3,8 @@ import './Card.css';
 import addToCartImage from '../../assets/add-to-cart.png';
 import { Link } from 'react-router';
 import type { Product } from '../../types';
-import { useAppContext } from '../../context/AppContext/AppContext';
+import { useCart } from '../../context/CartContext/CartContext';
+import { useFavorites } from '../../context/FavoriteContext/FavoriteContext';
 import { useAuth } from '../../context/AuthContext/AuthContext';
 
 interface CardProps {
@@ -11,7 +12,8 @@ interface CardProps {
 }
 
 export default function Card({ product }: CardProps) {
-  const { addToCart, addFavorite, removeFavorite, isFavorite } = useAppContext();
+  const { addToCart } = useCart();
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
   const { token } = useAuth();
   const isCurrentFavorite = isFavorite(product.id);
 
