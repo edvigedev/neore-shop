@@ -28,28 +28,44 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       const existingItem = prev.find((item) => item.product.id === product.id);
 
       if (existingItem) {
-        return prev.map((item) =>
-          item.product.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
-        );
+        const newQuantity = existingItem.quantity + quantity;
+
+        // Check if the new quantity exceeds the limit
+        if (newQuantity > 10) {
+          alert('You cannot have more than 10 units of the same product.');
+          // Cap the quantity at 10 instead of increasing it
+          return prev.map((item) =>
+            item.product.id === product.id ? { ...item, quantity: 10 } : item
+          );
+        } else {
+          // If within the limit, update as normal
+          return prev.map((item) =>
+            item.product.id === product.id ? { ...item, quantity: newQuantity } : item
+          );
+        }
       } else {
+        // If it's a new item, just add it to the cart
         return [...prev, { product, quantity }];
       }
     });
   };
 
-  const removeFromCart = (productId: number) => {
-    setCartItems((prev) => prev.filter((item) => item.product.id !== productId));
-  };
-
-  const updateQuantity = (productId: number, quantity: number) => {
-    if (quantity <= 0) {
-      removeFromCart(productId);
-      return;
+  const updateQuantity = (productId: number, newQuantity: number) => {
+    // Maintains the limit of 10 items per product even if the select range changes to > 10
+    if (newQuantity > 10) {
+      alert('You cannot have more than 10 units of the same product.');
+      newQuantity = 10; // Enforce the limit
     }
 
     setCartItems((prev) =>
-      prev.map((item) => (item.product.id === productId ? { ...item, quantity } : item))
+      prev.map((item) =>
+        item.product.id === productId ? { ...item, quantity: newQuantity } : item
+      )
     );
+  };
+
+  const removeFromCart = (productId: number) => {
+    setCartItems((prev) => prev.filter((item) => item.product.id !== productId));
   };
 
   const clearCart = () => {
