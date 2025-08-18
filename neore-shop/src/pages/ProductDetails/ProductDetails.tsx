@@ -7,9 +7,10 @@ import NavBar from '../../components/Navbar/NavBar';
 import type { Product } from '../../types';
 import { useCart } from '../../context/CartContext/CartContext';
 import { useFavorites } from '../../context/FavoriteContext/FavoriteContext';
-import addToCartImage from '../../assets/add-to-cart.png';
 import { useAuth } from '../../context/AuthContext/AuthContext';
 import clsx from 'clsx';
+import HeartIcon from '../../icons/HeartIcon';
+import PlusIcon from '../../icons/PlusIcon';
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -105,26 +106,34 @@ export default function ProductDetails() {
     <div>
       <NavBar />
       <div className="product-details-page-container">
+        {/* The image container is now the reference for positioning */}
         <div className="product-details-image-container">
+          <img src={data.images[0]} alt={data.title} />
+
+          {/* This section now overlays the image */}
           <section className="product-details-buttons-container">
             <button
               disabled={!token}
-              className={clsx('product-details-favorite-btn', { favorited: isCurrentFavorite })}
+              className={clsx('product-action-btn', { favorited: isCurrentFavorite })}
               onClick={handleFavoriteClick}
-              aria-label={isCurrentFavorite ? 'Remove from favorites' : 'Add to favorites'}
+              data-tooltip={isCurrentFavorite ? 'Remove from favorites' : 'Add to favorites'}
             >
-              {isCurrentFavorite ? '💜' : '🤍'}
+              <HeartIcon />
             </button>
-            <button onClick={() => addToCart(data, 1)} className="product-details-add-to-cart">
-              <img src={addToCartImage} alt="Add to Cart" />
+            <button
+              onClick={() => addToCart(data, 1)}
+              className="product-action-btn"
+              data-tooltip="Add to cart"
+            >
+              <PlusIcon />
             </button>
           </section>
-          <img src={data.images[0]} alt={data.title} />
         </div>
+
         <section className="product-details-introduction-section">
           <h1 className="product-details-page-title">{data.title}</h1>
           <aside className="product-details-rating-section">
-            <h3>RATING</h3>
+            <h3>Rating</h3>
             <span>{finalRating}</span>
           </aside>
           <p>{data.description}</p>
