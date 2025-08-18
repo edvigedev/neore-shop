@@ -19,9 +19,9 @@ export default function NavBar() {
         <div className="neore-logo"> Neore</div>
       </Link>
       <ul className="nav-bar-links">
-        <li>My Profile</li>
-
-        <li onClick={handleLogout}>{token ? 'Logout' : 'Login'}</li>
+        <li onClick={handleLogout} className="no-underline-link">
+          {token ? 'Logout' : 'Login'}
+        </li>
         <li>
           <Link to="/favorites" className="no-underline-link">
             Favorites
