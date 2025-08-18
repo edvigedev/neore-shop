@@ -6,7 +6,10 @@ import './ProductDetails.css';
 import NavBar from '../../components/Navbar/NavBar';
 import type { Product } from '../../types';
 import { useCart } from '../../context/CartContext/CartContext';
+import { useFavorites } from '../../context/FavoriteContext/FavoriteContext';
 import addToCartImage from '../../assets/add-to-cart.png';
+import { useAuth } from '../../context/AuthContext/AuthContext';
+import clsx from 'clsx';
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -14,6 +17,24 @@ export default function ProductDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { addToCart } = useCart();
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+  const { token } = useAuth();
+  const isCurrentFavorite = data ? isFavorite(data.id) : false;
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation
+    e.stopPropagation(); // Prevent event bubbling
+
+    if (!data) {
+      return;
+    }
+
+    if (isCurrentFavorite) {
+      removeFavorite(data);
+    } else {
+      addFavorite(data);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -84,10 +105,22 @@ export default function ProductDetails() {
     <div>
       <NavBar />
       <div className="product-details-page-container">
-        <button onClick={() => addToCart(data, 1)} className="product-details-add-to-cart">
-          <img src={addToCartImage} alt="Add to Cart" />
-        </button>
-        <img src={data.images[0]} alt={data.title} />
+        <div className="product-details-image-container">
+          <section className="product-details-buttons-container">
+            <button
+              disabled={!token}
+              className={clsx('product-details-favorite-btn', { favorited: isCurrentFavorite })}
+              onClick={handleFavoriteClick}
+              aria-label={isCurrentFavorite ? 'Remove from favorites' : 'Add to favorites'}
+            >
+              {isCurrentFavorite ? '💜' : '🤍'}
+            </button>
+            <button onClick={() => addToCart(data, 1)} className="product-details-add-to-cart">
+              <img src={addToCartImage} alt="Add to Cart" />
+            </button>
+          </section>
+          <img src={data.images[0]} alt={data.title} />
+        </div>
         <section className="product-details-introduction-section">
           <h1 className="product-details-page-title">{data.title}</h1>
           <aside className="product-details-rating-section">
