@@ -140,10 +140,10 @@ export default function ProductDetails() {
         </section>
         <section className="product-details-price-section">
           <h2 className="product-details-initial-price">€{data.price}</h2>
+          <h3>-{Math.round(data.discountPercentage)}% DISCOUNT!</h3>
           <h2 className="product-details-discounted-price">
             Now it&apos;s €{calculateDiscountedPrice()}!
           </h2>
-          <h3>-{Math.round(data.discountPercentage)}% DISCOUNT!</h3>
         </section>
       </div>
     </div>
