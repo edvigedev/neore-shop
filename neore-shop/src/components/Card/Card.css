@@ -4,7 +4,7 @@
 }
 
 .card:hover {
-  box-shadow: 0 0 20px #c444ff;
+  box-shadow: 0 0 20px rgba(196, 68, 255, 0.7);
 }
 
 .card {
@@ -26,44 +26,15 @@
 }
 
 .card-image-section {
-  display: flex;
   position: relative;
-  margin: 1em;
+  margin-bottom: 1em;
 }
 
 .card img {
-  width: 120px;
-  height: 100px;
+  width: 150px;
+  height: 120px;
   object-fit: cover;
-}
-
-.card-buttons-section {
-  display: flex;
-  flex-direction: column;
-}
-
-.add-to-cart {
-  position: absolute;
-  top: -15px;
-  right: -15px;
-  background-color: transparent;
-  cursor: pointer;
-  border: none;
-  border-radius: 40%;
-  width: 3.5em;
-  height: 3.5em;
-  transition: all 0.2s ease;
-}
-
-.add-to-cart:hover {
-  transform: scale(1.1);
-}
-
-.add-to-cart img {
-  width: 3.5em;
-  height: 3.5em;
-  border-radius: 50%;
-  border: none;
+  border-radius: 0.5em;
 }
 
 .card-info {
@@ -78,13 +49,13 @@
 .card h3 {
   font-size: 1em;
   margin-top: 0em;
+  margin-bottom: 0.5em;
 }
 
 .card-price {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-around;
   gap: 0.8em;
   color: #c444ff;
 }
@@ -107,28 +78,71 @@
   margin-top: 0em;
 }
 
-.favorite-btn {
+.card-buttons-section {
   position: absolute;
-  top: 0;
-  right: 100px;
-  background: rgb(212, 130, 250);
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 10;
+}
+
+.card-action-btn {
+  background-color: rgba(26, 26, 26, 0.5);
   border: none;
   border-radius: 50%;
-  width: 25px;
-  height: 25px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
-  transition: all 0.2s ease;
+  transition: all 0.2s ease-in-out;
+  color: #f5f5f5;
 }
 
-.favorite-btn:hover {
-  background: rgba(255, 255, 255, 0.9);
+.card-action-btn:hover {
+  background-color: rgb(212, 130, 250);
   transform: scale(1.1);
 }
 
-.favorite-btn.favorited:hover {
-  background: #c444ff;
+.card-action-btn:disabled {
+  cursor: not-allowed;
+  background-color: rgba(50, 50, 50, 0.4);
+}
+
+.card-action-btn.favorited {
+  color: #c444ff;
+}
+
+.card-action-btn[data-tooltip] {
+  position: relative;
+}
+
+.card-action-btn[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) scale(0.8);
+  bottom: 115%;
+  background-color: #333;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+  z-index: 20;
+}
+
+.card-action-btn[data-tooltip]:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) scale(1);
 }

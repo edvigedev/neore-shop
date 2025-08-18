@@ -1,11 +1,12 @@
 import clsx from 'clsx';
 import './Card.css';
-import addToCartImage from '../../assets/add-to-cart.png';
 import { Link } from 'react-router';
 import type { Product } from '../../types';
 import { useCart } from '../../context/CartContext/CartContext';
 import { useFavorites } from '../../context/FavoriteContext/FavoriteContext';
 import { useAuth } from '../../context/AuthContext/AuthContext';
+import HeartIcon from '../../icons/HeartIcon';
+import PlusIcon from '../../icons/PlusIcon';
 
 interface CardProps {
   product: Product;
@@ -51,17 +52,22 @@ export default function Card({ product }: CardProps) {
       <div className="card">
         <div className="card-image-section">
           <img src={product.thumbnail} alt={product.title} />
+          {/* --- This is the updated button section --- */}
           <section className="card-buttons-section">
-            <button onClick={handleAddToCart} className="add-to-cart">
-              <img src={addToCartImage} alt="Add to Cart" />
-            </button>
             <button
               disabled={!token}
-              className={clsx('favorite-btn', { favorited: isCurrentFavorite })}
+              className={clsx('card-action-btn', { favorited: isCurrentFavorite })}
               onClick={handleFavoriteClick}
-              aria-label={isCurrentFavorite ? 'Remove from favorites' : 'Add to favorites'}
+              data-tooltip={isCurrentFavorite ? 'Remove from favorites' : 'Add to favorites'}
             >
-              {isCurrentFavorite ? '💜' : '🤍'}
+              <HeartIcon />
+            </button>
+            <button
+              onClick={handleAddToCart}
+              className="card-action-btn"
+              data-tooltip="Add to cart"
+            >
+              <PlusIcon />
             </button>
           </section>
         </div>
