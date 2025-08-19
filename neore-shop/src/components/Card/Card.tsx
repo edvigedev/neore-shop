@@ -52,7 +52,6 @@ export default function Card({ product }: CardProps) {
       <div className="card">
         <div className="card-image-section">
           <img src={product.thumbnail} alt={product.title} />
-          {/* --- This is the updated button section --- */}
           <section className="card-buttons-section">
             <button
               disabled={!token}
@@ -75,10 +74,10 @@ export default function Card({ product }: CardProps) {
           <h3>{product.title}</h3>
           <div className="card-price">
             <h3 className="card-initial-price">€{product.price}</h3>
-            <h3 className="card-discounted-price">€{calculateDiscountedPrice()}</h3>
             <h3>-{Math.round(product.discountPercentage)}%</h3>
+            <h3 className="card-discounted-price">€{calculateDiscountedPrice()}</h3>
           </div>
-          <p className="card-description">{product.description.substring(0, 40)}...</p>
+          <p className="card-category">{product.category}</p>
         </div>
       </div>
     </Link>
