@@ -2,22 +2,25 @@ import { useEffect, useState } from 'react';
 import type { Product } from '../../types';
 import './AdminPage.css';
 import { Link } from 'react-router-dom';
+import { getErrorMessage } from '../../utils/getErrorMessage';
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
+import FetchingError from '../../components/FetchingError/FetchingError';
 export default function AdminPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await fetch('https://dummyjson.com/products');
         if (!response.ok) {
-          throw new Error('Failed to fetch products');
+          throw new Error(getErrorMessage(response));
         }
         const data = await response.json();
         setProducts(data.products);
       } catch (error: unknown) {
-        setError(error as Error);
+        setError(getErrorMessage(error));
       } finally {
         setLoading(false);
       }
@@ -26,10 +29,10 @@ export default function AdminPage() {
   }, []);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <LoadingSpinner size="small" />;
   }
   if (error) {
-    return <p>Error: {error.message}</p>;
+    return <FetchingError />;
   }
 
   return (

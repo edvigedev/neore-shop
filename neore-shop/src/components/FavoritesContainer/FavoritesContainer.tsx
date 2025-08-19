@@ -1,5 +1,6 @@
 import { useFavorites } from '../../context/FavoriteContext/FavoriteContext';
 import Card from '../Card/Card';
+import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
 import './FavoritesContainer.css';
 
 export default function FavoritesContainer() {
@@ -13,7 +14,9 @@ export default function FavoritesContainer() {
         <ul className="favorites-cards-container-list">
           {favorites.map((product) => (
             <li key={product.id}>
-              <Card product={product} />
+              <ErrorBoundary>
+                <Card product={product} />
+              </ErrorBoundary>
             </li>
           ))}
         </ul>

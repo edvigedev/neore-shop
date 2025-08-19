@@ -11,6 +11,7 @@ import { useAuth } from '../../context/AuthContext/AuthContext';
 import clsx from 'clsx';
 import HeartIcon from '../../icons/HeartIcon';
 import PlusIcon from '../../icons/PlusIcon';
+import { getErrorMessage } from '../../utils/getErrorMessage';
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -42,12 +43,12 @@ export default function ProductDetails() {
       try {
         const response = await fetch(`https://dummyjson.com/products/${id}`);
         if (!response.ok) {
-          throw new Error('Failed to get the product details');
+          throw new Error(getErrorMessage(response));
         }
         const result = await response.json();
         setData(result);
       } catch (error) {
-        setError(error instanceof Error ? error.message : 'An error occurred');
+        setError(getErrorMessage(error));
       } finally {
         setLoading(false);
       }
@@ -106,11 +107,9 @@ export default function ProductDetails() {
     <div>
       <NavBar />
       <div className="product-details-page-container">
-        {/* The image container is now the reference for positioning */}
         <div className="product-details-image-container">
           <img src={data.images[0]} alt={data.title} />
 
-          {/* This section now overlays the image */}
           <section className="product-details-buttons-container">
             <button
               disabled={!token}

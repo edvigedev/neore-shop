@@ -22,3 +22,16 @@
   color: #c444ff;
   margin-top: 0em;
 }
+
+.fetching-error-content button {
+  background-color: #c444ff;
+  color: #f5f5f5;
+  border: none;
+  padding: 0.5em 1em;
+  border-radius: 0.5em;
+  cursor: pointer;
+}
+
+.fetching-error-content button:hover {
+  background-color: rgb(212, 130, 250);
+}

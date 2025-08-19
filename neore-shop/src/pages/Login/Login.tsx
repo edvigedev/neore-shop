@@ -4,6 +4,7 @@ import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import FetchingError from '../../components/FetchingError/FetchingError';
 import { useAuth } from '../../context/AuthContext/AuthContext';
 import './Login.css';
+import { getErrorMessage } from '../../utils/getErrorMessage';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -33,20 +34,17 @@ export default function Login() {
         body: JSON.stringify({ username: username, password: password }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.message || `HTTP ${response.status}`);
+        throw new Error(getErrorMessage(response));
       }
+
+      const data = await response.json();
       login(data.accessToken);
       navigate('/');
+      return;
     } catch (error: unknown) {
       console.error('Fetch error:', error);
-      if (error instanceof Error) {
-        setError(error.message);
-      } else {
-        setError('An unknown error occurred');
-      }
+      setError(getErrorMessage(error));
     } finally {
       setLoading(false);
     }

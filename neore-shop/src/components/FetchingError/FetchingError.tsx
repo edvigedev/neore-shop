@@ -5,7 +5,8 @@ export default function FetchingError() {
     <div className="fetching-error-container">
       <div className="fetching-error-content">
         <h1>Oops! Something went wrong</h1>
-        <p>We couldn&apos;t load the data. Please try again later.</p>
+        <p>We couldn&apos;t load the data. Please try again.</p>
+        <button onClick={() => window.location.reload()}>Try again</button>
       </div>
     </div>
   );

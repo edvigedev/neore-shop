@@ -18,6 +18,7 @@ import ProtectedLayout from './components/ProtectedRoute/ProtectedLayout.tsx';
 import AdminGuard from './components/ProtectedRoute/AdminGuard.tsx';
 import AdminPage from './pages/AdminPage/AdminPage.tsx';
 import EditProductPage from './pages/EditProductPage/EditProductPage.tsx';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -25,37 +26,41 @@ createRoot(document.getElementById('root')!).render(
       <CartProvider>
         <FavoriteProvider>
           <BrowserRouter basename="/neore-shop/">
-            <Routes>
-              {/*                  1. PUBLIC ROUTES                    */}
-              <Route path="/login" element={<Login />} />
-              <Route index element={<App />} />
-              <Route path="/products/:id" element={<ProductDetails />} />
-              <Route path="/cart" element={<Cart />} />
-              {/*              2. GENERAL PROTECTED ROUTES             */}
-              <Route
-                element={
-                  <ProtectedRoute>
-                    <ProtectedLayout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route path="favorites" element={<Favorites />} />
-              </Route>
-              {/*              3. ADMIN-ONLY PROTECTED ROUTES          */}
-              <Route
-                path="/admin"
-                element={
-                  <AdminGuard>
-                    <ProtectedLayout />
-                  </AdminGuard>
-                }
-              >
-                <Route index element={<AdminPage />} />
-                <Route path="users" element={<Users />} />
-                <Route path="users/:id" element={<UserDetails />} />
-                <Route path="products/:id" element={<EditProductPage />} />
-              </Route>
-            </Routes>
+            <ErrorBoundary>
+              <Routes>
+                {/*                  1. PUBLIC ROUTES                    */}
+                <Route path="/login" element={<Login />} />
+                <Route index element={<App />} />
+                <Route path="/products/:id" element={<ProductDetails />} />
+                <Route path="/cart" element={<Cart />} />
+                {/*              2. GENERAL PROTECTED ROUTES             */}
+                <Route
+                  element={
+                    <ProtectedRoute>
+                      <ProtectedLayout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route path="favorites" element={<Favorites />} />
+                </Route>
+                {/*              3. ADMIN-ONLY PROTECTED ROUTES          */}
+                <Route
+                  path="/admin"
+                  element={
+                    <ErrorBoundary>
+                      <AdminGuard>
+                        <ProtectedLayout />
+                      </AdminGuard>
+                    </ErrorBoundary>
+                  }
+                >
+                  <Route index element={<AdminPage />} />
+                  <Route path="users" element={<Users />} />
+                  <Route path="users/:id" element={<UserDetails />} />
+                  <Route path="products/:id" element={<EditProductPage />} />
+                </Route>
+              </Routes>
+            </ErrorBoundary>
           </BrowserRouter>
         </FavoriteProvider>
       </CartProvider>

@@ -1,3 +1,4 @@
+import ErrorBoundary from '../../components/ErrorBoundary/ErrorBoundary';
 import FavoritesContainer from '../../components/FavoritesContainer/FavoritesContainer';
 import './Favorites.css';
 
@@ -7,7 +8,9 @@ export default function Favorites() {
       <div className="favorites-container">
         <h1 className="favorites-title">Your Favorites</h1>
         <hr className="favorites-horizontal-divider" />
-        <FavoritesContainer />
+        <ErrorBoundary>
+          <FavoritesContainer />
+        </ErrorBoundary>
       </div>
     </div>
   );

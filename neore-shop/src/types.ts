@@ -202,3 +202,24 @@ export interface CartContextType {
   totalPrice: number;
   totalQuantity: number;
 }
+
+export type StringFormData = {
+  [K in keyof Omit<
+    Product,
+    | 'id'
+    | 'reviews'
+    | 'meta'
+    | 'dimensions'
+    | 'hair'
+    | 'address'
+    | 'bank'
+    | 'company'
+    | 'crypto'
+    | 'stock'
+    | 'rating'
+  >]?: string;
+};
+
+export type FormErrors = {
+  [K in keyof FormData]?: string;
+};

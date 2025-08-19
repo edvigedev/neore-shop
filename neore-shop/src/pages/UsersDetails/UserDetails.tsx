@@ -4,6 +4,7 @@ import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import FetchingError from '../../components/FetchingError/FetchingError';
 import './UserDetails.css';
 import type { UserDetails, Carts, Product, Cart } from '../../types';
+import { getErrorMessage } from '../../utils/getErrorMessage';
 
 export default function UserDetails() {
   const { id } = useParams();
@@ -17,7 +18,7 @@ export default function UserDetails() {
       try {
         const response = await fetch(`https://dummyjson.com/users/${id}`);
         if (!response.ok) {
-          throw new Error('We could not load the user details');
+          throw new Error(getErrorMessage(response));
         }
         const result = await response.json();
         setData(result);
@@ -30,7 +31,7 @@ export default function UserDetails() {
         console.log(`API response for user ${id}:`, cartsData);
         setCartsData(cartsData);
       } catch (error) {
-        setError(error instanceof Error ? error.message : 'An error occurred');
+        setError(getErrorMessage(error));
       } finally {
         setLoading(false);
       }
@@ -46,20 +47,16 @@ export default function UserDetails() {
     return <FetchingError />;
   }
 
-  if (!data) {
-    return <FetchingError />;
-  }
-
   return (
     <div>
       <div className="user-details-page-container">
         <section className="user-details-introduction-section">
           <h1 className="user-details-page-title">
-            {data.firstName} {data.lastName}
+            {data?.firstName} {data?.lastName}
           </h1>
-          <h3>{data.role}</h3>
-          <h3>{data.email}</h3>
-          <h3>{data.phone}</h3>
+          <h3>{data?.role}</h3>
+          <h3>{data?.email}</h3>
+          <h3>{data?.phone}</h3>
         </section>
 
         <section className="user-details-carts-section">

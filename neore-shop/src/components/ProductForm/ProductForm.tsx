@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { Product } from '../../types';
+import type { Product, StringFormData } from '../../types';
 import './ProductForm.css';
 
 interface ProductFormProps {
@@ -10,23 +10,6 @@ interface ProductFormProps {
   onDelete?: () => void;
   loading?: boolean;
 }
-
-type StringFormData = {
-  [K in keyof Omit<
-    Product,
-    | 'id'
-    | 'reviews'
-    | 'meta'
-    | 'dimensions'
-    | 'hair'
-    | 'address'
-    | 'bank'
-    | 'company'
-    | 'crypto'
-    | 'stock'
-    | 'rating'
-  >]?: string;
-};
 
 export default function ProductForm({
   initialProduct,
@@ -54,30 +37,48 @@ export default function ProductForm({
   }, [initialProduct]);
 
   const validateFields = (name: string, value: string): string | null => {
+    const sanitizedValue = typeof value === 'string' ? value.trim() : value;
     switch (name) {
       case 'price':
-      case 'discountPercentage': {
-        const isValidNumericInput = /^[0-9,.]*$/.test(value);
-        if (!isValidNumericInput) {
+      case 'stock': {
+        const numericValue = parseFloat(sanitizedValue);
+        if (isNaN(numericValue)) {
           return 'This field only accepts numbers.';
+        }
+        if (Number(sanitizedValue) < 0) {
+          return 'This field cannot be negative.';
+        }
+        break;
+      }
+      case 'discountPercentage': {
+        const percentageValue = parseFloat(sanitizedValue);
+        if (isNaN(percentageValue)) {
+          return 'This field only accepts numbers.';
+        }
+        if (Number(sanitizedValue) < 0) {
+          return 'Discount cannot be negative.';
+        }
+        if (Number(sanitizedValue) > 100) {
+          return 'Discount cannot be greater than 100.';
         }
         break;
       }
       case 'title':
-        if (value.length > 50) {
+        if (!sanitizedValue) {
+          return 'Title is required.';
+        }
+        if (sanitizedValue.length > 50) {
           return 'Title cannot exceed 50 characters.';
         }
         break;
 
       case 'description':
-        if (value.length > 1000) {
+        if (sanitizedValue.length > 1000) {
           return 'Description cannot exceed 1000 characters.';
         }
         break;
-
-      case 'stock':
     }
-    return null;
+    return '';
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

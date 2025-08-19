@@ -3,6 +3,7 @@ import type { User, UsersResponse } from '../../types';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import FetchingError from '../../components/FetchingError/FetchingError';
 import { Link } from 'react-router';
+import { getErrorMessage } from '../../utils/getErrorMessage';
 import './Users.css';
 
 export default function Users() {
@@ -15,12 +16,12 @@ export default function Users() {
       try {
         const response = await fetch('https://dummyjson.com/users');
         if (!response.ok) {
-          throw new Error('Failed to fetch data');
+          throw new Error(getErrorMessage(response));
         }
         const result = await response.json();
         setData(result);
       } catch (error) {
-        setError(error instanceof Error ? error.message : 'An error occurred');
+        setError(getErrorMessage(error));
       } finally {
         setLoading(false);
       }

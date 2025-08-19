@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getErrorMessage } from '../../utils/getErrorMessage';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 import './Aside-HomePage.css';
@@ -18,12 +19,12 @@ export default function AsideHomePage() {
       try {
         const response = await fetch('https://dummyjson.com/quotes/random');
         if (!response.ok) {
-          throw new Error('Failed to fetch data');
+          throw new Error(getErrorMessage(response));
         }
         const result = await response.json();
         setData(result);
       } catch (error) {
-        setError(error instanceof Error ? error.message : 'An error occurred');
+        setError(getErrorMessage(error));
       } finally {
         setLoading(false);
       }
@@ -36,7 +37,7 @@ export default function AsideHomePage() {
   }
 
   if (error) {
-    return <h3>Error: {error}</h3>;
+    throw new Error(error);
   }
 
   return (

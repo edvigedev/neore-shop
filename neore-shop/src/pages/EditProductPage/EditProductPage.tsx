@@ -7,6 +7,7 @@ import ProductForm from '../../components/ProductForm/ProductForm';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import FetchingError from '../../components/FetchingError/FetchingError';
 import './EditProductPage.css';
+import { getErrorMessage } from '../../utils/getErrorMessage';
 
 export default function EditProductPage() {
   const { id } = useParams<{ id: string }>();
@@ -21,13 +22,15 @@ export default function EditProductPage() {
     setLoading(true);
     async function fetchProduct() {
       const response = await fetch(`https://dummyjson.com/products/${id}`);
+      if (!response.ok) {
+        throw new Error(getErrorMessage(response));
+      }
       const data = await response.json();
       setInitialProduct(data);
     }
     fetchProduct()
       .catch((error) => {
-        console.error('Error fetching product:', error);
-        setError(error.message);
+        setError(getErrorMessage(error));
       })
       .finally(() => {
         setLoading(false);
