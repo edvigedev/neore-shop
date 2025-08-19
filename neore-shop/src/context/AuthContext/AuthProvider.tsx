@@ -1,8 +1,9 @@
 import { useState, type ReactNode } from 'react';
 import { AuthContext } from './AuthContext.tsx';
-import type { User } from '../../types';
+import type { AuthResponse, AuthenticatedUser } from '../../types';
 
-const decodeJwt = (token: string): User | null => {
+const decodeJwt = (token: string): AuthResponse | null => {
+  if (!token) return null;
   try {
     const decodedUser = JSON.parse(atob(token.split('.')[1]));
     if (decodedUser && decodedUser.username === 'emilys') {
@@ -18,13 +19,17 @@ const decodeJwt = (token: string): User | null => {
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
 
-  const [user, setUser] = useState<User | null>(() => {
+  const [user, setUser] = useState<AuthenticatedUser | null>(() => {
     const savedToken = localStorage.getItem('token');
     return savedToken ? decodeJwt(savedToken) : null;
   });
 
-  const login = (newToken: string) => {
-    const originalDecodedUser = decodeJwt(newToken);
+  const login = (authData: AuthResponse) => {
+    if (!authData.accessToken) {
+      console.error('No access token provided');
+      return;
+    }
+    const originalDecodedUser = decodeJwt(authData.accessToken);
     let userToSet = originalDecodedUser;
     if (originalDecodedUser && originalDecodedUser.username === 'emilys') {
       userToSet = {
@@ -32,8 +37,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         role: 'admin',
       };
     }
-    setToken(newToken);
-    localStorage.setItem('token', newToken);
+    setToken(authData.accessToken);
+    localStorage.setItem('token', authData.accessToken);
     setUser(userToSet);
   };
 

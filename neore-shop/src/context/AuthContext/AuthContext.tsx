@@ -1,10 +1,10 @@
 import { createContext, useContext } from 'react';
-import type { User } from '../../types';
+import type { AuthenticatedUser, AuthResponse } from '../../types';
 
 interface AuthContextType {
   token: string | null;
-  user: User | null;
-  login: (newToken: string) => void;
+  user: AuthenticatedUser | null;
+  login: (authData: AuthResponse) => void;
   logout: () => void;
 }
 

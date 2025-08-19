@@ -39,7 +39,7 @@ export default function Login() {
       }
 
       const data = await response.json();
-      login(data.accessToken);
+      login(data);
       navigate('/');
       return;
     } catch (error: unknown) {

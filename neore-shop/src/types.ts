@@ -220,6 +220,18 @@ export type StringFormData = {
   >]?: string;
 };
 
-export type FormErrors = {
-  [K in keyof FormData]?: string;
-};
+export interface AuthResponse {
+  id: number;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  gender: string;
+  image: string;
+  accessToken: string;
+  refreshToken: string;
+  role?: 'admin' | 'user';
+}
+
+// Simpler type for what we store as the "user"
+export type AuthenticatedUser = Omit<AuthResponse, 'accessToken' | 'refreshToken'>;
