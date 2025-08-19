@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
-import type { Product } from '../src/types'; // Adjust the path to your types file
+import type { Product } from '../src/types';
 
-// We define mock data to have a predictable test environment.
 const mockProducts: Product[] = [
   {
     id: 1,
@@ -12,6 +11,8 @@ const mockProducts: Product[] = [
     rating: 4.69,
     thumbnail: '...',
     images: ['...'],
+    category: 'smartphones',
+    stock: 1,
   },
   {
     id: 2,
@@ -22,12 +23,13 @@ const mockProducts: Product[] = [
     rating: 4.44,
     thumbnail: '...',
     images: ['...'],
+    category: 'smartphones',
+    stock: 5,
   },
 ];
 
 test.describe('Favorites Functionality', () => {
   test.beforeEach(async ({ page }) => {
-    // Before each test, we mock the API call to ensure our tests are fast and reliable.
     await page.route('https://dummyjson.com/products', async (route) => {
       await route.fulfill({
         status: 200,
@@ -36,36 +38,61 @@ test.describe('Favorites Functionality', () => {
       });
     });
 
-    // Navigate to the homepage AFTER setting up the mock.
-    await page.goto('/');
+    await page.route('https://dummyjson.com/auth/login', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        json: {
+          id: 1,
+          username: 'emilys',
+          email: 'emily@example.com',
+          firstName: 'Emily',
+          lastName: 'Smith',
+          gender: 'female',
+          image: 'https://example.com/emily.jpg',
+          accessToken: 'fake-jwt-token',
+          refreshToken: 'fake-refresh-token',
+          role: 'admin',
+        },
+      });
+    });
+
+    await page.goto('/neore-shop/login');
+    await page.fill('#username', 'emilys');
+    await page.fill('#password', 'emilyspass');
+    await page.click('button[type="submit"]');
+
+    await page.waitForURL('/neore-shop/');
   });
 
   test('should add and remove a product from favorites, updating UI and local storage', async ({
     page,
   }) => {
-    const productToFavorite = mockProducts[0]; // We'll test with the iPhone 9
-    const FAVORITES_KEY = 'neoreShopFavorites'; // Use the actual key from your useFavorites hook
+    const productToFavorite = mockProducts[0];
+    const FAVORITES_KEY = 'neoreShopFavorites';
 
     // --- 1. ADD TO FAVORITES ---
-
-    // Find the specific card for the iPhone 9.
     const productCard = page.locator('.card', { hasText: productToFavorite.title });
 
-    // Find the favorite button within that card. It should initially be in the "add" state.
-    const favoriteButton = productCard.locator('.favorite-btn');
+    // Use favorite button
+    const favoriteButton = productCard.locator('.card-action-btn').first();
     await expect(favoriteButton).toBeVisible();
-    await expect(favoriteButton).toHaveText('🤍');
 
-    // Click the button to add it to favorites.
+    // Check initial state (not favorited)
+    await expect(favoriteButton).not.toHaveClass(/favorited/);
+
+    // Click to add to favorites
     await favoriteButton.click();
 
     // --- 2. VERIFY IT WAS ADDED ---
 
-    // The button's appearance and label should immediately change.
-    await expect(favoriteButton).toHaveText('💜');
-    await expect(favoriteButton).toHaveAttribute('aria-label', 'Remove from favorites');
+    // Button should now have favorited class
+    await expect(favoriteButton).toHaveClass(/favorited/);
 
-    // Verify that the product was correctly saved to local storage.
+    // Check tooltip text
+    await expect(favoriteButton).toHaveAttribute('data-tooltip', 'Remove from favorites');
+
+    // Verify localStorage
     const lsDataAfterAdd = await page.evaluate(
       (key) => window.localStorage.getItem(key),
       FAVORITES_KEY
@@ -74,17 +101,17 @@ test.describe('Favorites Functionality', () => {
     expect(favoritesInStorage).toEqual([productToFavorite]);
 
     // --- 3. REMOVE FROM FAVORITES ---
-
-    // Click the same button again to remove it from favorites.
     await favoriteButton.click();
 
     // --- 4. VERIFY IT WAS REMOVED ---
 
-    // The button should revert to its original state.
-    await expect(favoriteButton).toHaveText('🤍');
-    await expect(favoriteButton).toHaveAttribute('aria-label', 'Add to favorites');
+    // Button should no longer have favorited class
+    await expect(favoriteButton).not.toHaveClass(/favorited/);
 
-    // Verify that local storage is now an empty array.
+    // Check tooltip text
+    await expect(favoriteButton).toHaveAttribute('data-tooltip', 'Add to favorites');
+
+    // Verify localStorage is empty
     const lsDataAfterRemove = await page.evaluate(
       (key) => window.localStorage.getItem(key),
       FAVORITES_KEY
@@ -96,37 +123,39 @@ test.describe('Favorites Functionality', () => {
   test('should display favorited products on favorites page and remove them when unfavorited', async ({
     page,
   }) => {
-    const productToFavorite = mockProducts[0]; // iPhone 9
+    const productToFavorite = mockProducts[0];
 
     // --- 1. ADD TO FAVORITES FROM HOMEPAGE ---
     const productCard = page.locator('.card', { hasText: productToFavorite.title });
-    const favoriteButton = productCard.locator('.favorite-btn');
+    const favoriteButton = productCard.locator('.card-action-btn').first();
     await favoriteButton.click();
 
     // --- 2. NAVIGATE TO FAVORITES PAGE ---
-    await page.goto('/favorites');
+    await page.goto('/neore-shop/favorites');
 
     // --- 3. VERIFY PRODUCT APPEARS ON FAVORITES PAGE ---
-    const favoritesPage = page.locator('.favorites-page');
-    await expect(favoritesPage).toBeVisible();
+    const favoritesContainer = page.locator('.favorites-container');
+    await expect(favoritesContainer).toBeVisible();
 
-    const favoritesTitle = page.locator('.favorites-page h1');
-    await expect(favoritesTitle).toHaveText('My Favorites (1)');
+    const favoritesTitle = page.locator('.favorites-title');
+    await expect(favoritesTitle).toHaveText('Your Favorites');
 
     const favoritedProduct = page.locator('.card', { hasText: productToFavorite.title });
     await expect(favoritedProduct).toBeVisible();
 
     // --- 4. REMOVE FROM FAVORITES ON FAVORITES PAGE ---
-    const removeButton = favoritedProduct.locator('.favorite-btn');
-    await expect(removeButton).toHaveText('💜');
+    const removeButton = favoritedProduct.locator('.card-action-btn').first();
+
+    // Should be favorited initially
+    await expect(removeButton).toHaveClass(/favorited/);
+
     await removeButton.click();
 
     // --- 5. VERIFY PRODUCT DISAPPEARS ---
     await expect(favoritedProduct).not.toBeVisible();
 
     // --- 6. VERIFY EMPTY STATE ---
-    const emptyState = page.locator('.favorites-empty');
-    await expect(emptyState).toBeVisible();
-    await expect(emptyState).toHaveText('No favorites yet');
+    const emptyState = page.locator('p');
+    await expect(emptyState).toHaveText('You have not added any favorite yet');
   });
 });
