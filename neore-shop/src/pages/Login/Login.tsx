@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
-import FetchingError from '../../components/FetchingError/FetchingError';
 import { useAuth } from '../../context/AuthContext/AuthContext';
 import './Login.css';
 import { getErrorMessage } from '../../utils/getErrorMessage';
@@ -20,8 +19,15 @@ export default function Login() {
     setLoading(true);
     setError('');
 
-    if (!username || !password) {
-      setError('Please enter both username and password.');
+    if (!username.trim() || !password.trim()) {
+      setError('Both username and password are required');
+      setLoading(false);
+      return;
+    }
+
+    if (username !== 'emilys' || password !== 'emilyspass') {
+      setError('Incorrect username or password');
+      setLoading(false);
       return;
     }
 
@@ -50,18 +56,19 @@ export default function Login() {
     }
   };
 
+  const handleGuestLogin = () => {
+    navigate('/');
+  };
+
   if (loading) {
     return <LoadingSpinner />;
-  }
-
-  if (error) {
-    return <FetchingError />;
   }
 
   return (
     <>
       <h1 className="login-header">Welcome!</h1>
       <form onSubmit={handleLogin} className="login-form">
+        {error && <div className="login-error">{error}</div>}
         <label htmlFor="username" className="login-label">
           Username
         </label>
@@ -86,6 +93,9 @@ export default function Login() {
         />
         <button type="submit" className="login-button">
           Login
+        </button>
+        <button type="button" onClick={handleGuestLogin} className="login-button guest-button">
+          Continue as Guest
         </button>
       </form>
     </>
