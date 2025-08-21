@@ -28,6 +28,7 @@
   font-weight: 400;
   color: #000000;
   transition: all 0.3s ease;
+  position: relative; /* Add this to create positioning context */
 }
 
 .remove-item-btn {
@@ -37,10 +38,10 @@
   font-size: 1.5em;
   color: #c444ff;
   position: absolute;
-  text-align: right;
-  margin-left: 8em;
-  margin-top: 0.5em;
+  top: 0.5em;
+  right: 0.5em;
   transition: all 0.2s ease;
+  z-index: 10;
 }
 
 .remove-item-btn:hover {
@@ -190,11 +191,19 @@
   .cart-item {
     grid-template-columns: 80px 1fr;
     gap: 15px;
+    position: relative;
   }
 
   .cart-item-image {
     width: 80px;
     height: 80px;
+  }
+
+  .remove-item-btn {
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+    font-size: 1.2em;
   }
 
   .cart-item-buttons-section {
