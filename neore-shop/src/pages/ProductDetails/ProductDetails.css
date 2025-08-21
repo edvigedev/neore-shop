@@ -143,6 +143,11 @@
   color: #c444ff;
 }
 
+.product-action-btn.in-cart {
+  color: #f5f5f5;
+  background-color: #c444ff;
+}
+
 .product-action-btn[data-tooltip] {
   position: relative;
 }

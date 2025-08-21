@@ -18,7 +18,7 @@ export default function CartSummary() {
   return (
     <div>
       <div className="cart-summary-header">
-        <h3>({totalQuantity} items)</h3>
+        <h3 className="cart-summary-header-title">({totalQuantity} items)</h3>
         <button onClick={clearCart} className="clear-cart-btn">
           Clear Cart
         </button>

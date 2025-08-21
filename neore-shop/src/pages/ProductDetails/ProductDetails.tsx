@@ -11,6 +11,7 @@ import { useAuth } from '../../context/AuthContext/AuthContext';
 import clsx from 'clsx';
 import HeartIcon from '../../icons/HeartIcon';
 import PlusIcon from '../../icons/PlusIcon';
+import MinusIcon from '../../icons/MinusIcon';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 
 export default function ProductDetails() {
@@ -18,10 +19,14 @@ export default function ProductDetails() {
   const [data, setData] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { addToCart } = useCart();
+  const { addToCart, decreaseQuantity, getCartItem } = useCart();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
   const { token } = useAuth();
   const isCurrentFavorite = data ? isFavorite(data.id) : false;
+
+  // Check if product is in cart
+  const cartItem = data ? getCartItem(data.id) : undefined;
+  const isInCart = cartItem !== undefined;
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation
@@ -35,6 +40,23 @@ export default function ProductDetails() {
       removeFavorite(data);
     } else {
       addFavorite(data);
+    }
+  };
+
+  const handleCartToggle = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation
+    e.stopPropagation(); // Prevent event bubbling
+
+    if (!data) {
+      return;
+    }
+
+    if (isInCart) {
+      // If product is in cart, decrease quantity by 1
+      decreaseQuantity(data.id);
+    } else {
+      // If product is not in cart, add it
+      addToCart(data, 1);
     }
   };
 
@@ -121,11 +143,13 @@ export default function ProductDetails() {
             </button>
             <button
               disabled={!token}
-              onClick={() => addToCart(data, 1)}
-              className="product-action-btn"
-              data-tooltip="Add to cart"
+              onClick={handleCartToggle}
+              className={clsx('product-action-btn', {
+                'in-cart': isInCart,
+              })}
+              data-tooltip={isInCart ? 'Remove 1 from cart' : 'Add to cart'}
             >
-              <PlusIcon />
+              {isInCart ? <MinusIcon /> : <PlusIcon />}
             </button>
           </section>
         </div>

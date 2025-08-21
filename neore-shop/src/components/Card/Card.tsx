@@ -7,16 +7,21 @@ import { useFavorites } from '../../context/FavoriteContext/FavoriteContext';
 import { useAuth } from '../../context/AuthContext/AuthContext';
 import HeartIcon from '../../icons/HeartIcon';
 import PlusIcon from '../../icons/PlusIcon';
+import MinusIcon from '../../icons/MinusIcon';
 
 interface CardProps {
   product: Product;
 }
 
 export default function Card({ product }: CardProps) {
-  const { addToCart } = useCart();
+  const { addToCart, decreaseQuantity, getCartItem } = useCart();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
   const { token } = useAuth();
   const isCurrentFavorite = isFavorite(product.id);
+
+  // Check if product is in cart and get its quantity
+  const cartItem = getCartItem(product.id);
+  const isInCart = cartItem !== undefined;
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation
@@ -29,10 +34,17 @@ export default function Card({ product }: CardProps) {
     }
   };
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleCartToggle = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation
     e.stopPropagation(); // Prevent event bubbling
-    addToCart(product, 1);
+
+    if (isInCart) {
+      // If product is in cart, decrease quantity by 1
+      decreaseQuantity(product.id);
+    } else {
+      // If product is not in cart, add it
+      addToCart(product, 1);
+    }
   };
 
   const calculateDiscountedPrice = () => {
@@ -65,11 +77,13 @@ export default function Card({ product }: CardProps) {
             </button>
             <button
               disabled={!token}
-              onClick={handleAddToCart}
-              className="card-action-btn"
-              data-tooltip="Add to cart"
+              onClick={handleCartToggle}
+              className={clsx('card-action-btn', {
+                'in-cart': isInCart,
+              })}
+              data-tooltip={isInCart ? 'Remove 1 from cart' : 'Add to cart'}
             >
-              <PlusIcon />
+              {isInCart ? <MinusIcon /> : <PlusIcon />}
             </button>
           </section>
         </div>

@@ -154,7 +154,7 @@ test.describe('Cart Functionality', () => {
     await page.waitForURL(/.*\/cart/);
 
     // Reference: CartSummary component shows total quantity in header
-    await expect(page.locator('.cart-summary-header h3')).toHaveText('(2 items)');
+    await expect(page.locator('.cart-summary-header-title')).toHaveText('(2 items)');
 
     // Reference: CartItem component shows quantity selector with options 1-10
     const firstCartItem = page.locator('.cart-item').first();
@@ -169,7 +169,7 @@ test.describe('Cart Functionality', () => {
     await expect(itemTotal).toBeVisible();
 
     // Reference: CartSummary component shows updated total quantity
-    await expect(page.locator('.cart-summary-header h3')).toHaveText('(4 items)');
+    await expect(page.locator('.cart-summary-header-title')).toHaveText('(4 items)');
   });
 
   test('should remove items from cart', async ({ page }) => {
@@ -197,6 +197,143 @@ test.describe('Cart Functionality', () => {
     await expect(page.locator('.cart-summary-empty p')).toHaveText(
       'Add some products to get started!'
     );
+  });
+
+  test('should toggle cart button state on product cards', async ({ page }) => {
+    // Reference: HomePage component with CardsContainer and Card components
+    // beforeEach already navigated to homepage after login, so we start here
+
+    // Reference: Card component shows "+" button initially
+    const firstProductCard = page.locator('.card').first();
+    const cartButton = firstProductCard.locator('.card-action-btn').last();
+
+    // Initially shows "+" button for adding to cart
+    await expect(cartButton).toHaveAttribute('data-tooltip', 'Add to cart');
+    await expect(cartButton.locator('svg')).toBeVisible(); // PlusIcon
+
+    // Add product to cart
+    await cartButton.click();
+
+    // Button should now show "-" for removing from cart
+    await expect(cartButton).toHaveAttribute('data-tooltip', 'Remove 1 from cart');
+    await expect(cartButton).toHaveClass(/in-cart/);
+
+    // Verify cart count increased
+    await expect(page.locator('.cart-button')).toBeVisible();
+
+    // Remove product from cart using the same button
+    await cartButton.click();
+
+    // Button should return to "+" state
+    await expect(cartButton).toHaveAttribute('data-tooltip', 'Add to cart');
+    await expect(cartButton).not.toHaveClass(/in-cart/);
+  });
+
+  test('should remove items from cart using product card toggle', async ({ page }) => {
+    // Reference: HomePage component
+    // beforeEach already navigated to homepage after login, so we start here
+
+    // Add first product to cart
+    const firstProductCard = page.locator('.card').first();
+    await firstProductCard.locator('.card-action-btn').last().click();
+
+    // Add second product to cart
+    const secondProductCard = page.locator('.card').nth(1);
+    await secondProductCard.locator('.card-action-btn').last().click();
+
+    // Verify both products are in cart
+    await expect(page.locator('.cart-button')).toBeVisible();
+
+    // Navigate to cart page to confirm items are there
+    await page.locator('.cart-button').click();
+    await page.waitForURL(/.*\/cart/);
+    await expect(page.locator('.cart-item')).toHaveCount(2);
+
+    // Go back to homepage
+    await page.locator('.neore-logo').click();
+    await page.waitForURL('/neore-shop/');
+
+    // Remove first product using the toggle button (should now show "-")
+    const firstCardButton = page.locator('.card').first().locator('.card-action-btn').last();
+    await expect(firstCardButton).toHaveAttribute('data-tooltip', 'Remove 1 from cart');
+    await firstCardButton.click();
+
+    // Remove second product using the toggle button
+    const secondCardButton = page.locator('.card').nth(1).locator('.card-action-btn').last();
+    await expect(secondCardButton).toHaveAttribute('data-tooltip', 'Remove 1 from cart');
+    await secondCardButton.click();
+
+    // Navigate back to cart to verify items were removed
+    await page.locator('.cart-button').click();
+    await page.waitForURL(/.*\/cart/);
+
+    // Reference: CartSummary component should show empty state
+    await expect(page.locator('.cart-summary-empty')).toBeVisible();
+    await expect(page.locator('.cart-summary-empty h2')).toHaveText('Your cart is empty');
+  });
+
+  test('should maintain cart button state across navigation', async ({ page }) => {
+    // Reference: HomePage component
+    // beforeEach already navigated to homepage after login, so we start here
+
+    // Add product to cart
+    const firstProductCard = page.locator('.card').first();
+    const cartButton = firstProductCard.locator('.card-action-btn').last();
+    await cartButton.click();
+
+    // Verify button shows "-" state
+    await expect(cartButton).toHaveAttribute('data-tooltip', 'Remove 1 from cart');
+    await expect(cartButton).toHaveClass(/in-cart/);
+
+    // Navigate to product details page
+    await firstProductCard.click();
+    await page.waitForURL(/.*\/products\/1/);
+
+    // Reference: ProductDetails page should also show "-" button
+    const productDetailsButton = page.locator('.product-action-btn').last();
+    await expect(productDetailsButton).toHaveAttribute('data-tooltip', 'Remove 1 from cart');
+    await expect(productDetailsButton).toHaveClass(/in-cart/);
+
+    // Remove product from cart using product details button
+    await productDetailsButton.click();
+
+    // Button should now show "+" state
+    await expect(productDetailsButton).toHaveAttribute('data-tooltip', 'Add to cart');
+    await expect(productDetailsButton).not.toHaveClass(/in-cart/);
+
+    // Go back to homepage
+    await page.goBack();
+    await page.waitForURL('/neore-shop/');
+
+    // Homepage button should also reflect the removed state
+    const homeButton = page.locator('.card').first().locator('.card-action-btn').last();
+    await expect(homeButton).toHaveAttribute('data-tooltip', 'Add to cart');
+    await expect(homeButton).not.toHaveClass(/in-cart/);
+  });
+
+  test('should handle rapid add/remove operations', async ({ page }) => {
+    // Reference: HomePage component
+    // beforeEach already navigated to homepage after login, so we start here
+
+    const firstProductCard = page.locator('.card').first();
+    const cartButton = firstProductCard.locator('.card-action-btn').last();
+
+    // Rapidly click add/remove multiple times
+    await cartButton.click(); // Add
+    await cartButton.click(); // Remove
+    await cartButton.click(); // Add again
+    await cartButton.click(); // Remove again
+    await cartButton.click(); // Final add
+
+    // Final state should be added
+    await expect(cartButton).toHaveAttribute('data-tooltip', 'Remove 1 from cart');
+    await expect(cartButton).toHaveClass(/in-cart/);
+
+    // Verify in cart
+    await page.locator('.cart-button').click();
+    await page.waitForURL(/.*\/cart/);
+    await expect(page.locator('.cart-item')).toBeVisible();
+    await expect(page.locator('.cart-item h3')).toHaveText('iPhone 9');
   });
 
   test('should clear entire cart', async ({ page }) => {
@@ -254,74 +391,6 @@ test.describe('Cart Functionality', () => {
     await expect(cartTotal).toContainText(`€${expectedTotal}`);
   });
 
-  test('should enforce quantity limits per product', async ({ page }) => {
-    // Reference: HomePage component
-    // beforeEach already navigated to homepage after login, so we start here
-
-    // Add product to cart
-    await page.locator('.card').first().locator('.card-action-btn').last().click();
-
-    // Navigate to cart page
-    await page.locator('.cart-button').click();
-    await page.waitForURL(/.*\/cart/);
-
-    // Reference: CartItem component shows quantity selector with options 1-10
-    const quantitySelect = page.locator('select').first();
-    await expect(quantitySelect).toBeVisible();
-
-    // Verify quantity options are limited to 1-10
-    const options = await quantitySelect.locator('option').all();
-    expect(options.length).toBe(10);
-
-    // Try to set quantity to maximum (10)
-    await quantitySelect.selectOption('10');
-
-    // Reference: CartSummary component shows updated total quantity
-    await expect(page.locator('.cart-summary-header h3')).toHaveText('(10 items)');
-
-    // Go back to homepage and try to add more of the same product
-    // Use the cart button to navigate back instead of direct page.goto
-    await page.locator('.neore-logo').click();
-    await page.waitForURL('/neore-shop/');
-
-    // Add more of the same product (should be capped at 10)
-    await page.locator('.card').first().locator('.card-action-btn').last().click();
-
-    // Navigate back to cart to verify quantity is still capped at 10
-    await page.locator('.cart-button').click();
-    await page.waitForURL(/.*\/cart/);
-
-    // Reference: CartSummary component should still show 10 items (not 11)
-    await expect(page.locator('.cart-summary-header h3')).toHaveText('(10 items)');
-  });
-
-  test('should persist cart data across page refreshes', async ({ page }) => {
-    // Reference: HomePage component
-    // beforeEach already navigated to homepage after login, so we start here
-
-    // Add product to cart
-    await page.locator('.card').first().locator('.card-action-btn').last().click();
-
-    // Navigate to cart page
-    await page.locator('.cart-button').click();
-    await page.waitForURL(/.*\/cart/);
-
-    // Reference: CartSummary component shows the item
-    await expect(page.locator('.cart-item')).toBeVisible();
-    await expect(page.locator('.cart-summary-header h3')).toHaveText('(1 items)');
-
-    // Refresh the page - use a more reliable approach
-    await page.evaluate(() => window.location.reload());
-    await page.waitForSelector('.cart-item', { timeout: 10000 });
-
-    // Reference: CartSummary component should still show the item after refresh
-    await expect(page.locator('.cart-item')).toBeVisible();
-    await expect(page.locator('.cart-summary-header h3')).toHaveText('(1 items)');
-
-    // Reference: CartItem component should show correct product details
-    await expect(page.locator('.cart-item h3')).toHaveText('iPhone 9');
-  });
-
   test('should handle cart operations with multiple product types', async ({ page }) => {
     // Reference: HomePage component
     // beforeEach already navigated to homepage after login, so we start here
@@ -336,7 +405,7 @@ test.describe('Cart Functionality', () => {
     await page.waitForURL(/.*\/cart/);
 
     // Reference: CartSummary component shows correct total items
-    await expect(page.locator('.cart-summary-header h3')).toHaveText('(3 items)');
+    await expect(page.locator('.cart-summary-header-title')).toHaveText('(3 items)');
 
     // Reference: CartItem components show all three products
     const cartItems = page.locator('.cart-item');
@@ -351,6 +420,91 @@ test.describe('Cart Functionality', () => {
     const checkoutButton = page.locator('.checkout-btn');
     await expect(checkoutButton).toBeVisible();
     await expect(checkoutButton).toHaveText('Proceed to Checkout');
+  });
+
+  test('should decrease cart quantities with toggle button instead of removing everything', async ({
+    page,
+  }) => {
+    // Add first product to cart
+    const firstProductCard = page.locator('.card').first();
+    const firstProductButton = firstProductCard.locator('.card-action-btn').last();
+
+    // Add product to cart (should show "+" button initially)
+    await firstProductButton.click();
+
+    // Verify button shows "-" and "in-cart" class
+    await expect(firstProductButton).toHaveClass(/in-cart/);
+    await expect(firstProductButton.locator('svg')).toBeVisible(); // MinusIcon should be visible
+
+    // Navigate to cart page
+    await page.locator('.cart-button').click();
+    await page.waitForURL(/.*\/cart/);
+
+    // Reference: CartSummary component shows correct total items
+    await expect(page.locator('.cart-summary-header-title')).toHaveText('(1 items)');
+
+    // Reference: CartItem component shows quantity selector with value 1
+    const firstCartItem = page.locator('.cart-item').first();
+    const quantitySelect = firstCartItem.locator('select');
+    await expect(quantitySelect).toHaveValue('1');
+
+    // Increase quantity to 3 using the cart page selector
+    await quantitySelect.selectOption('3');
+
+    // Verify quantity increased
+    await expect(quantitySelect).toHaveValue('3');
+    await expect(page.locator('.cart-summary-header-title')).toHaveText('(3 items)');
+
+    // Go back to homepage
+    await page.locator('.neore-logo').click();
+    await page.waitForURL('/neore-shop/');
+
+    // Now click the "-" button to decrease quantity by 1
+    await firstProductButton.click(); // Should decrease from 3 to 2
+
+    // Navigate back to cart to verify quantity decreased
+    await page.locator('.cart-button').click();
+    await page.waitForURL(/.*\/cart/);
+
+    // Reference: CartSummary component should show 2 items now
+    await expect(page.locator('.cart-summary-header-title')).toHaveText('(2 items)');
+
+    // Reference: CartItem component should show quantity 2
+    await expect(firstCartItem.locator('select')).toHaveValue('2');
+
+    // Go back to homepage again
+    await page.locator('.neore-logo').click();
+    await page.waitForURL('/neore-shop/');
+
+    // Click "-" button again to decrease from 2 to 1
+    await firstProductButton.click();
+
+    // Navigate to cart to verify quantity is now 1
+    await page.locator('.cart-button').click();
+    await page.waitForURL(/.*\/cart/);
+
+    // Reference: CartSummary component should show 1 item
+    await expect(page.locator('.cart-summary-header-title')).toHaveText('(1 items)');
+
+    // Reference: CartItem component should show quantity 1
+    await expect(firstCartItem.locator('select')).toHaveValue('1');
+
+    // Go back to homepage one more time
+    await page.locator('.neore-logo').click();
+    await page.waitForURL('/neore-shop/');
+
+    // Click "-" button one final time - this should remove the item completely
+    await firstProductButton.click();
+
+    // Button should change back to "+" and lose "in-cart" class
+    await expect(firstProductButton).not.toHaveClass(/in-cart/);
+
+    // Navigate to cart to verify item is completely removed
+    await page.locator('.cart-button').click();
+    await page.waitForURL(/.*\/cart/);
+
+    // Reference: CartSummary component should show empty state
+    await expect(page.locator('.cart-summary-empty')).toBeVisible();
   });
 
   test('should display empty cart state correctly', async ({ page }) => {

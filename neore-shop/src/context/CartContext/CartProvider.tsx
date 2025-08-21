@@ -68,6 +68,24 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     setCartItems((prev) => prev.filter((item) => item.product.id !== productId));
   };
 
+  const decreaseQuantity = (productId: number) => {
+    setCartItems((prev) => {
+      const existingItem = prev.find((item) => item.product.id === productId);
+
+      if (!existingItem) return prev;
+
+      if (existingItem.quantity === 1) {
+        // If quantity is 1, remove the item completely
+        return prev.filter((item) => item.product.id !== productId);
+      } else {
+        // Decrease quantity by 1
+        return prev.map((item) =>
+          item.product.id === productId ? { ...item, quantity: item.quantity - 1 } : item
+        );
+      }
+    });
+  };
+
   const clearCart = () => {
     setCartItems([]);
   };
@@ -91,6 +109,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     cartItems,
     addToCart,
     removeFromCart,
+    decreaseQuantity,
     updateQuantity,
     clearCart,
     totalPrice,
