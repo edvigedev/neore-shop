@@ -113,13 +113,14 @@ export default function ProductDetails() {
           <section className="product-details-buttons-container">
             <button
               disabled={!token}
-              className={clsx('product-action-btn', { favorited: isCurrentFavorite })}
+              className={clsx('product-action-btn', { favorited: isCurrentFavorite && token })}
               onClick={handleFavoriteClick}
               data-tooltip={isCurrentFavorite ? 'Remove from favorites' : 'Add to favorites'}
             >
               <HeartIcon />
             </button>
             <button
+              disabled={!token}
               onClick={() => addToCart(data, 1)}
               className="product-action-btn"
               data-tooltip="Add to cart"
