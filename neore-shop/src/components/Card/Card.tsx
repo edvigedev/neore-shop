@@ -55,13 +55,16 @@ export default function Card({ product }: CardProps) {
           <section className="card-buttons-section">
             <button
               disabled={!token}
-              className={clsx('card-action-btn', { favorited: isCurrentFavorite })}
+              className={clsx('card-action-btn', {
+                favorited: isCurrentFavorite && token,
+              })}
               onClick={handleFavoriteClick}
               data-tooltip={isCurrentFavorite ? 'Remove from favorites' : 'Add to favorites'}
             >
               <HeartIcon />
             </button>
             <button
+              disabled={!token}
               onClick={handleAddToCart}
               className="card-action-btn"
               data-tooltip="Add to cart"
@@ -71,7 +74,7 @@ export default function Card({ product }: CardProps) {
           </section>
         </div>
         <div className="card-info">
-          <h3>{product.title}</h3>
+          <h3 className="card-title">{product.title}</h3>
           <div className="card-price">
             <h3 className="card-initial-price">€{product.price}</h3>
             <h3>-{Math.round(product.discountPercentage)}%</h3>

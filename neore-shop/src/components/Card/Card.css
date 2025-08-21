@@ -52,6 +52,12 @@
   margin-bottom: 0.5em;
 }
 
+.card-title {
+  font-size: 1em;
+  margin-top: 0em;
+  margin-bottom: 0.5em;
+}
+
 .card-price {
   display: flex;
   flex-direction: row;
