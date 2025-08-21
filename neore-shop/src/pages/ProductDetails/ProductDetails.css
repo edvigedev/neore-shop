@@ -79,6 +79,12 @@
   color: #c444ff;
 }
 
+.product-details-discount-percentage {
+  font-weight: 300;
+  font-size: 1.2em;
+  color: #c444ff;
+}
+
 /* This is now a positioning anchor for the buttons */
 .product-details-image-container {
   position: relative;
@@ -87,7 +93,7 @@
   max-width: 500px;
 }
 
-.product-details-page-container img {
+.product-details-image {
   width: 100%;
   height: auto;
   display: block;

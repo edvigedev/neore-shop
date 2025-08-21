@@ -108,7 +108,7 @@ export default function ProductDetails() {
       <NavBar />
       <div className="product-details-page-container">
         <div className="product-details-image-container">
-          <img src={data.images[0]} alt={data.title} />
+          <img src={data.images[0]} alt={data.title} className="product-details-image" />
 
           <section className="product-details-buttons-container">
             <button
@@ -139,7 +139,9 @@ export default function ProductDetails() {
         </section>
         <section className="product-details-price-section">
           <h2 className="product-details-initial-price">€{data.price}</h2>
-          <h3>-{Math.round(data.discountPercentage)}% DISCOUNT!</h3>
+          <h3 className="product-details-discount-percentage">
+            -{Math.round(data.discountPercentage)}%
+          </h3>
           <h2 className="product-details-discounted-price">
             Now it&apos;s €{calculateDiscountedPrice()}!
           </h2>
