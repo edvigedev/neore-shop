@@ -46,6 +46,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(null);
     setUser(null);
     localStorage.removeItem('token');
+
+    // Clear user-specific data when logging out
+    localStorage.removeItem('neoreShopCart');
+    localStorage.removeItem('neoreShopFavorites');
+
+    // Navigate to login page instead of reloading
+    window.location.href = '/neore-shop/login';
   };
 
   const value = { token, login, logout, user };
