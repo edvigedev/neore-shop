@@ -37,7 +37,7 @@ export default function AsideHomePage() {
   }
 
   if (error) {
-    throw new Error(error);
+    return null;
   }
 
   return (

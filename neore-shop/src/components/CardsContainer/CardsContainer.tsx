@@ -46,6 +46,11 @@ export default function CardsContainer() {
     <ErrorBoundary>
       <section className="cards-container">
         <ul className="cards-container-list">
+          {data?.products.length === 0 && (
+            <li>
+              <p className="cards-container-list-item-empty">No products found</p>
+            </li>
+          )}
           {data?.products.map((product: Product) => (
             <li key={product.id}>
               <Card product={product} />
