@@ -67,15 +67,15 @@
 }
 
 .product-form textarea {
-  resize: vertical; /* Allow vertical resizing */
+  resize: vertical;
   min-height: 80px;
 }
 
 /* --- Price Section Layout --- */
 .price-section {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Two columns */
-  gap: 20px; /* Space between columns */
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
   align-items: flex-end;
 }
 
@@ -84,7 +84,7 @@
   font-size: 24px;
   font-weight: 600;
   color: var(--font-color);
-  padding-bottom: 10px; /* Aligns better with input fields */
+  padding-bottom: 10px;
 }
 
 .calculated-price strong {
@@ -94,7 +94,7 @@
 /* --- Action Buttons Container --- */
 .form-actions {
   display: flex;
-  justify-content: flex-end; /* Align buttons to the right */
+  justify-content: flex-end;
   gap: 15px;
   padding-top: 20px;
   border-top: 1px solid var(--form-border-color);
@@ -140,7 +140,7 @@
 
 /* Delete button */
 .form-actions .delete-button {
-  background-color: #d9534f; /* A standard 'danger' red */
+  background-color: #d9534f;
   color: white;
   border: 1px solid transparent;
 }

@@ -1,15 +1,6 @@
 import { useState, useEffect } from 'react';
-import type { Product, StringFormData } from '../../types';
+import type { Product, StringFormData, ProductFormProps } from '../../types';
 import './ProductForm.css';
-
-interface ProductFormProps {
-  initialProduct?: Product;
-  onSave: (product: Product) => void;
-  onCancel: () => void;
-  isEditing?: boolean;
-  onDelete?: () => void;
-  loading?: boolean;
-}
 
 export default function ProductForm({
   initialProduct,
