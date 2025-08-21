@@ -10,7 +10,6 @@ const mockPayload = {
   lastName: 'Smith',
   role: 'admin',
 };
-// CORRECT: Uses Node.js's Buffer to encode to Base64
 const mockJwtToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${Buffer.from(JSON.stringify(mockPayload)).toString('base64')}.signature`;
 
 const mockUser = {
@@ -58,13 +57,6 @@ test.beforeEach(async ({ page }) => {
       },
     });
   });
-
-  //   await page.route('**/*', async (route) => {
-  //     if (route.request().url().includes('dummyjson.com')) {
-  //       return route.continue();
-  //     }
-  //     await route.fulfill({ status: 200, body: 'OK' });
-  //   });
 
   // Navigate to the login page. `baseURL` will prepend the domain.
   await page.goto('/neore-shop/login');
@@ -186,6 +178,142 @@ test.describe('Authentication System', () => {
     });
     await page.click('button[type="submit"]');
     await expect(page.locator('.login-error')).toBeVisible();
+  });
+
+  test('should handle different HTTP error statuses gracefully', async ({ page }) => {
+    // Test 400 Bad Request
+    await page.route('https://dummyjson.com/auth/login', async (route) => {
+      await route.fulfill({
+        status: 400,
+        contentType: 'application/json',
+        json: { message: 'Bad Request - Invalid credentials format' },
+      });
+    });
+    await page.click('button[type="submit"]');
+    await expect(page.locator('.login-error')).toBeVisible();
+    await expect(page.locator('.login-error')).toContainText(
+      'The resource you requested could not be found'
+    );
+
+    // Test 401 Unauthorized
+    await page.route('https://dummyjson.com/auth/login', async (route) => {
+      await route.fulfill({
+        status: 401,
+        contentType: 'application/json',
+        json: { message: 'Unauthorized - Invalid credentials' },
+      });
+    });
+    await page.reload();
+    await page.click('button[type="submit"]');
+    await expect(page.locator('.login-error')).toBeVisible();
+    await expect(page.locator('.login-error')).toContainText('Invalid credentials provided');
+
+    // Test 403 Forbidden
+    await page.route('https://dummyjson.com/auth/login', async (route) => {
+      await route.fulfill({
+        status: 403,
+        contentType: 'application/json',
+        json: { message: 'Forbidden - Account locked' },
+      });
+    });
+    await page.reload();
+    await page.click('button[type="submit"]');
+    await expect(page.locator('.login-error')).toBeVisible();
+    await expect(page.locator('.login-error')).toContainText(
+      "You don't have permission to access this resource"
+    );
+
+    // Test 404 Not Found
+    await page.route('https://dummyjson.com/auth/login', async (route) => {
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        json: { message: 'Login endpoint not found' },
+      });
+    });
+    await page.reload();
+    await page.click('button[type="submit"]');
+    await expect(page.locator('.login-error')).toBeVisible();
+    await expect(page.locator('.login-error')).toContainText(
+      'The resource you requested could not be found'
+    );
+  });
+
+  test('should handle network failures gracefully', async ({ page }) => {
+    // Mock network failure
+    await page.route('https://dummyjson.com/auth/login', async (route) => {
+      await route.abort('failed');
+    });
+
+    await page.click('button[type="submit"]');
+
+    // Wait for error to appear
+    await expect(page.locator('.login-error')).toBeVisible();
+    await expect(page.locator('.login-error')).toContainText('A network error occurred');
+  });
+
+  test('should handle malformed JSON responses', async ({ page }) => {
+    // Mock malformed JSON response
+    await page.route('https://dummyjson.com/auth/login', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: '{"invalid": json}', // Malformed JSON
+      });
+    });
+
+    await page.click('button[type="submit"]');
+
+    // Should show error for malformed response
+    await expect(page.locator('.login-error')).toBeVisible();
+  });
+
+  test('should handle slow API responses', async ({ page }) => {
+    // Mock slow response
+    await page.route('https://dummyjson.com/auth/login', async (route) => {
+      // Simulate slow response
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        json: mockUser,
+      });
+    });
+
+    await page.click('button[type="submit"]');
+
+    // Should show loading state
+    await expect(page.locator('.loading-spinner')).toBeVisible();
+
+    // Wait for response and successful login
+    await page.waitForURL('/neore-shop/');
+    await expect(page.locator('.nav-bar-links')).toContainText('Logout');
+  });
+
+  test('should handle form validation edge cases', async ({ page }) => {
+    // Test very long username/password
+    await page.fill('#username', 'a'.repeat(1000));
+    await page.fill('#password', 'b'.repeat(1000));
+    await page.click('button[type="submit"]');
+
+    // Should handle long inputs gracefully
+    await expect(page.locator('.login-error')).toContainText('Incorrect username or password');
+
+    // Test special characters
+    await page.fill('#username', 'user@#$%^&*()');
+    await page.fill('#password', 'pass@#$%^&*()');
+    await page.click('button[type="submit"]');
+
+    // Should handle special characters
+    await expect(page.locator('.login-error')).toContainText('Incorrect username or password');
+
+    // Test SQL injection attempts
+    await page.fill('#username', "'; DROP TABLE users; --");
+    await page.fill('#password', "'; DROP TABLE users; --");
+    await page.click('button[type="submit"]');
+
+    // Should handle injection attempts safely
+    await expect(page.locator('.login-error')).toContainText('Incorrect username or password');
   });
 
   test('should trim whitespace from username and password', async ({ page }) => {
