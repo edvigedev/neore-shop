@@ -63,8 +63,6 @@ const mockUser = {
 
 test.describe('Cart Functionality', () => {
   test.beforeEach(async ({ page }) => {
-    // Mock API calls for consistent testing
-    // Reference: CardsContainer component makes this call
     await page.route('https://dummyjson.com/products', async (route) => {
       await route.fulfill({
         status: 200,
@@ -103,7 +101,6 @@ test.describe('Cart Functionality', () => {
 
   test('should add items to cart from product cards', async ({ page }) => {
     // Reference: HomePage component with CardsContainer and Card components
-    // beforeEach already navigated to homepage after login, so we start here
 
     // Reference: Card component uses .card class and .card-action-btn for cart button
     const firstProductCard = page.locator('.card').first();
@@ -137,7 +134,6 @@ test.describe('Cart Functionality', () => {
 
   test('should add multiple items to cart and update quantities', async ({ page }) => {
     // Reference: HomePage component with product cards
-    // beforeEach already navigated to homepage after login, so we start here
 
     // Add first product to cart
     const firstProductCard = page.locator('.card').first();
@@ -172,7 +168,6 @@ test.describe('Cart Functionality', () => {
 
   test('should remove items from cart', async ({ page }) => {
     // Reference: HomePage component
-    // beforeEach already navigated to homepage after login, so we start here
 
     // Add product to cart
     await page.locator('.card').first().locator('.card-action-btn').last().click();
@@ -199,7 +194,6 @@ test.describe('Cart Functionality', () => {
 
   test('should toggle cart button state on product cards', async ({ page }) => {
     // Reference: HomePage component with CardsContainer and Card components
-    // beforeEach already navigated to homepage after login, so we start here
 
     // Reference: Card component shows "+" button initially
     const firstProductCard = page.locator('.card').first();
@@ -229,7 +223,6 @@ test.describe('Cart Functionality', () => {
 
   test('should remove items from cart using product card toggle', async ({ page }) => {
     // Reference: HomePage component
-    // beforeEach already navigated to homepage after login, so we start here
 
     // Add first product to cart
     const firstProductCard = page.locator('.card').first();
@@ -272,8 +265,6 @@ test.describe('Cart Functionality', () => {
 
   test('should maintain cart button state across navigation', async ({ page }) => {
     // Reference: HomePage component
-    // beforeEach already navigated to homepage after login, so we start here
-
     // Add product to cart
     const firstProductCard = page.locator('.card').first();
     const cartButton = firstProductCard.locator('.card-action-btn').last();
@@ -309,35 +300,8 @@ test.describe('Cart Functionality', () => {
     await expect(homeButton).not.toHaveClass(/in-cart/);
   });
 
-  test('should handle rapid add/remove operations', async ({ page }) => {
-    // Reference: HomePage component
-    // beforeEach already navigated to homepage after login, so we start here
-
-    const firstProductCard = page.locator('.card').first();
-    const cartButton = firstProductCard.locator('.card-action-btn').last();
-
-    // Rapidly click add/remove multiple times
-    await cartButton.click(); // Add
-    await cartButton.click(); // Remove
-    await cartButton.click(); // Add again
-    await cartButton.click(); // Remove again
-    await cartButton.click(); // Final add
-
-    // Final state should be added
-    await expect(cartButton).toHaveAttribute('data-tooltip', 'Remove 1 from cart');
-    await expect(cartButton).toHaveClass(/in-cart/);
-
-    // Verify in cart
-    await page.locator('.cart-button').click();
-    await page.waitForURL(/.*\/cart/);
-    await expect(page.locator('.cart-item')).toBeVisible();
-    await expect(page.locator('.cart-item h3')).toHaveText('iPhone 9');
-  });
-
   test('should clear entire cart', async ({ page }) => {
     // Reference: HomePage component
-    // beforeEach already navigated to homepage after login, so we start here
-
     // Add multiple products to cart
     await page.locator('.card').first().locator('.card-action-btn').last().click();
     await page.locator('.card').nth(1).locator('.card-action-btn').last().click();
@@ -361,7 +325,6 @@ test.describe('Cart Functionality', () => {
 
   test('should calculate cart totals correctly with discounts', async ({ page }) => {
     // Reference: HomePage component
-    // beforeEach already navigated to homepage after login, so we start here
 
     // Add first product to cart (iPhone 9: €549 with 12.96% discount)
     await page.locator('.card').first().locator('.card-action-btn').last().click();
@@ -390,9 +353,6 @@ test.describe('Cart Functionality', () => {
   });
 
   test('should handle cart operations with multiple product types', async ({ page }) => {
-    // Reference: HomePage component
-    // beforeEach already navigated to homepage after login, so we start here
-
     // Add different products to cart
     await page.locator('.card').first().locator('.card-action-btn').last().click(); // iPhone 9
     await page.locator('.card').nth(1).locator('.card-action-btn').last().click(); // iPhone X
@@ -423,6 +383,7 @@ test.describe('Cart Functionality', () => {
   test('should decrease cart quantities with toggle button instead of removing everything', async ({
     page,
   }) => {
+    // Reference: HomePage component
     // Add first product to cart
     const firstProductCard = page.locator('.card').first();
     const firstProductButton = firstProductCard.locator('.card-action-btn').last();

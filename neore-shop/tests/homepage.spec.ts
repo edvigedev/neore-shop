@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('HomePage', () => {
-  // This uses the baseURL configured in playwright.config.ts
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });

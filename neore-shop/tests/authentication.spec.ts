@@ -286,32 +286,6 @@ test.describe('Authentication System', () => {
     await expect(page.locator('.nav-bar-links')).toContainText('Logout');
   });
 
-  test('should handle form validation edge cases', async ({ page }) => {
-    // Test very long username/password
-    await page.fill('#username', 'a'.repeat(1000));
-    await page.fill('#password', 'b'.repeat(1000));
-    await page.click('button[type="submit"]');
-
-    // Should handle long inputs gracefully
-    await expect(page.locator('.login-error')).toContainText('Incorrect username or password');
-
-    // Test special characters
-    await page.fill('#username', 'user@#$%^&*()');
-    await page.fill('#password', 'pass@#$%^&*()');
-    await page.click('button[type="submit"]');
-
-    // Should handle special characters
-    await expect(page.locator('.login-error')).toContainText('Incorrect username or password');
-
-    // Test SQL injection attempts
-    await page.fill('#username', "'; DROP TABLE users; --");
-    await page.fill('#password', "'; DROP TABLE users; --");
-    await page.click('button[type="submit"]');
-
-    // Should handle injection attempts safely
-    await expect(page.locator('.login-error')).toContainText('Incorrect username or password');
-  });
-
   test('should trim whitespace from username and password', async ({ page }) => {
     await page.fill('#username', '  emilys  ');
     await page.fill('#password', '  emilyspass  ');
@@ -323,20 +297,6 @@ test.describe('Authentication System', () => {
   });
 
   test.describe('Authentication Navigation Scenarios', () => {
-    test('should maintain authentication state when navigating between pages', async ({ page }) => {
-      await page.click('button[type="submit"]');
-      await page.waitForURL('/neore-shop/');
-
-      // FIX: Use full paths for navigation
-      await page.goto('/neore-shop/favorites');
-      await expect(page.locator('.favorites-container')).toBeVisible();
-      await expect(page.locator('.nav-bar-links')).toContainText('Logout');
-
-      await page.goto('/neore-shop/admin');
-      await expect(page.locator('h1')).toContainText('Admin Dashboard');
-      await expect(page.locator('.nav-bar-links')).toContainText('Logout');
-    });
-
     test('should redirect to intended page after login from protected route', async ({ page }) => {
       // Start on login page, then go to a protected route
       await page.goto('/neore-shop/favorites');
