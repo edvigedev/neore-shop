@@ -159,3 +159,61 @@ test.describe('Favorites Functionality', () => {
     await expect(emptyState).toHaveText('You have not added any favorite yet');
   });
 });
+
+test.describe('Favorites Navigation Flow', () => {
+  test('should navigate from homepage to favorites page', async ({ page }) => {
+    // Login first
+    await page.goto('/neore-shop/login');
+    await page.fill('#username', 'emilys');
+    await page.fill('#password', 'emilyspass');
+    await page.click('button[type="submit"]');
+    await page.waitForURL('/neore-shop/');
+
+    // Navigate to favorites page
+    await page.goto('/neore-shop/favorites');
+
+    // Should be on favorites page
+    await expect(page).toHaveURL(/.*\/favorites/);
+    await expect(page.locator('.favorites-title')).toHaveText('Your Favorites');
+  });
+
+  test('should navigate back to homepage from favorites', async ({ page }) => {
+    // Login first
+    await page.goto('/neore-shop/login');
+    await page.fill('#username', 'emilys');
+    await page.fill('#password', 'emilyspass');
+    await page.click('button[type="submit"]');
+    await page.waitForURL('/neore-shop/');
+
+    // Go to favorites
+    await page.goto('/neore-shop/favorites');
+    await expect(page).toHaveURL(/.*\/favorites/);
+
+    // Navigate back to homepage using navbar logo
+    await page.locator('.neore-logo').click();
+    await expect(page).toHaveURL(/.*\/neore-shop\/?$/);
+  });
+
+  test('should handle browser back/forward navigation between homepage and favorites', async ({
+    page,
+  }) => {
+    // Login first
+    await page.goto('/neore-shop/login');
+    await page.fill('#username', 'emilys');
+    await page.fill('#password', 'emilyspass');
+    await page.click('button[type="submit"]');
+    await page.waitForURL('/neore-shop/');
+
+    // Navigate to favorites
+    await page.goto('/neore-shop/favorites');
+    await expect(page).toHaveURL(/.*\/favorites/);
+
+    // Go back to homepage
+    await page.goBack();
+    await expect(page).toHaveURL(/.*\/neore-shop\/?$/);
+
+    // Go forward to favorites
+    await page.goForward();
+    await expect(page).toHaveURL(/.*\/favorites/);
+  });
+});
