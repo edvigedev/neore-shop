@@ -45,11 +45,11 @@
   margin-right: 3%;
 }
 
-.admin-page-no-underline-link{
-    text-decoration: none;
-    font-size: 1.3em;
-    font-family: 'Inter', sans-serif;
-    color: #f5f5f5;
+.admin-page-no-underline-link {
+  text-decoration: none;
+  font-size: 1.3em;
+  font-family: 'Inter', sans-serif;
+  color: #f5f5f5;
 }
 
 .admin-page-no-underline-link:hover {
@@ -77,16 +77,19 @@
     font-size: 1.5em;
   }
 
-  .admin-page-products-list {align}
-
   .admin-page-products-list-item {
     font-size: 1em;
   }
+
+  .admin-page-no-underline-link {
+    font-size: 1em;
+  }
+
   .admin-page-horizontal-divider {
     width: 90%;
   }
   .admin-page-products-list {
     margin-right: 0;
-    margin-top:10%;
+    margin-top: 10%;
   }
 }

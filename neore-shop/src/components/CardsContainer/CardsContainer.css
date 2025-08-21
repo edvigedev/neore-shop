@@ -29,3 +29,9 @@
   font-style: italic;
   padding: 2rem;
 }
+
+@media (max-width: 768px) {
+  .cards-container-list li {
+    font-size: 1em;
+  }
+}
