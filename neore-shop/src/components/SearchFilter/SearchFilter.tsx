@@ -16,6 +16,11 @@ export default function SearchFilter({ placeholder, onSearch, className }: Searc
     onSearch(value);
   };
 
+  const handleClear = () => {
+    setSearchQuery('');
+    onSearch('');
+  };
+
   return (
     <div className="search-container">
       <input
@@ -27,7 +32,7 @@ export default function SearchFilter({ placeholder, onSearch, className }: Searc
         className={className}
       />
       {searchQuery && (
-        <button onClick={() => setSearchQuery('')} className="clear-search-button">
+        <button onClick={handleClear} className="clear-search-button">
           x
         </button>
       )}
