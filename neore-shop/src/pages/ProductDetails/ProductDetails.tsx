@@ -164,9 +164,9 @@ export default function ProductDetails() {
         </section>
         <section className="product-details-price-section">
           <h2 className="product-details-initial-price">€{data.price}</h2>
-          <h3 className="product-details-discount-percentage">
+          <span className="product-details-discount-percentage">
             -{Math.round(data.discountPercentage)}%
-          </h3>
+          </span>
           <h2 className="product-details-discounted-price">
             Now it&apos;s €{calculateDiscountedPrice()}!
           </h2>
