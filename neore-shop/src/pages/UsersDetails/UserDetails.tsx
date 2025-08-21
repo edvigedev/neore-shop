@@ -28,7 +28,6 @@ export default function UserDetails() {
           throw new Error("We could not load the user's carts");
         }
         const cartsData = await cartsResponse.json();
-        console.log(`API response for user ${id}:`, cartsData);
         setCartsData(cartsData);
       } catch (error) {
         setError(getErrorMessage(error));
