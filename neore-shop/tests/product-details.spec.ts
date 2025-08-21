@@ -10,8 +10,8 @@ const mockProducts: Product[] = [
     price: 549,
     discountPercentage: 12.96,
     rating: 4.69,
-    thumbnail: 'https://example.com/iphone9.jpg',
-    images: ['https://example.com/iphone9.jpg'],
+    thumbnail: 'https://picsum.photos/200/200?random=1',
+    images: ['https://picsum.photos/400/400?random=1'],
     category: 'smartphones',
     stock: 1,
   },
@@ -22,8 +22,8 @@ const mockProducts: Product[] = [
     price: 899,
     discountPercentage: 17.94,
     rating: 4.44,
-    thumbnail: 'https://example.com/iphonex.jpg',
-    images: ['https://example.com/iphonex.jpg'],
+    thumbnail: 'https://picsum.photos/200/200?random=2',
+    images: ['https://picsum.photos/400/400?random=2'],
     category: 'smartphones',
     stock: 5,
   },
@@ -102,8 +102,8 @@ test.describe('Product Details Page', () => {
     );
 
     // Reference: ProductDetails component shows product image
-    const productImage = page.locator('.product-details-image-container img');
-    await expect(productImage).toHaveAttribute('src', 'https://example.com/iphone9.jpg');
+    const productImage = page.locator('.product-details-image');
+    await expect(productImage).toHaveAttribute('src', 'https://picsum.photos/400/400?random=1');
     await expect(productImage).toHaveAttribute('alt', 'iPhone 9');
   });
 
@@ -267,6 +267,85 @@ test.describe('Product Details Page', () => {
     await expect(page.locator('.fetching-error-container')).toBeVisible();
   });
 
+  test('should handle different error scenarios gracefully', async ({ page }) => {
+    // Test 1: Server error (500)
+    await page.route('https://dummyjson.com/products/1', async (route) => {
+      await route.fulfill({
+        status: 500,
+        contentType: 'application/json',
+        json: { message: 'Internal server error' },
+      });
+    });
+
+    // Navigate to product details page
+    await page.click('text=iPhone 9');
+    await page.waitForURL('/neore-shop/products/1');
+
+    // Reference: ProductDetails component shows FetchingError for server error
+    await expect(page.locator('.fetching-error-container')).toBeVisible();
+    await expect(page.locator('.fetching-error-content h1')).toHaveText(
+      'Oops! Something went wrong'
+    );
+    await expect(page.locator('.fetching-error-content p')).toHaveText(
+      "We couldn't load the data. Please try again."
+    );
+
+    // Test 3: Malformed JSON response
+    await page.route('https://dummyjson.com/products/1', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: '{"invalid": json}', // Malformed JSON
+      });
+    });
+
+    // Reload the page to trigger the new mock
+    await page.reload();
+    await page.waitForURL('/neore-shop/products/1');
+
+    // Reference: ProductDetails component should handle malformed JSON gracefully
+    await expect(page.locator('.fetching-error-container')).toBeVisible();
+
+    // Test 4: Empty response
+    await page.route('https://dummyjson.com/products/1', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        json: {},
+      });
+    });
+
+    // Reload the page to trigger the new mock
+    await page.reload();
+    await page.waitForURL('/neore-shop/products/1');
+
+    // Reference: ProductDetails component should handle empty response gracefully
+    await expect(page.locator('.fetching-error-container')).toBeVisible();
+
+    // Test 5: Retry functionality
+    // Mock successful response for retry
+    await page.route('https://dummyjson.com/products/1', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        json: mockProduct,
+      });
+    });
+
+    // Click retry button
+    await page.click('.fetching-error-content button');
+    await page.waitForURL('/neore-shop/products/1');
+
+    // Reference: ProductDetails component should load successfully after retry
+    await expect(page.locator('.product-details-page-container')).toBeVisible();
+    await expect(page.locator('.product-details-page-title')).toHaveText('iPhone 9');
+
+    // Wait for image to load and be visible
+    const image = page.locator('.product-details-image');
+    await expect(image).toBeVisible();
+    await expect(image).toHaveAttribute('src', 'https://picsum.photos/400/400?random=1');
+  });
+
   test('should maintain favorite state across navigation', async ({ page }) => {
     // Navigate to product details page
     await page.click('text=iPhone 9');
@@ -304,7 +383,7 @@ test.describe('Product Details Page', () => {
     // Reference: ProductDetails component should be responsive
     // Check that elements are visible and properly sized for mobile
     await expect(page.locator('.product-details-page-container')).toBeVisible();
-    await expect(page.locator('.product-details-image-container img')).toBeVisible();
+    await expect(page.locator('.product-details-image')).toBeVisible();
     await expect(page.locator('.product-details-introduction-section')).toBeVisible();
     await expect(page.locator('.product-details-price-section')).toBeVisible();
 
