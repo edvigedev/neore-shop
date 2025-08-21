@@ -18,6 +18,10 @@ export default function HomePage() {
           <CardsContainer />
         </ErrorBoundary>
       </div>
+      <p className="home-page-end-of-page-text">You reached the end of our products&apos; list.</p>
+      <div className="home-page-footer">
+        <p>&copy; {new Date().getFullYear()} Neore Shop. All rights reserved.</p>
+      </div>
     </div>
   );
 }
