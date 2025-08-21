@@ -60,6 +60,16 @@
 .cart-button img {
   width: 2em;
   height: 2em;
+  position: relative;
+}
+
+.cart-count {
+  position: absolute;
+  margin-left: 0.3em;
+  font-size: 1.2em;
+  font-weight: 500;
+  color: #f5f5f5;
+  font-family: 'Inter', sans-serif;
 }
 
 .neore-logo {
@@ -72,6 +82,20 @@
 
 .neore-logo:hover {
   color: rgb(212, 130, 250);
+}
+
+.clear-search-button {
+  background-color: #c444ff;
+  border: none;
+  cursor: pointer;
+  padding: 0.3em;
+  border-radius: 0.5em;
+}
+
+.clear-search-button:hover {
+  background-color: rgb(212, 130, 250);
+  color: #c444ff;
+  border: 1px solid #c444ff;
 }
 
 /* Screens smaller than 980px */

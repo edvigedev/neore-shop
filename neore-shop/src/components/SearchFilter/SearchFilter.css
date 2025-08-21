@@ -1,0 +1,35 @@
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.search-container input {
+  width: 60%;
+  border: 1px solid #c444ff;
+  border-radius: 0.5em;
+  padding: 0.5em;
+  font-size: 1em;
+  font-family: 'Inter', sans-serif;
+  color: #c444ff;
+}
+
+.clear-search-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+  color: #c444ff;
+  margin-left: 10px;
+}
+
+.clear-search-button:hover {
+  color: rgb(212, 130, 250);
+}
+
+@media (max-width: 979px) {
+  .search-container input {
+    margin-bottom: 1em;
+  }
+}

@@ -56,6 +56,14 @@
   color: rgb(212, 130, 250);
 }
 
+.admin-page-no-matches {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 2rem;
+  margin: 1rem 0;
+}
+
 @media (max-width: 768px) {
   .admin-page-title {
     font-size: 2em;

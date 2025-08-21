@@ -1,14 +1,30 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import type { Product } from '../../types';
 import './AdminPage.css';
 import { Link } from 'react-router-dom';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import FetchingError from '../../components/FetchingError/FetchingError';
+import { useSearch } from '../../context/SearchContext/SearchContext';
+
 export default function AdminPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { globalSearch } = useSearch();
+
+  // Filter products based on search query
+  const filteredProducts = useMemo(() => {
+    if (!products.length) return [];
+    if (!globalSearch.trim()) return products;
+
+    return products.filter(
+      (product: Product) =>
+        product.title.toLowerCase().includes(globalSearch.toLowerCase()) ||
+        product.description.toLowerCase().includes(globalSearch.toLowerCase()) ||
+        product.category.toLowerCase().includes(globalSearch.toLowerCase())
+    );
+  }, [products, globalSearch]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -42,9 +58,14 @@ export default function AdminPage() {
       <hr className="admin-page-horizontal-divider" />
 
       <section className="admin-page-products-section">
-        {products.length > 0 && (
+        {filteredProducts.length === 0 && globalSearch.trim() && (
+          <p className="admin-page-no-matches">
+            No products found matching &quot;{globalSearch}&quot;
+          </p>
+        )}
+        {filteredProducts.length > 0 && (
           <ul className="admin-page-products-list">
-            {products.map((product: Product) => (
+            {filteredProducts.map((product: Product) => (
               <li key={product.id} className="admin-page-products-list-item">
                 <Link to={`/admin/products/${product.id}`} className="admin-page-no-underline-link">
                   {product.id}. {product.title}
