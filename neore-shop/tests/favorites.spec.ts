@@ -37,7 +37,16 @@ test.describe('Favorites Functionality', () => {
         json: { products: mockProducts, total: 2, skip: 0, limit: 30 },
       });
     });
+    const mockPayload = {
+      id: 1,
+      username: 'emilys',
+      email: 'emily@example.com',
+      firstName: 'Emily',
+      lastName: 'Smith',
+      role: 'admin',
+    };
 
+    const mockJwtToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${Buffer.from(JSON.stringify(mockPayload)).toString('base64')}.signature`;
     await page.route('https://dummyjson.com/auth/login', async (route) => {
       await route.fulfill({
         status: 200,
@@ -48,9 +57,7 @@ test.describe('Favorites Functionality', () => {
           email: 'emily@example.com',
           firstName: 'Emily',
           lastName: 'Smith',
-          gender: 'female',
-          image: 'https://example.com/emily.jpg',
-          accessToken: 'fake-jwt-token',
+          accessToken: mockJwtToken,
           refreshToken: 'fake-refresh-token',
           role: 'admin',
         },

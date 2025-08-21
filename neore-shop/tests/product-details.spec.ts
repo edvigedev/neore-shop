@@ -47,8 +47,6 @@ const mockUser = {
   email: 'emily@example.com',
   firstName: 'Emily',
   lastName: 'Smith',
-  gender: 'female',
-  image: 'https://example.com/emily.jpg',
   accessToken: mockJwtToken,
   refreshToken: 'fake-refresh-token',
   role: 'admin',

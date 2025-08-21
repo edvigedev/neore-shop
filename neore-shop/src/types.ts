@@ -13,78 +13,6 @@ export interface Product {
 
 // User-related interfaces for API responses
 
-export interface Coordinates {
-  lat: number;
-  lng: number;
-}
-
-export interface Address {
-  address: string;
-  city: string;
-  state: string;
-  stateCode: string;
-  postalCode: string;
-  coordinates: Coordinates;
-  country: string;
-}
-
-export interface Hair {
-  color: string;
-  type: string;
-}
-
-export interface Bank {
-  cardExpire: string;
-  cardNumber: string;
-  cardType: string;
-  currency: string;
-  iban: string;
-}
-
-export interface Company {
-  department: string;
-  name: string;
-  title: string;
-  address: Address;
-}
-
-export interface Crypto {
-  coin: string;
-  wallet: string;
-  network: string;
-}
-
-export interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
-  maidenName: string;
-  age: number;
-  gender: string;
-  email: string;
-  phone: string;
-  username: string;
-  password: string;
-  birthDate: string;
-  image: string;
-  bloodGroup: string;
-  height: number;
-  weight: number;
-  eyeColor: string;
-  hair: Hair;
-  ip: string;
-  address: Address;
-  macAddress: string;
-  university: string;
-  bank: Bank;
-  company: Company;
-  ein: string;
-  ssn: string;
-  userAgent: string;
-  crypto: Crypto;
-  role: 'admin' | 'moderator' | 'user';
-}
-
 export interface UsersResponse {
   users: User[];
   total: number;
@@ -92,51 +20,13 @@ export interface UsersResponse {
   limit: number;
 }
 
-// Interface for geographic coordinates
-export interface Coordinates {
-  lat: number;
-  lng: number;
-}
-
-// Interface for address details, used for both user and company
-export interface Address {
-  address: string;
-  city: string;
-  state: string;
-  stateCode: string;
-  postalCode: string;
-  coordinates: Coordinates;
-  country: string;
-}
-
-// Interface for the user's hair properties
-export interface Hair {
-  color: string;
-  type: string;
-}
-
-// Interface for the user's bank details
-export interface Bank {
-  cardExpire: string;
-  cardNumber: string;
-  cardType: string;
-  currency: string;
-  iban: string;
-}
-
-// Interface for the user's company information
-export interface Company {
-  department: string;
-  name: string;
-  title: string;
-  address: Address; // Reusing the Address interface
-}
-
-// Interface for the user's cryptocurrency details
-export interface Crypto {
-  coin: string;
-  wallet: string;
-  network: string;
+export interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  role: 'admin' | 'moderator' | 'user';
 }
 
 // The main UserDetails interface
@@ -144,31 +34,9 @@ export interface UserDetails {
   id: number;
   firstName: string;
   lastName: string;
-  maidenName: string;
-  age: number;
-  gender: 'female' | 'male' | 'other'; // Using literal types for specificity
   email: string;
   phone: string;
-  username: string;
-  password: string; // Note: Storing passwords in plaintext is not recommended
-  birthDate: string;
-  image: string;
-  bloodGroup: string;
-  height: number;
-  weight: number;
-  eyeColor: string;
-  hair: Hair;
-  ip: string;
-  address: Address;
-  macAddress: string;
-  university: string;
-  bank: Bank;
-  company: Company;
-  ein: string;
-  ssn: string;
-  userAgent: string;
-  crypto: Crypto;
-  role: 'admin' | 'moderator' | 'user'; // Using literal types for roles
+  role: 'admin' | 'moderator' | 'user';
 }
 
 export interface Carts {
@@ -196,6 +64,7 @@ export interface CartContextType {
   cartItems: CartItem[];
   addToCart: (product: Product, quantity: number) => void;
   removeFromCart: (productId: number) => void;
+  decreaseQuantity: (productId: number) => void;
   updateQuantity: (productId: number, quantity: number) => void;
   clearCart: () => void;
   getCartItem: (productId: number) => CartItem | undefined;
@@ -204,20 +73,7 @@ export interface CartContextType {
 }
 
 export type StringFormData = {
-  [K in keyof Omit<
-    Product,
-    | 'id'
-    | 'reviews'
-    | 'meta'
-    | 'dimensions'
-    | 'hair'
-    | 'address'
-    | 'bank'
-    | 'company'
-    | 'crypto'
-    | 'stock'
-    | 'rating'
-  >]?: string;
+  [K in keyof Omit<Product, 'id' | 'stock' | 'rating'>]?: string;
 };
 
 export interface AuthResponse {
@@ -233,5 +89,14 @@ export interface AuthResponse {
   role?: 'admin' | 'user';
 }
 
-// Simpler type for what we store as the "user"
+// Simpler type for what we store as the authenticated user
 export type AuthenticatedUser = Omit<AuthResponse, 'accessToken' | 'refreshToken'>;
+
+export interface ProductFormProps {
+  initialProduct?: Product;
+  onSave: (product: Product) => void;
+  onCancel: () => void;
+  isEditing?: boolean;
+  onDelete?: () => void;
+  loading?: boolean;
+}

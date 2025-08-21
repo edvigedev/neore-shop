@@ -18,15 +18,11 @@ const mockUser = {
   email: 'emily@example.com',
   firstName: 'Emily',
   lastName: 'Smith',
-  gender: 'female',
-  image: 'https://example.com/emily.jpg',
   accessToken: mockJwtToken,
   refreshToken: 'fake-refresh-token-67890',
   role: 'admin',
 };
 
-// The beforeEach hook is now perfect. All mocks are in place.
-// It correctly navigates to the login page to start each test.
 test.beforeEach(async ({ page }) => {
   // Mock the login API for consistent testing
   await page.route('https://dummyjson.com/auth/login', async (route) => {

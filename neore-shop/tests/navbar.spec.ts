@@ -108,6 +108,7 @@ test.describe('NavBar Component', () => {
     });
 
     await page.goto('/neore-shop/');
+    await page.waitForTimeout(1000);
   });
 
   test.describe('Navigation and Branding', () => {
