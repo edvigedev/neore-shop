@@ -50,7 +50,7 @@ export default function UserDetails() {
     <div>
       <div className="user-details-page-container">
         <section className="user-details-introduction-section">
-          <h1 className="user-details-page-title">
+          <h1 className="user-details-page-title" data-testid="user-details-page-title">
             {data?.firstName} {data?.lastName}
           </h1>
           <h3>{data?.role}</h3>
@@ -58,12 +58,16 @@ export default function UserDetails() {
           <h3>{data?.phone}</h3>
         </section>
 
-        <section className="user-details-carts-section">
+        <section className="user-details-carts-section" data-testid="user-details-carts-section">
           <h2>Carts</h2>
           {cartsData && cartsData.carts.length > 0 ? (
             <ul>
               {cartsData.carts.map((cart: Cart) => (
-                <li key={cart.id} className="user-details-one-cart-section">
+                <li
+                  key={cart.id}
+                  className="user-details-one-cart-section"
+                  data-testid="user-details-one-cart-section"
+                >
                   <h3>{cart.id}.</h3>
                   <p>Total Price: ${cart.total}</p>
                   <h3>Products:</h3>
@@ -78,7 +82,7 @@ export default function UserDetails() {
               ))}
             </ul>
           ) : (
-            <p>This user has no carts.</p>
+            <p data-testid="user-details-no-carts">This user has no carts.</p>
           )}
         </section>
       </div>

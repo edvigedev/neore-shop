@@ -113,7 +113,7 @@ test.describe('NavBar Component', () => {
 
   test.describe('Navigation and Branding', () => {
     test('should display Neore logo and navigate to homepage', async ({ page }) => {
-      const logo = page.locator('.neore-logo');
+      const logo = page.locator('[data-testid="navbar-logo-link"]');
       await expect(logo).toBeVisible();
       await expect(logo).toHaveText('Neore');
 
@@ -125,7 +125,7 @@ test.describe('NavBar Component', () => {
 
   test.describe('Authentication States', () => {
     test('should show Login when not authenticated', async ({ page }) => {
-      const loginButton = page.locator('.nav-bar-links li').first();
+      const loginButton = page.locator('[data-testid="navbar-logout-li"]');
       await expect(loginButton).toHaveText('Login');
     });
 
@@ -138,7 +138,7 @@ test.describe('NavBar Component', () => {
       await page.waitForURL('/neore-shop/');
 
       // Check logout is visible
-      const logoutButton = page.locator('.nav-bar-links li').first();
+      const logoutButton = page.locator('[data-testid="navbar-logout-li"]');
       await expect(logoutButton).toHaveText('Logout');
     });
 
@@ -151,7 +151,7 @@ test.describe('NavBar Component', () => {
       await page.waitForURL('/neore-shop/');
 
       // Logout
-      const logoutButton = page.locator('.nav-bar-links li').first();
+      const logoutButton = page.locator('[data-testid="navbar-logout-li"]');
       await logoutButton.click();
       await page.waitForURL(/.*\/login/);
     });
@@ -167,8 +167,10 @@ test.describe('NavBar Component', () => {
       await page.waitForURL('/neore-shop/');
 
       // Check admin links are visible
-      await expect(page.locator('.nav-bar-links')).toContainText('Admin Dashboard');
-      await expect(page.locator('.nav-bar-links')).toContainText('Users');
+      await expect(page.locator('[data-testid="navbar-admin-link"]')).toContainText(
+        'Admin Dashboard'
+      );
+      await expect(page.locator('[data-testid="navbar-users-link"]')).toContainText('Users');
     });
 
     test('should navigate to admin pages correctly', async ({ page }) => {
@@ -199,8 +201,8 @@ test.describe('NavBar Component', () => {
       await page.waitForURL('/neore-shop/');
 
       // Check cart elements
-      const cartButton = page.locator('.cart-button');
-      const cartCount = page.locator('.cart-count');
+      const cartButton = page.locator('[data-testid="navbar-cart-button"]');
+      const cartCount = page.locator('[data-testid="navbar-cart-count"]');
 
       await expect(cartButton).toBeVisible();
       await expect(cartCount).toBeVisible();
@@ -216,55 +218,55 @@ test.describe('NavBar Component', () => {
       await page.waitForURL('/neore-shop/');
 
       // Click cart and verify navigation
-      await page.locator('.cart-button').click();
+      await page.locator('[data-testid="navbar-cart-button"]').click();
       await expect(page).toHaveURL('/neore-shop/cart');
     });
   });
 
   test.describe('Search Functionality', () => {
     test('should display search input', async ({ page }) => {
-      const searchInput = page.locator('.nav-search-input');
+      const searchInput = page.locator('[data-testid="navbar-search-input"]');
       await expect(searchInput).toBeVisible();
       await expect(searchInput).toHaveAttribute('placeholder', 'Search');
     });
 
     test('should filter products in real-time', async ({ page }) => {
       // Type in search
-      const searchInput = page.locator('.nav-search-input');
+      const searchInput = page.locator('[data-testid="navbar-search-input"]');
       await searchInput.fill('iPhone');
 
       // Wait for filtering to take effect
       await page.waitForTimeout(100);
 
       // Check that only iPhone product is visible
-      const productCards = page.locator('.cards-container-list li');
+      const productCards = page.locator('[data-testid="cards-container-list"] li');
       await expect(productCards).toHaveCount(1);
       await expect(productCards.first()).toContainText('iPhone 9');
     });
 
     test('should filter products by category', async ({ page }) => {
       // Type in search
-      const searchInput = page.locator('.nav-search-input');
+      const searchInput = page.locator('[data-testid="navbar-search-input"]');
       await searchInput.fill('smartphones');
 
       // Wait for filtering to take effect
       await page.waitForTimeout(100);
 
       // Check that only smartphone products are visible
-      const productCards = page.locator('.cards-container-list li');
+      const productCards = page.locator('[data-testid="cards-container-list"] li');
       await expect(productCards).toHaveCount(2); // iPhone and Samsung Galaxy
     });
 
     test('should show no results message for non-matching search', async ({ page }) => {
       // Type in search
-      const searchInput = page.locator('.nav-search-input');
+      const searchInput = page.locator('[data-testid="navbar-search-input"]');
       await searchInput.fill('NonExistentProduct');
 
       // Wait for filtering to take effect
       await page.waitForTimeout(100);
 
       // Check no results message
-      const noResultsMessage = page.locator('.cards-container-list-item-empty');
+      const noResultsMessage = page.locator('[data-testid="cards-container-empty-search"]');
       await expect(noResultsMessage).toBeVisible();
       await expect(noResultsMessage).toContainText(
         'No products found matching "NonExistentProduct"'
@@ -273,7 +275,7 @@ test.describe('NavBar Component', () => {
 
     test('should clear search and show all products', async ({ page }) => {
       // Type in search
-      const searchInput = page.locator('.nav-search-input');
+      const searchInput = page.locator('[data-testid="navbar-search-input"]');
       await searchInput.fill('iPhone');
 
       // Wait for filtering
@@ -286,20 +288,20 @@ test.describe('NavBar Component', () => {
       await page.waitForTimeout(100);
 
       // Check all products are visible
-      const productCards = page.locator('.cards-container-list li');
+      const productCards = page.locator('[data-testid="cards-container-list"] li');
       await expect(productCards).toHaveCount(3);
     });
 
     test('should filter case-insensitively', async ({ page }) => {
       // Type in search with different cases
-      const searchInput = page.locator('.nav-search-input');
+      const searchInput = page.locator('[data-testid="navbar-search-input"]');
       await searchInput.fill('IPHONE');
 
       // Wait for filtering
       await page.waitForTimeout(100);
 
       // Check that iPhone product is still visible
-      const productCards = page.locator('.cards-container-list li');
+      const productCards = page.locator('[data-testid="cards-container-list"] li');
       await expect(productCards).toHaveCount(1);
       await expect(productCards.first()).toContainText('iPhone 9');
     });

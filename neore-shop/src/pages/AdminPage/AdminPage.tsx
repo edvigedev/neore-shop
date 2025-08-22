@@ -53,20 +53,28 @@ export default function AdminPage() {
 
   return (
     <div>
-      <h1 className="admin-page-title">Admin Dashboard</h1>
-      <p className="admin-page-description">This is where you will manage products.</p>
+      <h1 className="admin-page-title" data-testid="admin-page-title">
+        Admin Dashboard
+      </h1>
+      <p className="admin-page-description" data-testid="admin-page-description">
+        This is where you will manage products.
+      </p>
       <hr className="admin-page-horizontal-divider" />
 
-      <section className="admin-page-products-section">
+      <section className="admin-page-products-section" data-testid="admin-page-products-section">
         {filteredProducts.length === 0 && globalSearch.trim() && (
-          <p className="admin-page-no-matches">
+          <p className="admin-page-no-matches" data-testid="admin-page-no-matches">
             No products found matching &quot;{globalSearch}&quot;
           </p>
         )}
         {filteredProducts.length > 0 && (
-          <ul className="admin-page-products-list">
+          <ul className="admin-page-products-list" data-testid="admin-page-products-list">
             {filteredProducts.map((product: Product) => (
-              <li key={product.id} className="admin-page-products-list-item">
+              <li
+                key={product.id}
+                className="admin-page-products-list-item"
+                data-testid="admin-page-products-list-item"
+              >
                 <Link to={`/admin/products/${product.id}`} className="admin-page-no-underline-link">
                   {product.id}. {product.title}
                 </Link>

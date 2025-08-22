@@ -55,15 +55,20 @@ export default function Users() {
 
   return (
     <div>
-      <h1 className="users-page-title"> All users </h1>
+      <h1 className="users-page-title" data-testid="users-page-title">
+        {' '}
+        All users{' '}
+      </h1>
       <hr className="users-horizontal-divider" />
-      <section className="users-list-section">
+      <section className="users-list-section" data-testid="users-list-section">
         {filteredUsers.length === 0 && globalSearch.trim() && (
-          <p className="users-no-matches">No users found matching &quot;{globalSearch}&quot;</p>
+          <p className="users-no-matches" data-testid="users-no-matches">
+            No users found matching &quot;{globalSearch}&quot;
+          </p>
         )}
-        <ul className="users-list-container">
+        <ul className="users-list-container" data-testid="users-list-container">
           {filteredUsers.map((user: User) => (
-            <li key={user.id} className="users-list-items">
+            <li key={user.id} className="users-list-items" data-testid="users-list-items">
               <Link to={`/admin/users/${user.id}`} className="users-no-underline-link">
                 {user.id}. {user.firstName} {user.lastName};
               </Link>

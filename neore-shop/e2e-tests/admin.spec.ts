@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 import type { Product, User } from '../src/types';
 
-// Mock data for testing
 const mockProducts: Product[] = [
   {
     id: 1,
@@ -71,7 +70,6 @@ const mockAdminUser = {
 
 test.describe('Admin Functionality', () => {
   test.beforeEach(async ({ page }) => {
-    // Mock API calls
     await page.route('https://dummyjson.com/products', async (route) => {
       await route.fulfill({
         status: 200,
@@ -96,29 +94,24 @@ test.describe('Admin Functionality', () => {
       });
     });
 
-    // Login as admin with proper waits
     await page.goto('/neore-shop/login');
 
-    // Wait for login form to be ready
     await page.waitForSelector('#username', { timeout: 10000 });
     await page.waitForSelector('#password', { timeout: 10000 });
     await page.waitForSelector('button[type="submit"]', { timeout: 10000 });
 
-    // Fill and submit form
     await page.fill('#username', 'emilys');
     await page.fill('#password', 'emilyspass');
     await page.click('button[type="submit"]');
 
-    // Wait for successful login
     await page.waitForURL('/neore-shop/', { timeout: 15000 });
   });
 
   test('should access admin dashboard after login', async ({ page }) => {
-    // Wait for authentication to complete and verify we're logged in
-    await expect(page.locator('.nav-bar-links')).toContainText('Logout');
+    await expect(page.locator('[data-testid="navbar-logout-li"]')).toHaveText('Logout');
 
     // Verify admin link is visible
-    const adminLink = page.getByRole('link', { name: 'Admin Dashboard' });
+    const adminLink = page.locator('[data-testid="navbar-admin-link"]');
     await expect(adminLink).toBeVisible();
 
     // Navigate to admin dashboard
@@ -126,8 +119,8 @@ test.describe('Admin Functionality', () => {
     await page.waitForURL('/neore-shop/admin');
 
     // Verify admin page content
-    await expect(page.locator('.admin-page-title')).toHaveText('Admin Dashboard');
-    await expect(page.locator('.admin-page-description')).toContainText(
+    await expect(page.locator('[data-testid="admin-page-title"]')).toHaveText('Admin Dashboard');
+    await expect(page.locator('[data-testid="admin-page-description"]')).toContainText(
       'This is where you will manage products'
     );
   });
@@ -154,11 +147,11 @@ test.describe('Admin Functionality', () => {
     await page.goto('/neore-shop/admin');
 
     // Verify products section
-    await expect(page.locator('.admin-page-products-section')).toBeVisible();
-    await expect(page.locator('.admin-page-products-list')).toBeVisible();
+    await expect(page.locator('[data-testid="admin-page-products-section"]')).toBeVisible();
+    await expect(page.locator('[data-testid="admin-page-products-list"]')).toBeVisible();
 
     // Verify products are displayed
-    const productItems = page.locator('.admin-page-products-list-item');
+    const productItems = page.locator('[data-testid="admin-page-products-list-item"]');
     await expect(productItems).toHaveCount(2);
 
     // Verify product details (products show as "1. iPhone 9", "2. iPhone X")
@@ -166,12 +159,17 @@ test.describe('Admin Functionality', () => {
     await expect(productItems.nth(1)).toContainText('2. iPhone X');
 
     // Test navigation to edit product page
-    const firstProductLink = page.locator('.admin-page-products-list-item').first().locator('a');
+    const firstProductLink = page
+      .locator('[data-testid="admin-page-products-list-item"]')
+      .first()
+      .locator('a');
     await firstProductLink.click();
 
     // Verify edit page loads
     await page.waitForURL(/.*\/admin\/products\/\d+/);
-    await expect(page.locator('.edit-product-page-title')).toHaveText('Edit: iPhone 9');
+    await expect(page.locator('[data-testid="edit-product-page-title"]')).toHaveText(
+      'Edit: iPhone 9'
+    );
   });
 
   test('should manage users in admin dashboard', async ({ page }) => {
@@ -196,11 +194,11 @@ test.describe('Admin Functionality', () => {
     await page.goto('/neore-shop/admin/users');
 
     // Verify users page content
-    await expect(page.locator('.users-page-title')).toHaveText('All users');
-    await expect(page.locator('.users-list-section')).toBeVisible();
+    await expect(page.locator('[data-testid="users-page-title"]')).toHaveText('All users');
+    await expect(page.locator('[data-testid="users-list-section"]')).toBeVisible();
 
     // Verify users are displayed
-    const userItems = page.locator('.users-list-items');
+    const userItems = page.locator('[data-testid="users-list-items"]');
     await expect(userItems).toHaveCount(2);
 
     // Verify user details (users show as "1. John Doe", "2. Jane Smith")
@@ -208,17 +206,17 @@ test.describe('Admin Functionality', () => {
     await expect(userItems.nth(1)).toContainText('2. Jane Smith');
 
     // Test navigation to user details page
-    const firstUserLink = page.locator('.users-list-items').first().locator('a');
+    const firstUserLink = page.locator('[data-testid="users-list-items"]').first().locator('a');
     await firstUserLink.click();
 
     // Verify user details page loads
     await page.waitForURL(/.*\/admin\/users\/\d+/);
-    await expect(page.locator('.user-details-page-title')).toContainText('John Doe');
+    await expect(page.locator('[data-testid="user-details-page-title"]')).toContainText('John Doe');
   });
 
   test('should block access to admin routes when not authenticated', async ({ page }) => {
     // First logout to clear authentication state
-    await page.locator('.nav-bar-links').getByText('Logout').click();
+    await page.locator('[data-testid="navbar-logout-li"]').click();
     await page.waitForURL(/.*\/login/);
 
     // Now try to access admin route without authentication
@@ -226,7 +224,7 @@ test.describe('Admin Functionality', () => {
 
     // Should be redirected to login page since not authenticated
     await expect(page).toHaveURL(/.*\/login/);
-    await expect(page.locator('.login-header')).toBeVisible();
+    await expect(page.locator('[data-testid="login-header"]')).toBeVisible();
   });
 
   test('should handle admin page loading errors gracefully', async ({ page }) => {
@@ -243,6 +241,6 @@ test.describe('Admin Functionality', () => {
     await page.goto('/neore-shop/admin');
 
     // Should show error state
-    await expect(page.locator('.fetching-error-container')).toBeVisible();
+    await expect(page.locator('[data-testid="fetching-error"]')).toBeVisible();
   });
 });

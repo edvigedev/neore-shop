@@ -25,10 +25,7 @@ export default function NavBar() {
   return (
     <nav className="nav-bar" data-testid="navbar">
       <Link to="/" className="no-underline-link" data-testid="navbar-logo-link">
-        <div className="neore-logo" data-testid="navbar-logo">
-          {' '}
-          Neore
-        </div>
+        <div className="neore-logo"> Neore</div>
       </Link>
       <SearchFilter
         placeholder="Search"
@@ -36,7 +33,7 @@ export default function NavBar() {
         className="nav-search-input"
         data-testid="navbar-search-input"
       />
-      <ul className="nav-bar-links" data-testid="navbar-links">
+      <ul className="nav-bar-links">
         <li onClick={handleLogout} className="no-underline-link" data-testid="navbar-logout-li">
           {token ? 'Logout' : 'Login'}
         </li>
