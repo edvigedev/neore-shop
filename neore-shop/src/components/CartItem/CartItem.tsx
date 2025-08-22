@@ -22,36 +22,57 @@ export default function CartItem({ product, quantity, onUpdateQuantity, onRemove
   };
 
   return (
-    <div className="cart-item">
+    <div className="cart-item" data-testid="cart-item">
       <section className="cart-item-buttons-section">
         <button
           onClick={handleRemove}
           className="remove-item-btn"
           aria-label="Remove item from cart"
+          data-testid="cart-item-remove-button"
         >
           ×
         </button>
       </section>
 
       <div className="cart-item-image-section">
-        <img src={product.thumbnail} alt={product.title} className="cart-item-image" />
+        <img
+          src={product.thumbnail}
+          alt={product.title}
+          className="cart-item-image"
+          data-testid="cart-item-image"
+        />
       </div>
 
       <div className="cart-item-details">
-        <h3>{product.title}</h3>
-        <p className="cart-item-description">{product.description.substring(0, 50)}...</p>
+        <h3 data-testid="cart-item-title">{product.title}</h3>
+        <p className="cart-item-description" data-testid="cart-item-description">
+          {product.description.substring(0, 50)}...
+        </p>
 
         <div className="cart-item-price-section">
-          <span className="cart-item-original-price">€{product.price}</span>
-          <span className="cart-item-discounted-price">Now €{discountedPrice.toFixed(2)}!</span>
-          <span id="cart-item-discount-badge">-{Math.round(product.discountPercentage)}% off!</span>
+          <span className="cart-item-original-price" data-testid="cart-item-original-price">
+            €{product.price}
+          </span>
+          <span className="cart-item-discounted-price" data-testid="cart-item-discounted-price">
+            Now €{discountedPrice.toFixed(2)}!
+          </span>
+          <span id="cart-item-discount-badge" data-testid="cart-item-discount-badge">
+            -{Math.round(product.discountPercentage)}% off!
+          </span>
         </div>
       </div>
 
       <section className="cart-item-quantity-section">
         <div className="cart-item-quantity">
-          <label htmlFor={`quantity-${product.id}`}>Qty:</label>
-          <select id={`quantity-${product.id}`} value={quantity} onChange={handleQuantityChange}>
+          <label htmlFor={`quantity-${product.id}`} data-testid="cart-item-quantity-label">
+            Qty:
+          </label>
+          <select
+            id={`quantity-${product.id}`}
+            value={quantity}
+            onChange={handleQuantityChange}
+            data-testid="cart-item-quantity-select"
+          >
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
               <option key={num} value={num}>
                 {num}
@@ -61,7 +82,7 @@ export default function CartItem({ product, quantity, onUpdateQuantity, onRemove
         </div>
 
         <div className="cart-item-total">
-          <span>€{itemTotal.toFixed(2)}</span>
+          <span data-testid="cart-item-total">€{itemTotal.toFixed(2)}</span>
         </div>
       </section>
     </div>
