@@ -11,10 +11,11 @@ export default function LoadingSpinner({
   color = '#C444FF',
 }: LoadingSpinnerProps) {
   return (
-    <div className="loading-spinner-container">
+    <div className="loading-spinner-container" data-testid="loading-spinner-container">
       <div
         className={clsx('loading-spinner', size)}
         style={{ '--spinner-color': color } as React.CSSProperties}
+        data-testid="loading-spinner"
       ></div>
     </div>
   );
