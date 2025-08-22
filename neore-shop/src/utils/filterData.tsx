@@ -1,9 +1,13 @@
 import type { Product, User } from '../types';
 
-export function filterData<T extends Product | User>(data: T[], searchQuery: string): T[] {
-  if (!searchQuery.trim()) return data;
+export function filterData<T extends Product | User>(
+  data: T[],
+  searchQuery: string | null | undefined
+): T[] {
+  // Handle null/undefined search queries
+  if (!searchQuery || !searchQuery.trim()) return data;
 
-  const query = searchQuery.toLowerCase();
+  const query = searchQuery.trim().toLowerCase();
 
   return data.filter((item) => {
     // For products
