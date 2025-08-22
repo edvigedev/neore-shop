@@ -19,7 +19,7 @@ export default function Login() {
     setLoading(true);
     setError('');
 
-    if (!username.trim() || !password.trim()) {
+    if (!username || !password) {
       setError('Both username and password are required');
       setLoading(false);
       return;
@@ -66,9 +66,15 @@ export default function Login() {
 
   return (
     <>
-      <h1 className="login-header">Welcome!</h1>
-      <form onSubmit={handleLogin} className="login-form">
-        {error && <div className="login-error">{error}</div>}
+      <h1 className="login-header" data-testid="login-header">
+        Welcome!
+      </h1>
+      <form onSubmit={handleLogin} className="login-form" data-testid="login-form">
+        {error && (
+          <div className="login-error" data-testid="login-error">
+            {error}
+          </div>
+        )}
         <label htmlFor="username" className="login-label">
           Username
         </label>
@@ -79,6 +85,7 @@ export default function Login() {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           className="login-input"
+          data-testid="login-username-input"
         />
         <label htmlFor="password" className="login-label">
           Password
@@ -90,11 +97,17 @@ export default function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="login-input"
+          data-testid="login-password-input"
         />
-        <button type="submit" className="login-button">
+        <button type="submit" className="login-button" data-testid="login-submit-button">
           Login
         </button>
-        <button type="button" onClick={handleGuestLogin} className="login-button guest-button">
+        <button
+          type="button"
+          onClick={handleGuestLogin}
+          className="login-button guest-button"
+          data-testid="login-guest-button"
+        >
           Continue as Guest
         </button>
       </form>

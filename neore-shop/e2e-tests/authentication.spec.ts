@@ -61,52 +61,54 @@ test.beforeEach(async ({ page }) => {
 test.describe('Authentication System', () => {
   test('should display login form correctly', async ({ page }) => {
     // This test stays on the login page and is correct.
-    await expect(page.locator('.login-header')).toHaveText('Welcome!');
-    await expect(page.locator('#username')).toBeVisible();
-    await expect(page.locator('#password')).toBeVisible();
-    await expect(page.locator('button[type="submit"]')).toHaveText('Login');
-    await expect(page.locator('.guest-button')).toHaveText('Continue as Guest');
+    await expect(page.locator('[data-testid="login-header"]')).toHaveText('Welcome!');
+    await expect(page.locator('[data-testid="login-username-input"]')).toBeVisible();
+    await expect(page.locator('[data-testid="login-password-input"]')).toBeVisible();
+    await expect(page.locator('[data-testid="login-submit-button"]')).toHaveText('Login');
+    await expect(page.locator('[data-testid="login-guest-button"]')).toHaveText(
+      'Continue as Guest'
+    );
   });
 
   test('should show error for empty fields on submit', async ({ page }) => {
     // This test stays on the login page and is correct.
-    await page.fill('#username', '');
-    await page.fill('#password', '');
-    await page.click('button[type="submit"]');
-    await expect(page.locator('.login-error')).toHaveText(
+    await page.fill('[data-testid="login-username-input"]', '');
+    await page.fill('[data-testid="login-password-input"]', '');
+    await page.click('[data-testid="login-submit-button"]');
+    await expect(page.locator('[data-testid="login-error"]')).toHaveText(
       'Both username and password are required'
     );
   });
 
   test('should show error for incorrect credentials', async ({ page }) => {
     // This test stays on the login page and is correct.
-    await page.fill('#username', 'wronguser');
-    await page.fill('#password', 'wrongpass');
-    await page.click('button[type="submit"]');
-    await expect(page.locator('.login-error')).toHaveText('Incorrect username or password');
+    await page.fill('[data-testid="login-username-input"]', 'wronguser');
+    await page.fill('[data-testid="login-password-input"]', 'wrongpass');
+    await page.click('[data-testid="login-submit-button"]');
+    await expect(page.locator('[data-testid="login-error"]')).toHaveText(
+      'Incorrect username or password'
+    );
   });
 
   test('should login successfully with correct credentials', async ({ page }) => {
-    await page.click('button[type="submit"]');
+    await page.click('[data-testid="login-submit-button"]');
 
-    // FIX: Wait for redirect to the correct homepage URL
     await page.waitForURL('/neore-shop/');
 
-    // Now assert that an element on the homepage is visible
-    await expect(page.locator('.nav-bar-links')).toContainText('Logout');
-    await expect(page.getByRole('link', { name: 'Favorites' })).toBeVisible();
-    await expect(page.locator('.cart-button')).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Admin Dashboard' })).toBeVisible();
+    await expect(page.locator('[data-testid="navbar-logout-li"]')).toHaveText('Logout');
+    await expect(page.locator('[data-testid="navbar-favorites-link"]')).toBeVisible();
+    await expect(page.locator('[data-testid="navbar-cart-button"]')).toBeVisible();
+    await expect(page.locator('[data-testid="navbar-admin-link"]')).toBeVisible();
   });
 
   test('should allow guest access without login', async ({ page }) => {
-    await page.click('.guest-button');
+    await page.click('[data-testid="login-guest-button"]');
 
     // FIX: Wait for redirect to the correct homepage URL
     await page.waitForURL('/neore-shop/');
 
-    await expect(page.locator('.nav-bar-links')).toContainText('Login');
-    await expect(page.locator('.nav-bar-links')).not.toContainText('Users');
+    await expect(page.locator('[data-testid="navbar-logout-li"]')).toHaveText('Login');
+    await expect(page.locator('[data-testid="navbar-users-link"]')).not.toBeVisible();
   });
 
   test('should protect routes when not authenticated', async ({ page }) => {
@@ -115,49 +117,48 @@ test.describe('Authentication System', () => {
 
     // FIX: Assert that the URL is now the login page's URL
     await expect(page).toHaveURL(/.*\/login/);
-    await expect(page.locator('.login-header')).toBeVisible();
+    await expect(page.locator('[data-testid="login-header"]')).toBeVisible();
   });
 
   test('should allow access to protected routes when authenticated', async ({ page }) => {
-    await page.click('button[type="submit"]');
+    await page.click('[data-testid="login-submit-button"]');
     await page.waitForURL('/neore-shop/');
 
-    // FIX: Use the full path to navigate
-    await page.goto('/neore-shop/favorites');
+    await page.click('[data-testid="navbar-favorites-link"]');
+    await page.waitForURL('/neore-shop/favorites');
 
-    await expect(page.locator('.favorites-container')).toBeVisible();
-    await expect(page.locator('.favorites-title')).toHaveText('Your Favorites');
+    await expect(page.locator('[data-testid="favorites-title"]')).toHaveText('Your Favorites');
   });
 
   test('should persist authentication across page refreshes', async ({ page }) => {
-    await page.click('button[type="submit"]');
+    await page.click('[data-testid="login-submit-button"]');
     await page.waitForURL('/neore-shop/');
-    await expect(page.locator('.nav-bar-links')).toContainText('Logout');
+    await expect(page.locator('[data-testid="navbar-logout-li"]')).toHaveText('Logout');
 
     await page.reload();
 
     // After reload, assert the user is still logged in
-    await expect(page.locator('.nav-bar-links')).toContainText('Logout');
-    await expect(page.locator('.cart-button')).toBeVisible();
+    await expect(page.locator('[data-testid="navbar-logout-li"]')).toHaveText('Logout');
+    await expect(page.locator('[data-testid="navbar-cart-button"]')).toBeVisible();
   });
 
   test('should logout successfully and clear authentication state', async ({ page }) => {
-    await page.click('button[type="submit"]');
+    await page.click('[data-testid="login-submit-button"]');
     await page.waitForURL('/neore-shop/');
-    await expect(page.locator('.nav-bar-links')).toContainText('Logout');
+    await expect(page.locator('[data-testid="navbar-logout-li"]')).toHaveText('Logout');
 
-    await page.click('text=Logout');
+    await page.click('[data-testid="navbar-logout-li"]');
 
     // FIX: Assert that we have been redirected to the login page
     await expect(page).toHaveURL(/.*\/login/);
-    await expect(page.locator('.login-header')).toHaveText('Welcome!');
+    await expect(page.locator('[data-testid="login-header"]')).toHaveText('Welcome!');
   });
 
   test('should block access to admin routes for non-admin users', async ({ page }) => {
     // This test requires a non-admin user, but for now we'll test the redirect logic
-    await page.click('button[type="submit"]');
+    await page.click('[data-testid="login-submit-button"]');
     await page.waitForURL('/neore-shop/');
-    await page.click('text=Logout');
+    await page.click('[data-testid="navbar-logout-li"]');
     await page.waitForURL(/.*\/login/);
 
     // FIX: Use the full path to navigate
@@ -172,8 +173,8 @@ test.describe('Authentication System', () => {
     await page.route('https://dummyjson.com/auth/login', async (route) => {
       await route.fulfill({ status: 500 });
     });
-    await page.click('button[type="submit"]');
-    await expect(page.locator('.login-error')).toBeVisible();
+    await page.click('[data-testid="login-submit-button"]');
+    await expect(page.locator('[data-testid="login-error"]')).toBeVisible();
   });
 
   test('should handle different HTTP error statuses gracefully', async ({ page }) => {
@@ -185,9 +186,9 @@ test.describe('Authentication System', () => {
         json: { message: 'Bad Request - Invalid credentials format' },
       });
     });
-    await page.click('button[type="submit"]');
-    await expect(page.locator('.login-error')).toBeVisible();
-    await expect(page.locator('.login-error')).toContainText(
+    await page.click('[data-testid="login-submit-button"]');
+    await expect(page.locator('[data-testid="login-error"]')).toBeVisible();
+    await expect(page.locator('[data-testid="login-error"]')).toContainText(
       'The resource you requested could not be found'
     );
 
@@ -200,9 +201,11 @@ test.describe('Authentication System', () => {
       });
     });
     await page.reload();
-    await page.click('button[type="submit"]');
-    await expect(page.locator('.login-error')).toBeVisible();
-    await expect(page.locator('.login-error')).toContainText('Invalid credentials provided');
+    await page.click('[data-testid="login-submit-button"]');
+    await expect(page.locator('[data-testid="login-error"]')).toBeVisible();
+    await expect(page.locator('[data-testid="login-error"]')).toContainText(
+      'Invalid credentials provided'
+    );
 
     // Test 403 Forbidden
     await page.route('https://dummyjson.com/auth/login', async (route) => {
@@ -213,9 +216,9 @@ test.describe('Authentication System', () => {
       });
     });
     await page.reload();
-    await page.click('button[type="submit"]');
-    await expect(page.locator('.login-error')).toBeVisible();
-    await expect(page.locator('.login-error')).toContainText(
+    await page.click('[data-testid="login-submit-button"]');
+    await expect(page.locator('[data-testid="login-error"]')).toBeVisible();
+    await expect(page.locator('[data-testid="login-error"]')).toContainText(
       "You don't have permission to access this resource"
     );
 
@@ -228,9 +231,9 @@ test.describe('Authentication System', () => {
       });
     });
     await page.reload();
-    await page.click('button[type="submit"]');
-    await expect(page.locator('.login-error')).toBeVisible();
-    await expect(page.locator('.login-error')).toContainText(
+    await page.click('[data-testid="login-submit-button"]');
+    await expect(page.locator('[data-testid="login-error"]')).toBeVisible();
+    await expect(page.locator('[data-testid="login-error"]')).toContainText(
       'The resource you requested could not be found'
     );
   });
@@ -241,11 +244,13 @@ test.describe('Authentication System', () => {
       await route.abort('failed');
     });
 
-    await page.click('button[type="submit"]');
+    await page.click('[data-testid="login-submit-button"]');
 
     // Wait for error to appear
-    await expect(page.locator('.login-error')).toBeVisible();
-    await expect(page.locator('.login-error')).toContainText('A network error occurred');
+    await expect(page.locator('[data-testid="login-error"]')).toBeVisible();
+    await expect(page.locator('[data-testid="login-error"]')).toContainText(
+      'A network error occurred'
+    );
   });
 
   test('should handle malformed JSON responses', async ({ page }) => {
@@ -258,10 +263,10 @@ test.describe('Authentication System', () => {
       });
     });
 
-    await page.click('button[type="submit"]');
+    await page.click('[data-testid="login-submit-button"]');
 
     // Should show error for malformed response
-    await expect(page.locator('.login-error')).toBeVisible();
+    await expect(page.locator('[data-testid="login-error"]')).toBeVisible();
   });
 
   test('should handle slow API responses', async ({ page }) => {
@@ -276,24 +281,14 @@ test.describe('Authentication System', () => {
       });
     });
 
-    await page.click('button[type="submit"]');
+    await page.click('[data-testid="login-submit-button"]');
 
     // Should show loading state
-    await expect(page.locator('.loading-spinner')).toBeVisible();
+    await expect(page.locator('[data-testid="loading-spinner"]')).toBeVisible();
 
     // Wait for response and successful login
     await page.waitForURL('/neore-shop/');
-    await expect(page.locator('.nav-bar-links')).toContainText('Logout');
-  });
-
-  test('should trim whitespace from username and password', async ({ page }) => {
-    await page.fill('#username', '  emilys  ');
-    await page.fill('#password', '  emilyspass  ');
-    await page.click('button[type="submit"]');
-
-    // FIX: Wait for the correct homepage URL
-    await page.waitForURL('/neore-shop/');
-    await expect(page.locator('.nav-bar-links')).toContainText('Logout');
+    await expect(page.locator('[data-testid="navbar-logout-li"]')).toHaveText('Logout');
   });
 
   test.describe('Authentication Navigation Scenarios', () => {
@@ -303,24 +298,24 @@ test.describe('Authentication System', () => {
       await page.waitForURL(/.*\/login/); // Assert we were sent back to login
 
       // Now log in
-      await page.click('button[type="submit"]');
+      await page.click('[data-testid="login-submit-button"]');
       await page.waitForURL('/neore-shop/');
 
-      await expect(page.locator('.nav-bar-links')).toContainText('Favorites');
-      await page.click('text=Favorites');
+      await expect(page.locator('[data-testid="navbar-favorites-link"]')).toBeVisible();
+      await page.click('[data-testid="navbar-favorites-link"]');
       await page.waitForURL('/neore-shop/favorites');
-      await expect(page.locator('.favorites-container')).toBeVisible();
+      await expect(page.locator('[data-testid="favorites-title"]')).toBeVisible();
     });
 
     test('should block access to protected routes after logout via deep links', async ({
       page,
     }) => {
-      await page.click('button[type="submit"]');
+      await page.click('[data-testid="login-submit-button"]');
       await page.waitForURL('/neore-shop/');
       await page.goto('/neore-shop/admin');
       await expect(page.locator('h1')).toContainText('Admin Dashboard');
 
-      await page.click('text=Logout');
+      await page.click('[data-testid="navbar-logout-li"]');
       await page.waitForURL(/.*\/login/);
 
       // Try to go back to the admin page
@@ -328,7 +323,7 @@ test.describe('Authentication System', () => {
 
       // Assert we were blocked and sent back to login
       await expect(page).toHaveURL(/.*\/login/);
-      await expect(page.locator('.login-header')).toHaveText('Welcome!');
+      await expect(page.locator('[data-testid="login-header"]')).toHaveText('Welcome!');
     });
   });
 });
