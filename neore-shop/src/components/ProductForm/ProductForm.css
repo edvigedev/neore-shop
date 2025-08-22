@@ -21,6 +21,9 @@
 /* --- General Styles for Input Groups --- */
 .form-group {
   margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .form-group label {
