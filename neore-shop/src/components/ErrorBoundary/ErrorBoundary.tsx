@@ -1,33 +1,46 @@
-import { Component, type ErrorInfo } from 'react';
-import FetchingError from '../FetchingError/FetchingError';
+import React, { Component, type ReactNode } from 'react';
 
-interface ErrorBoundaryProps {
-  children: React.ReactNode;
+interface Props {
+  children: ReactNode;
 }
 
-interface ErrorBoundaryState {
+interface State {
   hasError: boolean;
-  error: Error | null;
+  error?: Error;
 }
 
-class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  public state: ErrorBoundaryState = {
-    hasError: false,
-    error: null,
-  };
+class ErrorBoundary extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = { hasError: false };
+  }
 
-  public static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+  static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Uncaught error:', error, errorInfo);
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Error caught by boundary:', error, errorInfo);
   }
 
-  public render() {
+  render() {
     if (this.state.hasError) {
-      return <FetchingError />;
+      return (
+        <div className="error-boundary" data-testid="error-boundary">
+          <h2 data-testid="error-boundary-title">Something went wrong.</h2>
+          <p data-testid="error-boundary-message">
+            We&apos;re sorry, but something unexpected happened. Please try refreshing the page.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            data-testid="error-boundary-reload-button"
+          >
+            Reload Page
+          </button>
+        </div>
+      );
     }
+
     return this.props.children;
   }
 }
