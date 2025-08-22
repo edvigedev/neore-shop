@@ -60,10 +60,10 @@ export default function Card({ product }: CardProps) {
   };
 
   return (
-    <Link to={`/products/${product.id}`} className="no-underline-link">
-      <div className="card">
+    <Link to={`/products/${product.id}`} className="no-underline-link" data-testid="card-link">
+      <div className="card" data-testid="card">
         <div className="card-image-section">
-          <img src={product.thumbnail} alt={product.title} />
+          <img src={product.thumbnail} alt={product.title} data-testid="card-image" />
           <section className="card-buttons-section">
             <button
               disabled={!token}
@@ -72,6 +72,7 @@ export default function Card({ product }: CardProps) {
               })}
               onClick={handleFavoriteClick}
               data-tooltip={isCurrentFavorite ? 'Remove from favorites' : 'Add to favorites'}
+              data-testid="card-favorite-button"
             >
               <HeartIcon />
             </button>
@@ -82,19 +83,32 @@ export default function Card({ product }: CardProps) {
                 'in-cart': isInCart,
               })}
               data-tooltip={isInCart ? 'Remove 1 from cart' : 'Add to cart'}
+              data-testid="card-cart-button"
             >
               {isInCart ? <MinusIcon /> : <PlusIcon />}
             </button>
           </section>
         </div>
         <div className="card-info">
-          <h3 className="card-title">{product.title}</h3>
+          <h3 className="card-title" data-testid="card-title">
+            {product.title}
+          </h3>
           <div className="card-price">
-            <h3 className="card-initial-price">€{product.price}</h3>
-            <h3>-{Math.round(product.discountPercentage)}%</h3>
-            <h3 className="card-discounted-price">€{calculateDiscountedPrice()}</h3>
+            <h3 className="card-initial-price" data-testid="card-initial-price">
+              €{product.price}
+            </h3>
+            {product.discountPercentage > 0 && (
+              <h3 data-testid="card-discount-percentage">
+                -{Math.round(product.discountPercentage)}%
+              </h3>
+            )}
+            <h3 className="card-discounted-price" data-testid="card-discounted-price">
+              €{calculateDiscountedPrice()}
+            </h3>
           </div>
-          <p className="card-category">{product.category}</p>
+          <p className="card-category" data-testid="card-category">
+            {product.category}
+          </p>
         </div>
       </div>
     </Link>
