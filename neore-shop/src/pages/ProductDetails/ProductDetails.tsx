@@ -86,11 +86,20 @@ export default function ProductDetails() {
     return <FetchingError />;
   }
 
-  if (!data) {
+  // Validate that all required data fields are present
+  // This prevents crashes when API returns incomplete data (e.g., empty {} response)
+  if (
+    !data ||
+    !data.title ||
+    !data.price ||
+    !data.images ||
+    data.images.length === 0 ||
+    !data.description
+  ) {
     return <FetchingError />;
   }
 
-  const rating = data.rating;
+  const rating = data.rating || 0; // Default to 0 if rating is missing
 
   function getStarRating(rating: number) {
     // Round to the nearest half
@@ -114,8 +123,8 @@ export default function ProductDetails() {
   const finalRating = getStarRating(rating);
 
   const calculateDiscountedPrice = () => {
-    const price = parseFloat(String(data?.price).replace(',', '.') || '0');
-    const discount = parseFloat(String(data?.discountPercentage).replace(',', '.') || '0');
+    const price = parseFloat(String(data.price).replace(',', '.') || '0');
+    const discount = parseFloat(String(data.discountPercentage).replace(',', '.') || '0');
 
     if (price > 0 && discount > 0) {
       const finalPrice = price - price * (discount / 100);
@@ -126,18 +135,30 @@ export default function ProductDetails() {
   };
 
   return (
-    <div>
+    <div data-testid="product-details-page">
       <NavBar />
-      <div className="product-details-page-container">
-        <div className="product-details-image-container">
-          <img src={data.images[0]} alt={data.title} className="product-details-image" />
+      <div className="product-details-page-container" data-testid="product-details-page-container">
+        <div
+          className="product-details-image-container"
+          data-testid="product-details-image-container"
+        >
+          <img
+            src={data.images[0]}
+            alt={data.title}
+            className="product-details-image"
+            data-testid="product-details-image"
+          />
 
-          <section className="product-details-buttons-container">
+          <section
+            className="product-details-buttons-container"
+            data-testid="product-details-buttons-container"
+          >
             <button
               disabled={!token}
               className={clsx('product-action-btn', { favorited: isCurrentFavorite && token })}
               onClick={handleFavoriteClick}
               data-tooltip={isCurrentFavorite ? 'Remove from favorites' : 'Add to favorites'}
+              data-testid="product-details-favorite-button"
             >
               <HeartIcon />
             </button>
@@ -148,27 +169,51 @@ export default function ProductDetails() {
                 'in-cart': isInCart,
               })}
               data-tooltip={isInCart ? 'Remove 1 from cart' : 'Add to cart'}
+              data-testid="product-action-btn"
             >
               {isInCart ? <MinusIcon /> : <PlusIcon />}
             </button>
           </section>
         </div>
 
-        <section className="product-details-introduction-section">
-          <h1 className="product-details-page-title">{data.title}</h1>
-          <aside className="product-details-rating-section">
-            <h3>Rating</h3>
-            <span>{finalRating}</span>
+        <section
+          className="product-details-introduction-section"
+          data-testid="product-details-introduction-section"
+        >
+          <h1 className="product-details-page-title" data-testid="product-details-page-title">
+            {data.title}
+          </h1>
+          <aside
+            className="product-details-rating-section"
+            data-testid="product-details-rating-section"
+          >
+            <h3 data-testid="product-details-rating-title">Rating</h3>
+            <span data-testid="product-details-rating-stars">{finalRating}</span>
           </aside>
-          <p>{data.description}</p>
+          <p data-testid="product-details-description">{data.description}</p>
         </section>
-        <section className="product-details-price-section">
-          <h2 className="product-details-initial-price">€{data.price}</h2>
-          <span className="product-details-discount-percentage">
-            -{Math.round(data.discountPercentage)}%
-          </span>
-          <h2 className="product-details-discounted-price">
-            Now it&apos;s €{calculateDiscountedPrice()}!
+        <section
+          className="product-details-price-section"
+          data-testid="product-details-price-section"
+        >
+          <h2 className="product-details-initial-price" data-testid="product-details-initial-price">
+            €{data.price}
+          </h2>
+          {data.discountPercentage && data.discountPercentage > 0 && (
+            <span
+              className="product-details-discount-percentage"
+              data-testid="product-details-discount-percentage"
+            >
+              -{Math.round(data.discountPercentage)}%
+            </span>
+          )}
+          <h2
+            className="product-details-discounted-price"
+            data-testid="product-details-discounted-price"
+          >
+            {data.discountPercentage && data.discountPercentage > 0
+              ? `Now it's €${calculateDiscountedPrice()}!`
+              : `€${data.price}`}
           </h2>
         </section>
       </div>

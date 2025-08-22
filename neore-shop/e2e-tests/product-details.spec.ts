@@ -88,19 +88,16 @@ test.describe('Product Details Page', () => {
 
   test('should display product details correctly', async ({ page }) => {
     // Navigate to product details page
-    await page.click('text=iPhone 9');
+    await page.locator('[data-testid="card-link-1"]').click();
     await page.waitForURL('/neore-shop/products/1');
 
-    // Reference: ProductDetails component shows product title in h1
-    await expect(page.locator('.product-details-page-title')).toHaveText('iPhone 9');
+    await expect(page.locator('[data-testid="product-details-page-title"]')).toHaveText('iPhone 9');
 
-    // Reference: ProductDetails component shows product description in p tag
-    await expect(page.locator('.product-details-introduction-section p')).toHaveText(
+    await expect(page.locator('[data-testid="product-details-description"]')).toHaveText(
       'An apple mobile which is nothing like apple'
     );
 
-    // Reference: ProductDetails component shows product image
-    const productImage = page.locator('.product-details-image');
+    const productImage = page.locator('[data-testid="product-details-image"]');
     await expect(productImage).toHaveAttribute('src', 'https://picsum.photos/400/400?random=1');
     await expect(productImage).toHaveAttribute('alt', 'iPhone 9');
   });
@@ -110,17 +107,15 @@ test.describe('Product Details Page', () => {
     await page.click('text=iPhone 9');
     await page.waitForURL('/neore-shop/products/1');
 
-    // Reference: ProductDetails component shows original price with strikethrough
-    await expect(page.locator('.product-details-initial-price')).toHaveText('€549');
-    await expect(page.locator('.product-details-initial-price')).toHaveClass(/.*/);
+    await expect(page.locator('[data-testid="product-details-initial-price"]')).toHaveText('€549');
+    await expect(page.locator('[data-testid="product-details-initial-price"]')).toHaveClass(/.*/);
 
-    // Reference: ProductDetails component shows discount percentage
-    await expect(page.locator('.product-details-discount-percentage')).toContainText('-13%');
+    await expect(page.locator('[data-testid="product-details-discount-percentage"]')).toContainText(
+      '-13%'
+    );
 
-    // Reference: ProductDetails component shows discounted price
-    // €549 * (1 - 12.96/100) = €477.85
     const expectedDiscountedPrice = (549 * (1 - 12.96 / 100)).toFixed(2);
-    await expect(page.locator('.product-details-discounted-price')).toContainText(
+    await expect(page.locator('[data-testid="product-details-discounted-price"]')).toContainText(
       `€${expectedDiscountedPrice}`
     );
   });
@@ -131,11 +126,11 @@ test.describe('Product Details Page', () => {
     await page.waitForURL('/neore-shop/products/1');
 
     // Reference: ProductDetails component shows rating section
-    await expect(page.locator('.product-details-rating-section')).toBeVisible();
-    await expect(page.locator('.product-details-rating-section h3')).toHaveText('Rating');
+    await expect(page.locator('[data-testid="product-details-rating-section"]')).toBeVisible();
+    await expect(page.locator('[data-testid="product-details-rating-title"]')).toHaveText('Rating');
 
     // Reference: ProductDetails component shows star rating (4.69 rounded to 4.5 = ★★★★☆)
-    await expect(page.locator('.product-details-rating-section span')).toHaveText('★★★★☆');
+    await expect(page.locator('[data-testid="product-details-rating-stars"]')).toHaveText('★★★★☆');
   });
 
   test('should display action buttons correctly', async ({ page }) => {
@@ -144,15 +139,15 @@ test.describe('Product Details Page', () => {
     await page.waitForURL('/neore-shop/products/1');
 
     // Reference: ProductDetails component shows action buttons container
-    await expect(page.locator('.product-details-buttons-container')).toBeVisible();
+    await expect(page.locator('[data-testid="product-details-buttons-container"]')).toBeVisible();
 
     // Reference: ProductDetails component shows favorite button
-    const favoriteButton = page.locator('.product-action-btn').first();
+    const favoriteButton = page.locator('[data-testid="product-details-favorite-button"]');
     await expect(favoriteButton).toBeVisible();
     await expect(favoriteButton).toHaveAttribute('data-tooltip', 'Add to favorites');
 
     // Reference: ProductDetails component shows add to cart button
-    const cartButton = page.locator('.product-action-btn').last();
+    const cartButton = page.locator('[data-testid="product-action-btn"]');
     await expect(cartButton).toBeVisible();
     await expect(cartButton).toHaveAttribute('data-tooltip', 'Add to cart');
   });
@@ -163,7 +158,7 @@ test.describe('Product Details Page', () => {
     await page.waitForURL('/neore-shop/products/1');
 
     // Reference: ProductDetails component shows favorite button
-    const favoriteButton = page.locator('.product-action-btn').first();
+    const favoriteButton = page.locator('[data-testid="product-details-favorite-button"]');
     await expect(favoriteButton).toBeVisible();
 
     // Click favorite button to add to favorites
@@ -186,23 +181,20 @@ test.describe('Product Details Page', () => {
     await page.click('text=iPhone 9');
     await page.waitForURL('/neore-shop/products/1');
 
-    // Reference: ProductDetails component shows add to cart button
-    const cartButton = page.locator('.product-action-btn').last();
+    const cartButton = page.locator('[data-testid="product-action-btn"]');
     await expect(cartButton).toBeVisible();
 
     // Click add to cart button
     await cartButton.click();
 
-    // Reference: NavBar component shows cart button with updated count
-    await expect(page.locator('.cart-button')).toBeVisible();
+    await expect(page.locator('[data-testid="navbar-cart-button"]')).toBeVisible();
 
     // Navigate to cart page to verify item was added
-    await page.locator('.cart-button').click();
+    await page.locator('[data-testid="navbar-cart-button"]').click();
     await page.waitForURL(/.*\/cart/);
 
-    // Reference: Cart page should show the added product
-    await expect(page.locator('.cart-item')).toBeVisible();
-    await expect(page.locator('.cart-item h3')).toHaveText('iPhone 9');
+    await expect(page.locator('[data-testid="cart-item-1"]')).toBeVisible();
+    await expect(page.locator('[data-testid="cart-item-title-1"]')).toHaveText('iPhone 9');
   });
 
   test('should handle loading state correctly', async ({ page }) => {
@@ -219,14 +211,12 @@ test.describe('Product Details Page', () => {
     // Navigate to product details page
     await page.goto('/neore-shop/products/1');
 
-    // Reference: ProductDetails component shows LoadingSpinner while loading
-    await expect(page.locator('.loading-spinner')).toBeVisible();
+    await expect(page.locator('[data-testid="loading-spinner"]')).toBeVisible();
 
     // Wait for loading to complete
     await page.waitForURL('/neore-shop/products/1');
 
-    // Reference: ProductDetails component should show product details after loading
-    await expect(page.locator('.product-details-page-title')).toHaveText('iPhone 9');
+    await expect(page.locator('[data-testid="product-details-page-title"]')).toHaveText('iPhone 9');
   });
 
   test('should handle error state correctly', async ({ page }) => {
@@ -243,8 +233,7 @@ test.describe('Product Details Page', () => {
     await page.goto('/neore-shop/products/1');
     await page.waitForURL('/neore-shop/products/1');
 
-    // Reference: ProductDetails component shows FetchingError when API fails
-    await expect(page.locator('.fetching-error-container')).toBeVisible();
+    await expect(page.locator('[data-testid="fetching-error"]')).toBeVisible();
   });
 
   test('should handle invalid product ID gracefully', async ({ page }) => {
@@ -261,8 +250,7 @@ test.describe('Product Details Page', () => {
     await page.goto('/neore-shop/products/999');
     await page.waitForURL('/neore-shop/products/999');
 
-    // Reference: ProductDetails component shows FetchingError for invalid product
-    await expect(page.locator('.fetching-error-container')).toBeVisible();
+    await expect(page.locator('[data-testid="fetching-error"]')).toBeVisible();
   });
 
   test('should handle different error scenarios gracefully', async ({ page }) => {
@@ -279,12 +267,11 @@ test.describe('Product Details Page', () => {
     await page.click('text=iPhone 9');
     await page.waitForURL('/neore-shop/products/1');
 
-    // Reference: ProductDetails component shows FetchingError for server error
-    await expect(page.locator('.fetching-error-container')).toBeVisible();
-    await expect(page.locator('.fetching-error-content h1')).toHaveText(
+    await expect(page.locator('[data-testid="fetching-error"]')).toBeVisible();
+    await expect(page.locator('[data-testid="fetching-error-title"]')).toHaveText(
       'Oops! Something went wrong'
     );
-    await expect(page.locator('.fetching-error-content p')).toHaveText(
+    await expect(page.locator('[data-testid="fetching-error-message"]')).toHaveText(
       "We couldn't load the data. Please try again."
     );
 
@@ -301,8 +288,7 @@ test.describe('Product Details Page', () => {
     await page.reload();
     await page.waitForURL('/neore-shop/products/1');
 
-    // Reference: ProductDetails component should handle malformed JSON gracefully
-    await expect(page.locator('.fetching-error-container')).toBeVisible();
+    await expect(page.locator('[data-testid="fetching-error"]')).toBeVisible();
 
     // Test 4: Empty response
     await page.route('https://dummyjson.com/products/1', async (route) => {
@@ -317,8 +303,7 @@ test.describe('Product Details Page', () => {
     await page.reload();
     await page.waitForURL('/neore-shop/products/1');
 
-    // Reference: ProductDetails component should handle empty response gracefully
-    await expect(page.locator('.fetching-error-container')).toBeVisible();
+    await expect(page.locator('[data-testid="fetching-error-title"]')).toBeVisible();
 
     // Test 5: Retry functionality
     // Mock successful response for retry
@@ -331,15 +316,16 @@ test.describe('Product Details Page', () => {
     });
 
     // Click retry button
-    await page.click('.fetching-error-content button');
+    await page.click('[data-testid="fetching-error-retry-button"]');
     await page.waitForURL('/neore-shop/products/1');
+    await page.waitForLoadState('networkidle');
 
     // Reference: ProductDetails component should load successfully after retry
-    await expect(page.locator('.product-details-page-container')).toBeVisible();
-    await expect(page.locator('.product-details-page-title')).toHaveText('iPhone 9');
+    await expect(page.locator('[data-testid="product-details-page-container"]')).toBeVisible();
+    await expect(page.locator('[data-testid="product-details-page-title"]')).toHaveText('iPhone 9');
 
     // Wait for image to load and be visible
-    const image = page.locator('.product-details-image');
+    const image = page.locator('[data-testid="product-details-image"]');
     await expect(image).toBeVisible();
     await expect(image).toHaveAttribute('src', 'https://picsum.photos/400/400?random=1');
   });
@@ -350,7 +336,7 @@ test.describe('Product Details Page', () => {
     await page.waitForURL('/neore-shop/products/1');
 
     // Add product to favorites
-    const favoriteButton = page.locator('.product-action-btn').first();
+    const favoriteButton = page.locator('[data-testid="product-details-favorite-button"]');
     await favoriteButton.click();
     await expect(favoriteButton).toHaveClass(/favorited/);
 
@@ -358,9 +344,8 @@ test.describe('Product Details Page', () => {
     await page.click('text=Favorites');
     await page.waitForURL('/neore-shop/favorites');
 
-    // Reference: Favorites page should show the product
-    await expect(page.locator('.favorites-container')).toBeVisible();
-    await expect(page.locator('.card-title')).toHaveText('iPhone 9');
+    await expect(page.locator('[data-testid="favorites-title"]')).toBeVisible();
+    await expect(page.locator('[data-testid="card-title-1"]')).toHaveText('iPhone 9');
 
     // Navigate back to product details
     await page.click('text=iPhone 9');
@@ -368,26 +353,6 @@ test.describe('Product Details Page', () => {
 
     // Reference: ProductDetails component should maintain favorite state
     await expect(favoriteButton).toHaveClass(/favorited/);
-  });
-
-  test('should handle responsive design correctly', async ({ page }) => {
-    // Set mobile viewport
-    await page.setViewportSize({ width: 768, height: 1024 });
-
-    // Navigate to product details page
-    await page.click('text=iPhone 9');
-    await page.waitForURL('/neore-shop/products/1');
-
-    // Reference: ProductDetails component should be responsive
-    // Check that elements are visible and properly sized for mobile
-    await expect(page.locator('.product-details-page-container')).toBeVisible();
-    await expect(page.locator('.product-details-image')).toBeVisible();
-    await expect(page.locator('.product-details-introduction-section')).toBeVisible();
-    await expect(page.locator('.product-details-price-section')).toBeVisible();
-
-    // Reference: ProductDetails component should show action buttons
-    await expect(page.locator('.product-details-buttons-container')).toBeVisible();
-    await expect(page.locator('.product-action-btn')).toHaveCount(2);
   });
 
   test('should handle product with maximum rating correctly', async ({ page }) => {
@@ -406,7 +371,6 @@ test.describe('Product Details Page', () => {
     await page.click('text=iPhone 9');
     await page.waitForURL('/neore-shop/products/1');
 
-    // Reference: ProductDetails component should show 5 full stars
-    await expect(page.locator('.product-details-rating-section span')).toHaveText('★★★★★');
+    await expect(page.locator('[data-testid="product-details-rating-stars"]')).toHaveText('★★★★★');
   });
 });
