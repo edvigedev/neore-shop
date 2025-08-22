@@ -1,8 +1,7 @@
 .search-container {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
+  justify-content: flex-end;
+  width: 55%;
 }
 
 .search-container input {
@@ -30,6 +29,8 @@
 
 @media (max-width: 979px) {
   .search-container input {
-    margin-bottom: 1em;
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 2em;
   }
 }
