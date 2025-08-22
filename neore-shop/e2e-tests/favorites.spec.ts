@@ -197,7 +197,7 @@ test.describe('Favorites Navigation Flow', () => {
     await expect(page).toHaveURL(/.*\/favorites/);
 
     // Navigate back to homepage using navbar logo
-    await page.locator('.neore-logo').click();
+    await page.locator('[data-testid="navbar-logo-link"]').click();
     await expect(page).toHaveURL(/.*\/neore-shop\/?$/);
   });
 

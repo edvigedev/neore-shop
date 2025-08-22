@@ -6,7 +6,9 @@ export default function Favorites() {
   return (
     <div>
       <div className="favorites-container">
-        <h1 className="favorites-title">Your Favorites</h1>
+        <h1 className="favorites-title" data-testid="favorites-title">
+          Your Favorites
+        </h1>
         <hr className="favorites-horizontal-divider" />
         <ErrorBoundary>
           <FavoritesContainer />

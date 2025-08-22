@@ -60,8 +60,12 @@ export default function Card({ product }: CardProps) {
   };
 
   return (
-    <Link to={`/products/${product.id}`} className="no-underline-link" data-testid="card-link">
-      <div className="card" data-testid="card">
+    <Link
+      to={`/products/${product.id}`}
+      className="no-underline-link"
+      data-testid={`card-link-${product.id}`}
+    >
+      <div className="card" data-testid={`card-${product.id}`}>
         <div className="card-image-section">
           <img src={product.thumbnail} alt={product.title} data-testid="card-image" />
           <section className="card-buttons-section">
@@ -72,7 +76,7 @@ export default function Card({ product }: CardProps) {
               })}
               onClick={handleFavoriteClick}
               data-tooltip={isCurrentFavorite ? 'Remove from favorites' : 'Add to favorites'}
-              data-testid="card-favorite-button"
+              data-testid={`card-favorite-button-${product.id}`}
             >
               <HeartIcon />
             </button>
@@ -83,14 +87,14 @@ export default function Card({ product }: CardProps) {
                 'in-cart': isInCart,
               })}
               data-tooltip={isInCart ? 'Remove 1 from cart' : 'Add to cart'}
-              data-testid="card-cart-button"
+              data-testid={`card-cart-button-${product.id}`}
             >
               {isInCart ? <MinusIcon /> : <PlusIcon />}
             </button>
           </section>
         </div>
         <div className="card-info">
-          <h3 className="card-title" data-testid="card-title">
+          <h3 className="card-title" data-testid={`card-title-${product.id}`}>
             {product.title}
           </h3>
           <div className="card-price">
