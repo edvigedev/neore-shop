@@ -23,43 +23,53 @@ export default function NavBar() {
   };
 
   return (
-    <nav className="nav-bar">
-      <Link to="/" className="no-underline-link">
-        <div className="neore-logo"> Neore</div>
+    <nav className="nav-bar" data-testid="navbar">
+      <Link to="/" className="no-underline-link" data-testid="navbar-logo-link">
+        <div className="neore-logo" data-testid="navbar-logo">
+          {' '}
+          Neore
+        </div>
       </Link>
-      <SearchFilter placeholder="Search" onSearch={handleSearch} className="nav-search-input" />
-      <ul className="nav-bar-links">
-        <li onClick={handleLogout} className="no-underline-link">
+      <SearchFilter
+        placeholder="Search"
+        onSearch={handleSearch}
+        className="nav-search-input"
+        data-testid="navbar-search-input"
+      />
+      <ul className="nav-bar-links" data-testid="navbar-links">
+        <li onClick={handleLogout} className="no-underline-link" data-testid="navbar-logout-li">
           {token ? 'Logout' : 'Login'}
         </li>
         <li>
           {user && (
-            <Link to="/favorites" className="no-underline-link">
+            <Link to="/favorites" className="no-underline-link" data-testid="navbar-favorites-link">
               Favorites
             </Link>
           )}
         </li>
         <li>
           {user?.role === 'admin' && (
-            <Link to="/admin/users" className="no-underline-link">
+            <Link to="/admin/users" className="no-underline-link" data-testid="navbar-users-link">
               Users
             </Link>
           )}
         </li>
         <li>
           {user?.role === 'admin' && (
-            <Link to="/admin" className="no-underline-link">
+            <Link to="/admin" className="no-underline-link" data-testid="navbar-admin-link">
               Admin Dashboard
             </Link>
           )}
         </li>
         <li>
           {user && (
-            <Link to="/cart" className="no-underline-link">
-              <button className="cart-button">
+            <Link to="/cart" className="no-underline-link" data-testid="navbar-cart-link">
+              <button className="cart-button" data-testid="navbar-cart-button">
                 <img src={cartImage} alt="Cart" />
               </button>
-              <span className="cart-count">{totalQuantity}</span>
+              <span className="cart-count" data-testid="navbar-cart-count">
+                {totalQuantity}
+              </span>
             </Link>
           )}
         </li>
