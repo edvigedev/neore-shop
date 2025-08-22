@@ -62,7 +62,14 @@ const mockUser = {
 };
 
 test.describe('Cart Functionality', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, context }) => {
+    // Clear all storage for this context to ensure clean state
+    await context.clearCookies();
+    await page.addInitScript(() => {
+      localStorage.clear();
+      sessionStorage.clear();
+    });
+
     await page.route('https://dummyjson.com/products', async (route) => {
       await route.fulfill({
         status: 200,
@@ -100,14 +107,9 @@ test.describe('Cart Functionality', () => {
   });
 
   test('should add items to cart from product cards', async ({ page }) => {
-    // Reference: HomePage component with CardsContainer and Card components
-
-    // Reference: Card component uses .card class and .card-action-btn for cart button
-    const firstProductCard = page.locator('.card').first();
+    const firstProductCard = page.locator('[data-testid="card-1"]');
     await expect(firstProductCard).toBeVisible();
-
-    // Reference: Card component has cart button with PlusIcon and "Add to cart" tooltip
-    const cartButton = firstProductCard.locator('.card-action-btn').last();
+    const cartButton = firstProductCard.locator('[data-testid="card-cart-button-1"]');
     await expect(cartButton).toHaveAttribute('data-tooltip', 'Add to cart');
 
     // Add first product to cart
@@ -115,69 +117,72 @@ test.describe('Cart Functionality', () => {
 
     // Reference: NavBar component shows cart button with cart count
     // Check that cart button is visible (indicating item was added)
-    await expect(page.locator('.cart-button')).toBeVisible();
+    await expect(page.locator('[data-testid="navbar-cart-button"]')).toBeVisible();
 
     // Navigate to cart page to verify item was added
-    await page.locator('.cart-button').click();
+    await page.locator('[data-testid="navbar-cart-button"]').click();
     await page.waitForURL(/.*\/cart/);
 
     // Reference: Cart page uses .cart-page-container and h1 with "My Cart" text
     await expect(page.locator('.cart-page-container h1')).toHaveText('My Cart');
 
-    // Reference: CartSummary component shows cart items in .cart-items-list
-    await expect(page.locator('.cart-items-list')).toBeVisible();
+    // Reference: CartSummary component shows cart items in data-testid="cart-items-list"
+    await expect(page.locator('[data-testid="cart-items-list"]')).toBeVisible();
 
-    // Reference: CartItem component displays product title in h3
-    const firstCartItem = page.locator('.cart-item').first();
-    await expect(firstCartItem.locator('h3')).toHaveText('iPhone 9');
+    // Reference: CartItem component displays product title in data-testid="cart-item-title-{id}"
+    const firstCartItem = page.locator('[data-testid="cart-item-1"]');
+    await expect(firstCartItem.locator('[data-testid="cart-item-title-1"]')).toHaveText('iPhone 9');
   });
 
   test('should add multiple items to cart and update quantities', async ({ page }) => {
     // Reference: HomePage component with product cards
 
     // Add first product to cart
-    const firstProductCard = page.locator('.card').first();
-    await firstProductCard.locator('.card-action-btn').last().click();
+    const firstProductCard = page.locator('[data-testid="card-1"]');
+    await firstProductCard.locator('[data-testid="card-cart-button-1"]').click();
 
     // Add second product to cart
-    const secondProductCard = page.locator('.card').nth(1);
-    await secondProductCard.locator('.card-action-btn').last().click();
+    const secondProductCard = page.locator('[data-testid="card-2"]');
+    await secondProductCard.locator('[data-testid="card-cart-button-2"]').click();
 
     // Navigate to cart page
-    await page.locator('.cart-button').click();
+    await page.locator('[data-testid="navbar-cart-button"]').click();
     await page.waitForURL(/.*\/cart/);
 
     // Reference: CartSummary component shows total quantity in header
-    await expect(page.locator('.cart-summary-header-title')).toHaveText('(2 items)');
+    await expect(page.locator('[data-testid="cart-summary-header-title"]')).toHaveText('(2 items)');
 
-    // Reference: CartItem component shows quantity selector with options 1-10
-    const firstCartItem = page.locator('.cart-item').first();
-    const quantitySelect = firstCartItem.locator('select');
+    // Reference: CartItem component shows quantity selector with data-testid="cart-item-quantity-select-{id}"
+    const firstCartItem = page.locator('[data-testid="cart-item-1"]');
+    const quantitySelect = firstCartItem.locator('[data-testid="cart-item-quantity-select-1"]');
     await expect(quantitySelect).toBeVisible();
 
     // Update quantity of first item
     await quantitySelect.selectOption('3');
 
     // Reference: CartItem component shows updated total price for the item
-    const itemTotal = firstCartItem.locator('.cart-item-total span');
+    const itemTotal = firstCartItem.locator('[data-testid="cart-item-total-1"]');
     await expect(itemTotal).toBeVisible();
 
     // Reference: CartSummary component shows updated total quantity
-    await expect(page.locator('.cart-summary-header-title')).toHaveText('(4 items)');
+    await expect(page.locator('[data-testid="cart-summary-header-title"]')).toHaveText('(4 items)');
   });
 
   test('should remove items from cart', async ({ page }) => {
     // Reference: HomePage component
 
     // Add product to cart
-    await page.locator('.card').first().locator('.card-action-btn').last().click();
+    await page
+      .locator('[data-testid="card-1"]')
+      .locator('[data-testid="card-cart-button-1"]')
+      .click();
 
     // Navigate to cart page
-    await page.locator('.cart-button').click();
+    await page.locator('[data-testid="navbar-cart-button"]').click();
     await page.waitForURL(/.*\/cart/);
 
-    // Reference: CartItem component has remove button with × symbol and .remove-item-btn class
-    const removeButton = page.locator('.remove-item-btn');
+    // Reference: CartItem component has remove button with data-testid="cart-item-remove-button-{id}"
+    const removeButton = page.locator('[data-testid="cart-item-remove-button-1"]');
     await expect(removeButton).toBeVisible();
     await expect(removeButton).toHaveText('×');
 
@@ -185,9 +190,11 @@ test.describe('Cart Functionality', () => {
     await removeButton.click();
 
     // Reference: CartSummary component shows empty state when no items
-    await expect(page.locator('.cart-summary-empty')).toBeVisible();
-    await expect(page.locator('.cart-summary-empty h2')).toHaveText('Your cart is empty');
-    await expect(page.locator('.cart-summary-empty p')).toHaveText(
+    await expect(page.locator('[data-testid="cart-summary-empty"]')).toBeVisible();
+    await expect(page.locator('[data-testid="cart-summary-empty-title"]')).toHaveText(
+      'Your cart is empty'
+    );
+    await expect(page.locator('[data-testid="cart-summary-empty-message"]')).toHaveText(
       'Add some products to get started!'
     );
   });
@@ -196,8 +203,8 @@ test.describe('Cart Functionality', () => {
     // Reference: HomePage component with CardsContainer and Card components
 
     // Reference: Card component shows "+" button initially
-    const firstProductCard = page.locator('.card').first();
-    const cartButton = firstProductCard.locator('.card-action-btn').last();
+    const firstProductCard = page.locator('[data-testid="card-1"]');
+    const cartButton = firstProductCard.locator('[data-testid="card-cart-button-1"]');
 
     // Initially shows "+" button for adding to cart
     await expect(cartButton).toHaveAttribute('data-tooltip', 'Add to cart');
@@ -211,7 +218,7 @@ test.describe('Cart Functionality', () => {
     await expect(cartButton).toHaveClass(/in-cart/);
 
     // Verify cart count increased
-    await expect(page.locator('.cart-button')).toBeVisible();
+    await expect(page.locator('[data-testid="navbar-cart-button"]')).toBeVisible();
 
     // Remove product from cart using the same button
     await cartButton.click();
@@ -225,49 +232,72 @@ test.describe('Cart Functionality', () => {
     // Reference: HomePage component
 
     // Add first product to cart
-    const firstProductCard = page.locator('.card').first();
-    await firstProductCard.locator('.card-action-btn').last().click();
+    const firstProductCard = page.locator('[data-testid="card-1"]');
+    await firstProductCard.locator('[data-testid="card-cart-button-1"]').click();
 
     // Add second product to cart
-    const secondProductCard = page.locator('.card').nth(1);
-    await secondProductCard.locator('.card-action-btn').last().click();
+    const secondProductCard = page.locator('[data-testid="card-2"]');
+    await secondProductCard.locator('[data-testid="card-cart-button-2"]').click();
 
     // Verify both products are in cart
-    await expect(page.locator('.cart-button')).toBeVisible();
+    await expect(page.locator('[data-testid="navbar-cart-button"]')).toBeVisible();
 
     // Navigate to cart page to confirm items are there
-    await page.locator('.cart-button').click();
+    await page.locator('[data-testid="navbar-cart-button"]').click();
     await page.waitForURL(/.*\/cart/);
-    await expect(page.locator('.cart-item')).toHaveCount(2);
+
+    // Use a more specific selector that only targets main cart item containers
+    const cartItems = page.locator(
+      'div[data-testid="cart-item-1"], div[data-testid="cart-item-2"]'
+    );
+    const count = await cartItems.count();
+    console.log(`Found ${count} cart items in first test`);
+
+    // Debug: Log the actual data-testid values
+    for (let i = 0; i < Math.min(count, 10); i++) {
+      // Limit to first 10 to avoid spam
+      const testId = await cartItems.nth(i).getAttribute('data-testid');
+      console.log(`Cart item ${i}: ${testId}`);
+    }
+
+    await expect(
+      page.locator('div[data-testid="cart-item-1"], div[data-testid="cart-item-2"]')
+    ).toHaveCount(2);
 
     // Go back to homepage
-    await page.locator('.neore-logo').click();
+    await page.locator('[data-testid="navbar-logo-link"]').click();
     await page.waitForURL('/neore-shop/');
 
     // Remove first product using the toggle button (should now show "-")
-    const firstCardButton = page.locator('.card').first().locator('.card-action-btn').last();
+    const firstCardButton = page
+      .locator('[data-testid="card-1"]')
+      .locator('[data-testid="card-cart-button-1"]');
     await expect(firstCardButton).toHaveAttribute('data-tooltip', 'Remove 1 from cart');
     await firstCardButton.click();
 
     // Remove second product using the toggle button
-    const secondCardButton = page.locator('.card').nth(1).locator('.card-action-btn').last();
+    const secondCardButton = page
+      .locator('[data-testid="card-2"]')
+      .locator('[data-testid="card-cart-button-2"]');
     await expect(secondCardButton).toHaveAttribute('data-tooltip', 'Remove 1 from cart');
     await secondCardButton.click();
 
     // Navigate back to cart to verify items were removed
-    await page.locator('.cart-button').click();
+    await page.locator('[data-testid="navbar-cart-button"]').click();
     await page.waitForURL(/.*\/cart/);
 
     // Reference: CartSummary component should show empty state
-    await expect(page.locator('.cart-summary-empty')).toBeVisible();
-    await expect(page.locator('.cart-summary-empty h2')).toHaveText('Your cart is empty');
+    await expect(page.locator('[data-testid="cart-summary-empty"]')).toBeVisible();
+    await expect(page.locator('[data-testid="cart-summary-empty-title"]')).toHaveText(
+      'Your cart is empty'
+    );
   });
 
   test('should maintain cart button state across navigation', async ({ page }) => {
     // Reference: HomePage component
     // Add product to cart
-    const firstProductCard = page.locator('.card').first();
-    const cartButton = firstProductCard.locator('.card-action-btn').last();
+    const firstProductCard = page.locator('[data-testid="card-1"]');
+    const cartButton = firstProductCard.locator('[data-testid="card-cart-button-1"]');
     await cartButton.click();
 
     // Verify button shows "-" state
@@ -295,7 +325,9 @@ test.describe('Cart Functionality', () => {
     await page.waitForURL('/neore-shop/');
 
     // Homepage button should also reflect the removed state
-    const homeButton = page.locator('.card').first().locator('.card-action-btn').last();
+    const homeButton = page
+      .locator('[data-testid="card-1"]')
+      .locator('[data-testid="card-cart-button-1"]');
     await expect(homeButton).toHaveAttribute('data-tooltip', 'Add to cart');
     await expect(homeButton).not.toHaveClass(/in-cart/);
   });
@@ -303,15 +335,21 @@ test.describe('Cart Functionality', () => {
   test('should clear entire cart', async ({ page }) => {
     // Reference: HomePage component
     // Add multiple products to cart
-    await page.locator('.card').first().locator('.card-action-btn').last().click();
-    await page.locator('.card').nth(1).locator('.card-action-btn').last().click();
+    await page
+      .locator('[data-testid="card-1"]')
+      .locator('[data-testid="card-cart-button-1"]')
+      .click();
+    await page
+      .locator('[data-testid="card-2"]')
+      .locator('[data-testid="card-cart-button-2"]')
+      .click();
 
     // Navigate to cart page
-    await page.locator('.cart-button').click();
+    await page.locator('[data-testid="navbar-cart-button"]').click();
     await page.waitForURL(/.*\/cart/);
 
-    // Reference: CartSummary component shows clear cart button with .clear-cart-btn class
-    const clearCartButton = page.locator('.clear-cart-btn');
+    // Reference: CartSummary component shows clear cart button
+    const clearCartButton = page.locator('[data-testid="cart-summary-clear-button"]');
     await expect(clearCartButton).toBeVisible();
     await expect(clearCartButton).toHaveText('Clear Cart');
 
@@ -319,32 +357,43 @@ test.describe('Cart Functionality', () => {
     await clearCartButton.click();
 
     // Reference: CartSummary component shows empty state
-    await expect(page.locator('.cart-summary-empty')).toBeVisible();
-    await expect(page.locator('.cart-summary-empty h2')).toHaveText('Your cart is empty');
+    await expect(page.locator('[data-testid="cart-summary-empty"]')).toBeVisible();
+    await expect(page.locator('[data-testid="cart-summary-empty-title"]')).toHaveText(
+      'Your cart is empty'
+    );
   });
 
   test('should calculate cart totals correctly with discounts', async ({ page }) => {
     // Reference: HomePage component
 
     // Add first product to cart (iPhone 9: €549 with 12.96% discount)
-    await page.locator('.card').first().locator('.card-action-btn').last().click();
+    await page
+      .locator('[data-testid="card-1"]')
+      .locator('[data-testid="card-cart-button-1"]')
+      .click();
 
     // Navigate to cart page
-    await page.locator('.cart-button').click();
+    await page.locator('[data-testid="navbar-cart-button"]').click();
     await page.waitForURL(/.*\/cart/);
 
     // Reference: CartItem component shows original and discounted prices
-    const firstCartItem = page.locator('.cart-item').first();
-    await expect(firstCartItem.locator('.cart-item-original-price')).toHaveText('€549');
-    await expect(firstCartItem.locator('.cart-item-discounted-price')).toContainText('Now €');
-    await expect(firstCartItem.locator('#cart-item-discount-badge')).toContainText('-13% off!');
+    const firstCartItem = page.locator('[data-testid="cart-item-1"]');
+    await expect(firstCartItem.locator('[data-testid="cart-item-original-price-1"]')).toHaveText(
+      '€549'
+    );
+    await expect(
+      firstCartItem.locator('[data-testid="cart-item-discounted-price-1"]')
+    ).toContainText('Now €');
+    await expect(firstCartItem.locator('[data-testid="cart-item-discount-badge-1"]')).toContainText(
+      '-13% off!'
+    );
 
     // Reference: CartItem component shows item total
-    const itemTotal = firstCartItem.locator('.cart-item-total span');
+    const itemTotal = firstCartItem.locator('[data-testid="cart-item-total-1"]');
     await expect(itemTotal).toBeVisible();
 
     // Reference: CartSummary component shows cart total in footer
-    const cartTotal = page.locator('.cart-total .total-price');
+    const cartTotal = page.locator('[data-testid="cart-total-price"]');
     await expect(cartTotal).toBeVisible();
 
     // Verify the total calculation (€549 * (1 - 0.1296) = €477.85)
@@ -354,28 +403,56 @@ test.describe('Cart Functionality', () => {
 
   test('should handle cart operations with multiple product types', async ({ page }) => {
     // Add different products to cart
-    await page.locator('.card').first().locator('.card-action-btn').last().click(); // iPhone 9
-    await page.locator('.card').nth(1).locator('.card-action-btn').last().click(); // iPhone X
-    await page.locator('.card').nth(2).locator('.card-action-btn').last().click(); // Samsung Galaxy
+    await page
+      .locator('[data-testid="card-1"]')
+      .locator('[data-testid="card-cart-button-1"]')
+      .click(); // iPhone 9
+    await page
+      .locator('[data-testid="card-2"]')
+      .locator('[data-testid="card-cart-button-2"]')
+      .click(); // iPhone X
+    await page
+      .locator('[data-testid="card-3"]')
+      .locator('[data-testid="card-cart-button-3"]')
+      .click(); // Samsung Galaxy
 
     // Navigate to cart page
-    await page.locator('.cart-button').click();
+    await page.locator('[data-testid="navbar-cart-button"]').click();
     await page.waitForURL(/.*\/cart/);
 
     // Reference: CartSummary component shows correct total items
-    await expect(page.locator('.cart-summary-header-title')).toHaveText('(3 items)');
+    await expect(page.locator('[data-testid="cart-summary-header-title"]')).toHaveText('(3 items)');
 
     // Reference: CartItem components show all three products
-    const cartItems = page.locator('.cart-item');
+    const cartItems = page.locator(
+      'div[data-testid="cart-item-1"], div[data-testid="cart-item-2"], div[data-testid="cart-item-3"]'
+    );
+
+    // Debug: Log what elements are found
+    const count = await cartItems.count();
+    console.log(`Found ${count} cart items`);
+
+    // Debug: Log the actual data-testid values
+    for (let i = 0; i < count; i++) {
+      const testId = await cartItems.nth(i).getAttribute('data-testid');
+      console.log(`Cart item ${i}: ${testId}`);
+    }
+
     await expect(cartItems).toHaveCount(3);
 
     // Verify each product is displayed correctly
-    await expect(cartItems.nth(0).locator('h3')).toHaveText('iPhone 9');
-    await expect(cartItems.nth(1).locator('h3')).toHaveText('iPhone X');
-    await expect(cartItems.nth(2).locator('h3')).toHaveText('Samsung Galaxy');
+    await expect(
+      page.locator('[data-testid="cart-item-1"]').locator('[data-testid="cart-item-title-1"]')
+    ).toHaveText('iPhone 9');
+    await expect(
+      page.locator('[data-testid="cart-item-2"]').locator('[data-testid="cart-item-title-2"]')
+    ).toHaveText('iPhone X');
+    await expect(
+      page.locator('[data-testid="cart-item-3"]').locator('[data-testid="cart-item-title-3"]')
+    ).toHaveText('Samsung Galaxy');
 
     // Reference: CartSummary component shows checkout button
-    const checkoutButton = page.locator('.checkout-btn');
+    const checkoutButton = page.locator('[data-testid="checkout-btn"]');
     await expect(checkoutButton).toBeVisible();
     await expect(checkoutButton).toHaveText('Proceed to Checkout');
   });
@@ -385,8 +462,8 @@ test.describe('Cart Functionality', () => {
   }) => {
     // Reference: HomePage component
     // Add first product to cart
-    const firstProductCard = page.locator('.card').first();
-    const firstProductButton = firstProductCard.locator('.card-action-btn').last();
+    const firstProductCard = page.locator('[data-testid="card-1"]');
+    const firstProductButton = firstProductCard.locator('[data-testid="card-cart-button-1"]');
 
     // Add product to cart (should show "+" button initially)
     await firstProductButton.click();
@@ -396,15 +473,15 @@ test.describe('Cart Functionality', () => {
     await expect(firstProductButton.locator('svg')).toBeVisible(); // MinusIcon should be visible
 
     // Navigate to cart page
-    await page.locator('.cart-button').click();
+    await page.locator('[data-testid="navbar-cart-button"]').click();
     await page.waitForURL(/.*\/cart/);
 
     // Reference: CartSummary component shows correct total items
-    await expect(page.locator('.cart-summary-header-title')).toHaveText('(1 items)');
+    await expect(page.locator('[data-testid="cart-summary-header-title"]')).toHaveText('(1 items)');
 
     // Reference: CartItem component shows quantity selector with value 1
-    const firstCartItem = page.locator('.cart-item').first();
-    const quantitySelect = firstCartItem.locator('select');
+    const firstCartItem = page.locator('[data-testid="cart-item-1"]');
+    const quantitySelect = firstCartItem.locator('[data-testid="cart-item-quantity-select-1"]');
     await expect(quantitySelect).toHaveValue('1');
 
     // Increase quantity to 3 using the cart page selector
@@ -412,44 +489,48 @@ test.describe('Cart Functionality', () => {
 
     // Verify quantity increased
     await expect(quantitySelect).toHaveValue('3');
-    await expect(page.locator('.cart-summary-header-title')).toHaveText('(3 items)');
+    await expect(page.locator('[data-testid="cart-summary-header-title"]')).toHaveText('(3 items)');
 
     // Go back to homepage
-    await page.locator('.neore-logo').click();
+    await page.locator('[data-testid="navbar-logo-link"]').click();
     await page.waitForURL('/neore-shop/');
 
     // Now click the "-" button to decrease quantity by 1
     await firstProductButton.click(); // Should decrease from 3 to 2
 
     // Navigate back to cart to verify quantity decreased
-    await page.locator('.cart-button').click();
+    await page.locator('[data-testid="navbar-cart-button"]').click();
     await page.waitForURL(/.*\/cart/);
 
     // Reference: CartSummary component should show 2 items now
-    await expect(page.locator('.cart-summary-header-title')).toHaveText('(2 items)');
+    await expect(page.locator('[data-testid="cart-summary-header-title"]')).toHaveText('(2 items)');
 
     // Reference: CartItem component should show quantity 2
-    await expect(firstCartItem.locator('select')).toHaveValue('2');
+    await expect(firstCartItem.locator('[data-testid="cart-item-quantity-select-1"]')).toHaveValue(
+      '2'
+    );
 
     // Go back to homepage again
-    await page.locator('.neore-logo').click();
+    await page.locator('[data-testid="navbar-logo-link"]').click();
     await page.waitForURL('/neore-shop/');
 
     // Click "-" button again to decrease from 2 to 1
     await firstProductButton.click();
 
     // Navigate to cart to verify quantity is now 1
-    await page.locator('.cart-button').click();
+    await page.locator('[data-testid="navbar-cart-button"]').click();
     await page.waitForURL(/.*\/cart/);
 
     // Reference: CartSummary component should show 1 item
-    await expect(page.locator('.cart-summary-header-title')).toHaveText('(1 items)');
+    await expect(page.locator('[data-testid="cart-summary-header-title"]')).toHaveText('(1 items)');
 
     // Reference: CartItem component should show quantity 1
-    await expect(firstCartItem.locator('select')).toHaveValue('1');
+    await expect(firstCartItem.locator('[data-testid="cart-item-quantity-select-1"]')).toHaveValue(
+      '1'
+    );
 
     // Go back to homepage one more time
-    await page.locator('.neore-logo').click();
+    await page.locator('[data-testid="navbar-logo-link"]').click();
     await page.waitForURL('/neore-shop/');
 
     // Click "-" button one final time - this should remove the item completely
@@ -459,11 +540,11 @@ test.describe('Cart Functionality', () => {
     await expect(firstProductButton).not.toHaveClass(/in-cart/);
 
     // Navigate to cart to verify item is completely removed
-    await page.locator('.cart-button').click();
+    await page.locator('[data-testid="navbar-cart-button"]').click();
     await page.waitForURL(/.*\/cart/);
 
     // Reference: CartSummary component should show empty state
-    await expect(page.locator('.cart-summary-empty')).toBeVisible();
+    await expect(page.locator('[data-testid="cart-summary-empty"]')).toBeVisible();
   });
 
   test('should display empty cart state correctly', async ({ page }) => {
@@ -471,9 +552,11 @@ test.describe('Cart Functionality', () => {
     await page.goto('/neore-shop/cart');
 
     // Reference: CartSummary component shows empty state when no items
-    await expect(page.locator('.cart-summary-empty')).toBeVisible();
-    await expect(page.locator('.cart-summary-empty h2')).toHaveText('Your cart is empty');
-    await expect(page.locator('.cart-summary-empty p')).toHaveText(
+    await expect(page.locator('[data-testid="cart-summary-empty"]')).toBeVisible();
+    await expect(page.locator('[data-testid="cart-summary-empty-title"]')).toHaveText(
+      'Your cart is empty'
+    );
+    await expect(page.locator('[data-testid="cart-summary-empty-message"]')).toHaveText(
       'Add some products to get started!'
     );
 

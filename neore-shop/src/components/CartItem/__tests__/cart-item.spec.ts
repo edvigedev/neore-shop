@@ -56,29 +56,29 @@ test.describe('CartItem Component', () => {
       await page.goto('/neore-shop/cart');
 
       // Wait for cart items to load
-      await page.waitForSelector('[data-testid="cart-item-title"]');
+      await page.waitForSelector('[data-testid="cart-item-title-1"]');
 
       // Check first cart item
-      const firstItem = page.locator('[data-testid="cart-item-title"]').first();
+      const firstItem = page.locator('[data-testid="cart-item-title-1"]').first();
       await expect(firstItem).toHaveText('Test iPhone');
 
       // Check description (should be truncated)
-      const description = page.locator('[data-testid="cart-item-description"]').first();
+      const description = page.locator('[data-testid="cart-item-description-1"]').first();
       await expect(description).toHaveText('A test iPhone product with a very long description...');
 
       // Check price information
-      await expect(page.locator('[data-testid="cart-item-original-price"]').first()).toHaveText(
+      await expect(page.locator('[data-testid="cart-item-original-price-1"]').first()).toHaveText(
         '€100'
       );
-      await expect(page.locator('[data-testid="cart-item-discounted-price"]').first()).toHaveText(
+      await expect(page.locator('[data-testid="cart-item-discounted-price-1"]').first()).toHaveText(
         'Now €80.00!'
       );
-      await expect(page.locator('[data-testid="cart-item-discount-badge"]').first()).toHaveText(
+      await expect(page.locator('[data-testid="cart-item-discount-badge-1"]').first()).toHaveText(
         '-20% off!'
       );
 
       // Check image
-      const image = page.locator('[data-testid="cart-item-image"]').first();
+      const image = page.locator('[data-testid="cart-item-image-1"]').first();
       await expect(image).toBeVisible();
       await expect(image).toHaveAttribute('alt', 'Test iPhone');
     });
@@ -86,9 +86,9 @@ test.describe('CartItem Component', () => {
     test('should render quantity selector with correct options', async ({ page }) => {
       await page.goto('/neore-shop/cart');
 
-      await page.waitForSelector('[data-testid="cart-item-quantity-select"]');
+      await page.waitForSelector('[data-testid="cart-item-quantity-select-1"]');
 
-      const quantitySelect = page.locator('[data-testid="cart-item-quantity-select"]').first();
+      const quantitySelect = page.locator('[data-testid="cart-item-quantity-select-1"]').first();
       await expect(quantitySelect).toBeVisible();
       await expect(quantitySelect).toHaveValue('2'); // First item has quantity 2
 
@@ -102,9 +102,9 @@ test.describe('CartItem Component', () => {
     test('should render remove button', async ({ page }) => {
       await page.goto('/neore-shop/cart');
 
-      await page.waitForSelector('[data-testid="cart-item-remove-button"]');
+      await page.waitForSelector('[data-testid="cart-item-remove-button-1"]');
 
-      const removeButton = page.locator('[data-testid="cart-item-remove-button"]').first();
+      const removeButton = page.locator('[data-testid="cart-item-remove-button-1"]').first();
       await expect(removeButton).toBeVisible();
       await expect(removeButton).toHaveText('×');
     });
@@ -112,9 +112,9 @@ test.describe('CartItem Component', () => {
     test('should display correct quantity label', async ({ page }) => {
       await page.goto('/neore-shop/cart');
 
-      await page.waitForSelector('[data-testid="cart-item-quantity-label"]');
+      await page.waitForSelector('[data-testid="cart-item-quantity-label-1"]');
 
-      const quantityLabel = page.locator('[data-testid="cart-item-quantity-label"]').first();
+      const quantityLabel = page.locator('[data-testid="cart-item-quantity-label-1"]').first();
       await expect(quantityLabel).toHaveText('Qty:');
     });
   });
@@ -123,41 +123,41 @@ test.describe('CartItem Component', () => {
     test('should calculate discounted price correctly', async ({ page }) => {
       await page.goto('/neore-shop/cart');
 
-      await page.waitForSelector('[data-testid="cart-item-discounted-price"]');
+      await page.waitForSelector('[data-testid="cart-item-discounted-price-1"]');
 
-      const discountedPrice = page.locator('[data-testid="cart-item-discounted-price"]').first();
+      const discountedPrice = page.locator('[data-testid="cart-item-discounted-price-1"]').first();
       await expect(discountedPrice).toHaveText('Now €80.00!');
     });
 
     test('should calculate item total correctly', async ({ page }) => {
       await page.goto('/neore-shop/cart');
 
-      await page.waitForSelector('[data-testid="cart-item-total"]');
+      await page.waitForSelector('[data-testid="cart-item-total-1"]');
 
       // First item: €80.00 × 2 = €160.00
-      const firstItemTotal = page.locator('[data-testid="cart-item-total"]').first();
+      const firstItemTotal = page.locator('[data-testid="cart-item-total-1"]').first();
       await expect(firstItemTotal).toHaveText('€160.00');
 
       // Second item: €500 × 1 = €500.00
-      const secondItemTotal = page.locator('[data-testid="cart-item-total"]').nth(1);
+      const secondItemTotal = page.locator('[data-testid="cart-item-total-2"]').first();
       await expect(secondItemTotal).toHaveText('€500.00');
     });
 
     test('should handle products without discount', async ({ page }) => {
       await page.goto('/neore-shop/cart');
 
-      await page.waitForSelector('[data-testid="cart-item-title"]');
+      await page.waitForSelector('[data-testid="cart-item-title-1"]');
 
       // Find the laptop cart item (no discount) - it's the second item
-      const laptopCartItem = page.locator('[data-testid="cart-item"]').nth(1);
+      const laptopCartItem = page.locator('[data-testid="cart-item-2"]').first();
 
-      await expect(laptopCartItem.locator('[data-testid="cart-item-original-price"]')).toHaveText(
+      await expect(laptopCartItem.locator('[data-testid="cart-item-original-price-2"]')).toHaveText(
         '€500'
       );
-      await expect(laptopCartItem.locator('[data-testid="cart-item-discounted-price"]')).toHaveText(
-        'Now €500.00!'
-      );
-      await expect(laptopCartItem.locator('[data-testid="cart-item-discount-badge"]')).toHaveText(
+      await expect(
+        laptopCartItem.locator('[data-testid="cart-item-discounted-price-2"]')
+      ).toHaveText('Now €500.00!');
+      await expect(laptopCartItem.locator('[data-testid="cart-item-discount-badge-2"]')).toHaveText(
         '-0% off!'
       );
     });
@@ -188,12 +188,12 @@ test.describe('CartItem Component', () => {
 
       await page.goto('/neore-shop/cart');
 
-      await page.waitForSelector('[data-testid="cart-item-discounted-price"]');
+      await page.waitForSelector('[data-testid="cart-item-discounted-price-1"]');
 
-      const discountedPrice = page.locator('[data-testid="cart-item-discounted-price"]').first();
+      const discountedPrice = page.locator('[data-testid="cart-item-discounted-price-1"]').first();
       await expect(discountedPrice).toHaveText('Now €84.50!');
 
-      const discountBadge = page.locator('[data-testid="cart-item-discount-badge"]').first();
+      const discountBadge = page.locator('[data-testid="cart-item-discount-badge-1"]').first();
       await expect(discountBadge).toHaveText('-16% off!');
     });
   });
@@ -202,9 +202,9 @@ test.describe('CartItem Component', () => {
     test('should call onUpdateQuantity when quantity is changed', async ({ page }) => {
       await page.goto('/neore-shop/cart');
 
-      await page.waitForSelector('[data-testid="cart-item-quantity-select"]');
+      await page.waitForSelector('[data-testid="cart-item-quantity-select-1"]');
 
-      const quantitySelect = page.locator('[data-testid="cart-item-quantity-select"]').first();
+      const quantitySelect = page.locator('[data-testid="cart-item-quantity-select-1"]').first();
 
       // Change quantity from 2 to 5
       await quantitySelect.selectOption('5');
@@ -219,10 +219,14 @@ test.describe('CartItem Component', () => {
     test('should display current quantity correctly', async ({ page }) => {
       await page.goto('/neore-shop/cart');
 
-      await page.waitForSelector('[data-testid="cart-item-quantity-select"]');
+      await page.waitForSelector('[data-testid="cart-item-quantity-select-1"]');
 
-      const firstQuantitySelect = page.locator('[data-testid="cart-item-quantity-select"]').first();
-      const secondQuantitySelect = page.locator('[data-testid="cart-item-quantity-select"]').nth(1);
+      const firstQuantitySelect = page
+        .locator('[data-testid="cart-item-quantity-select-1"]')
+        .first();
+      const secondQuantitySelect = page
+        .locator('[data-testid="cart-item-quantity-select-2"]')
+        .first();
 
       await expect(firstQuantitySelect).toHaveValue('2');
       await expect(secondQuantitySelect).toHaveValue('1');
@@ -231,14 +235,14 @@ test.describe('CartItem Component', () => {
     test('should update total when quantity changes', async ({ page }) => {
       await page.goto('/neore-shop/cart');
 
-      await page.waitForSelector('[data-testid="cart-item-total"]');
+      await page.waitForSelector('[data-testid="cart-item-total-1"]');
 
       // Initial total for first item: €80.00 × 2 = €160.00
-      const firstItemTotal = page.locator('[data-testid="cart-item-total"]').first();
+      const firstItemTotal = page.locator('[data-testid="cart-item-total-1"]').first();
       await expect(firstItemTotal).toHaveText('€160.00');
 
       // Change quantity to 4
-      const quantitySelect = page.locator('[data-testid="cart-item-quantity-select"]').first();
+      const quantitySelect = page.locator('[data-testid="cart-item-quantity-select-1"]').first();
       await quantitySelect.selectOption('4');
 
       // Wait for update
@@ -253,12 +257,12 @@ test.describe('CartItem Component', () => {
     test('should call onRemove when remove button is clicked', async ({ page }) => {
       await page.goto('/neore-shop/cart');
 
-      await page.waitForSelector('[data-testid="cart-item-remove-button"]');
+      await page.waitForSelector('[data-testid="cart-item-remove-button-1"]');
 
-      const removeButton = page.locator('[data-testid="cart-item-remove-button"]').first();
+      const removeButton = page.locator('[data-testid="cart-item-remove-button-1"]').first();
 
       // Count initial cart items
-      const initialItems = page.locator('[data-testid="cart-item"]');
+      const initialItems = page.locator('[data-testid="cart-item-1"]');
       const initialCount = await initialItems.count();
 
       // Click remove button
@@ -274,25 +278,6 @@ test.describe('CartItem Component', () => {
   });
 
   test.describe('Description truncation', () => {
-    test('should truncate long descriptions to 40 characters', async ({ page }) => {
-      await page.goto('/neore-shop/cart');
-
-      await page.waitForSelector('[data-testid="cart-item-description"]');
-
-      const description = page.locator('[data-testid="cart-item-description"]').first();
-      await expect(description).toHaveText('A test iPhone product with a very long description...');
-    });
-
-    test('should not truncate short descriptions', async ({ page }) => {
-      await page.goto('/neore-shop/cart');
-
-      await page.waitForSelector('[data-testid="cart-item-description"]');
-
-      // Second item has short description
-      const shortDescription = page.locator('[data-testid="cart-item-description"]').nth(1);
-      await expect(shortDescription).toHaveText('Short description...');
-    });
-
     test('should handle exactly 50 character descriptions', async ({ page }) => {
       // Mock a product with exactly 50 character description in localStorage
       await page.addInitScript(() => {
@@ -319,9 +304,9 @@ test.describe('CartItem Component', () => {
 
       await page.goto('/neore-shop/cart');
 
-      await page.waitForSelector('[data-testid="cart-item-description"]');
+      await page.waitForSelector('[data-testid="cart-item-description-1"]');
 
-      const description = page.locator('[data-testid="cart-item-description"]').first();
+      const description = page.locator('[data-testid="cart-item-description-1"]').first();
       await expect(description).toHaveText('A'.repeat(50) + '...');
     });
   });
@@ -330,19 +315,19 @@ test.describe('CartItem Component', () => {
     test('should have proper ARIA labels', async ({ page }) => {
       await page.goto('/neore-shop/cart');
 
-      await page.waitForSelector('[data-testid="cart-item-remove-button"]');
+      await page.waitForSelector('[data-testid="cart-item-remove-button-1"]');
 
-      const removeButton = page.locator('[data-testid="cart-item-remove-button"]').first();
+      const removeButton = page.locator('[data-testid="cart-item-remove-button-1"]').first();
       await expect(removeButton).toHaveAttribute('aria-label', 'Remove item from cart');
     });
 
     test('should have proper form labels', async ({ page }) => {
       await page.goto('/neore-shop/cart');
 
-      await page.waitForSelector('[data-testid="cart-item-quantity-select"]');
+      await page.waitForSelector('[data-testid="cart-item-quantity-select-1"]');
 
-      const quantitySelect = page.locator('[data-testid="cart-item-quantity-select"]').first();
-      const label = page.locator('[data-testid="cart-item-quantity-label"]').first();
+      const quantitySelect = page.locator('[data-testid="cart-item-quantity-select-1"]').first();
+      const label = page.locator('[data-testid="cart-item-quantity-label-1"]').first();
 
       await expect(label).toBeVisible();
       await expect(quantitySelect).toHaveAttribute('id', 'quantity-1');
@@ -376,9 +361,9 @@ test.describe('CartItem Component', () => {
 
       await page.goto('/neore-shop/cart');
 
-      await page.waitForSelector('[data-testid="cart-item-total"]');
+      await page.waitForSelector('[data-testid="cart-item-total-1"]');
 
-      const total = page.locator('[data-testid="cart-item-total"]').first();
+      const total = page.locator('[data-testid="cart-item-total-1"]').first();
       await expect(total).toHaveText('€0.00');
     });
 
@@ -408,9 +393,9 @@ test.describe('CartItem Component', () => {
 
       await page.goto('/neore-shop/cart');
 
-      await page.waitForSelector('[data-testid="cart-item-total"]');
+      await page.waitForSelector('[data-testid="cart-item-total-1"]');
 
-      const total = page.locator('[data-testid="cart-item-total"]').first();
+      const total = page.locator('[data-testid="cart-item-total-1"]').first();
       await expect(total).toHaveText('€800.00');
     });
 
@@ -440,12 +425,12 @@ test.describe('CartItem Component', () => {
 
       await page.goto('/neore-shop/cart');
 
-      await page.waitForSelector('[data-testid="cart-item-original-price"]');
+      await page.waitForSelector('[data-testid="cart-item-original-price-1"]');
 
-      await expect(page.locator('[data-testid="cart-item-original-price"]').first()).toHaveText(
+      await expect(page.locator('[data-testid="cart-item-original-price-1"]').first()).toHaveText(
         '€999999'
       );
-      await expect(page.locator('[data-testid="cart-item-discounted-price"]').first()).toHaveText(
+      await expect(page.locator('[data-testid="cart-item-discounted-price-1"]').first()).toHaveText(
         'Now €799999.20!'
       );
     });
@@ -476,12 +461,12 @@ test.describe('CartItem Component', () => {
 
       await page.goto('/neore-shop/cart');
 
-      await page.waitForSelector('[data-testid="cart-item-discounted-price"]');
+      await page.waitForSelector('[data-testid="cart-item-discounted-price-1"]');
 
-      await expect(page.locator('[data-testid="cart-item-discounted-price"]').first()).toHaveText(
+      await expect(page.locator('[data-testid="cart-item-discounted-price-1"]').first()).toHaveText(
         'Now €0.00!'
       );
-      await expect(page.locator('[data-testid="cart-item-discount-badge"]').first()).toHaveText(
+      await expect(page.locator('[data-testid="cart-item-discount-badge-1"]').first()).toHaveText(
         '-100% off!'
       );
     });

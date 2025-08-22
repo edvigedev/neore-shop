@@ -60,17 +60,25 @@ export default function CardsContainer() {
   return (
     <ErrorBoundary>
       <section className="cards-container">
-        <ul className="cards-container-list">
+        <ul className="cards-container-list" data-testid="cards-container-list">
           {filteredProducts.length === 0 && globalSearch.trim() && (
             <li>
-              <p className="cards-container-list-item-empty">
+              <p
+                className="cards-container-list-item-empty"
+                data-testid="cards-container-empty-search"
+              >
                 No products found matching &quot;{globalSearch}&quot;
               </p>
             </li>
           )}
           {filteredProducts.length === 0 && !globalSearch.trim() && (
             <li>
-              <p className="cards-container-list-item-empty">No products found</p>
+              <p
+                className="cards-container-list-item-empty"
+                data-testid="cards-container-empty-no-products"
+              >
+                No products found
+              </p>
             </li>
           )}
           {filteredProducts.map((product: Product) => (
