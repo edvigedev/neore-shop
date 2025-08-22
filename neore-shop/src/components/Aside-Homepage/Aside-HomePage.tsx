@@ -41,9 +41,9 @@ export default function AsideHomePage() {
   }
 
   return (
-    <aside className="home-page-aside">
-      <h3> THINK BEFORE YOU SHOP!</h3>
-      <p>
+    <aside className="home-page-aside" data-testid="aside-homepage">
+      <h3 data-testid="aside-homepage-title"> THINK BEFORE YOU SHOP!</h3>
+      <p data-testid="aside-homepage-quote">
         &quot;{data?.quote}&quot; - {data?.author}
       </p>
     </aside>
