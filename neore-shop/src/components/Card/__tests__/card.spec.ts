@@ -49,15 +49,14 @@ test.describe('Card Component', () => {
 
   test.describe('Rendering', () => {
     test('should render product information correctly', async ({ page }) => {
-      // Ensure mock is ready before navigation
       await page.waitForLoadState('networkidle');
       await page.goto('/');
 
       // Wait for products to load
-      await page.waitForSelector('[data-testid="card-title"]');
+      await page.waitForSelector('[data-testid="card-1"]');
 
       // Check first card
-      const firstCard = page.locator('[data-testid="card-title"]').first();
+      const firstCard = page.locator('[data-testid="card-title-1"]').first();
       await expect(firstCard).toHaveText('Test iPhone');
 
       // Check price information
@@ -81,10 +80,10 @@ test.describe('Card Component', () => {
     test('should render favorite and cart buttons when authenticated', async ({ page }) => {
       await page.goto('/');
 
-      await page.waitForSelector('[data-testid="card-favorite-button"]');
+      await page.waitForSelector('[data-testid="card-favorite-button-1"]');
 
-      const favoriteButton = page.locator('[data-testid="card-favorite-button"]').first();
-      const cartButton = page.locator('[data-testid="card-cart-button"]').first();
+      const favoriteButton = page.locator('[data-testid="card-favorite-button-1"]').first();
+      const cartButton = page.locator('[data-testid="card-cart-button-1"]').first();
 
       await expect(favoriteButton).toBeVisible();
       await expect(cartButton).toBeVisible();
@@ -93,20 +92,20 @@ test.describe('Card Component', () => {
     test('should render as a link to product details', async ({ page }) => {
       await page.goto('/');
 
-      await page.waitForSelector('[data-testid="card-link"]');
+      await page.waitForSelector('[data-testid="card-link-1"]');
 
-      const cardLink = page.locator('[data-testid="card-link"]').first();
+      const cardLink = page.locator('[data-testid="card-link-1"]').first();
       await expect(cardLink).toHaveAttribute('href', '/neore-shop/products/1');
     });
 
     test('should handle products without discount', async ({ page }) => {
       await page.goto('/');
 
-      await page.waitForSelector('[data-testid="card-title"]');
+      await page.waitForSelector('[data-testid="card-2"]');
 
       // Find the laptop card (no discount)
       const laptopCard = page
-        .locator('[data-testid="card-title"]')
+        .locator('[data-testid="card-title-2"]')
         .filter({ hasText: 'Test Laptop' });
       const cardContainer = laptopCard.locator('xpath=ancestor::div[contains(@class, "card")]');
 
@@ -126,9 +125,9 @@ test.describe('Card Component', () => {
     test('should add product to favorites when favorite button is clicked', async ({ page }) => {
       await page.goto('/');
 
-      await page.waitForSelector('[data-testid="card-favorite-button"]');
+      await page.waitForSelector('[data-testid="card-favorite-button-1"]');
 
-      const favoriteButton = page.locator('[data-testid="card-favorite-button"]').first();
+      const favoriteButton = page.locator('[data-testid="card-favorite-button-1"]').first();
 
       // Check initial state
       await expect(favoriteButton).toHaveAttribute('data-tooltip', 'Add to favorites');
@@ -148,9 +147,9 @@ test.describe('Card Component', () => {
     }) => {
       await page.goto('/');
 
-      await page.waitForSelector('[data-testid="card-favorite-button"]');
+      await page.waitForSelector('[data-testid="card-favorite-button-1"]');
 
-      const favoriteButton = page.locator('[data-testid="card-favorite-button"]').first();
+      const favoriteButton = page.locator('[data-testid="card-favorite-button-1"]').first();
 
       // First click to add to favorites
       await favoriteButton.click();
@@ -167,9 +166,9 @@ test.describe('Card Component', () => {
     test('should show correct tooltip based on favorite status', async ({ page }) => {
       await page.goto('/');
 
-      await page.waitForSelector('[data-testid="card-favorite-button"]');
+      await page.waitForSelector('[data-testid="card-favorite-button-1"]');
 
-      const favoriteButton = page.locator('[data-testid="card-favorite-button"]').first();
+      const favoriteButton = page.locator('[data-testid="card-favorite-button-1"]').first();
 
       // Initial state
       await expect(favoriteButton).toHaveAttribute('data-tooltip', 'Add to favorites');
@@ -185,9 +184,9 @@ test.describe('Card Component', () => {
     test('should add product to cart when cart button is clicked', async ({ page }) => {
       await page.goto('/');
 
-      await page.waitForSelector('[data-testid="card-cart-button"]');
+      await page.waitForSelector('[data-testid="card-cart-button-1"]');
 
-      const cartButton = page.locator('[data-testid="card-cart-button"]').first();
+      const cartButton = page.locator('[data-testid="card-cart-button-1"]').first();
 
       // Check initial state
       await expect(cartButton).toHaveAttribute('data-tooltip', 'Add to cart');
@@ -205,9 +204,9 @@ test.describe('Card Component', () => {
     test('should remove product from cart when cart button is clicked again', async ({ page }) => {
       await page.goto('/');
 
-      await page.waitForSelector('[data-testid="card-cart-button"]');
+      await page.waitForSelector('[data-testid="card-cart-button-1"]');
 
-      const cartButton = page.locator('[data-testid="card-cart-button"]').first();
+      const cartButton = page.locator('[data-testid="card-cart-button-1"]').first();
 
       // First click to add to cart
       await cartButton.click();
@@ -224,9 +223,9 @@ test.describe('Card Component', () => {
     test('should show correct tooltip based on cart status', async ({ page }) => {
       await page.goto('/');
 
-      await page.waitForSelector('[data-testid="card-cart-button"]');
+      await page.waitForSelector('[data-testid="card-cart-button-1"]');
 
-      const cartButton = page.locator('[data-testid="card-cart-button"]').first();
+      const cartButton = page.locator('[data-testid="card-cart-button-1"]').first();
 
       // Initial state
       await expect(cartButton).toHaveAttribute('data-tooltip', 'Add to cart');
@@ -287,9 +286,9 @@ test.describe('Card Component', () => {
     test('should navigate to product details when card is clicked', async ({ page }) => {
       await page.goto('/neore-shop/');
 
-      await page.waitForSelector('[data-testid="card-title"]');
+      await page.waitForSelector('[data-testid="card-title-1"]');
 
-      const cardTitle = page.locator('[data-testid="card-title"]').first();
+      const cardTitle = page.locator('[data-testid="card-title-1"]').first();
       await cardTitle.click();
 
       // Should navigate to product details page
@@ -299,10 +298,10 @@ test.describe('Card Component', () => {
     test('should prevent navigation when buttons are clicked', async ({ page }) => {
       await page.goto('/neore-shop/');
 
-      await page.waitForSelector('[data-testid="card-favorite-button"]');
+      await page.waitForSelector('[data-testid="card-favorite-button-1"]');
 
-      const favoriteButton = page.locator('[data-testid="card-favorite-button"]').first();
-      const cartButton = page.locator('[data-testid="card-cart-button"]').first();
+      const favoriteButton = page.locator('[data-testid="card-favorite-button-1"]').first();
+      const cartButton = page.locator('[data-testid="card-cart-button-1"]').first();
 
       // Click buttons
       await favoriteButton.click();
@@ -343,9 +342,9 @@ test.describe('Card Component', () => {
       await page.goto('/neore-shop/');
 
       // Should not crash and should render something
-      await page.waitForSelector('[data-testid="card"]');
+      await page.waitForSelector('[data-testid="card-1"]');
 
-      const card = page.locator('[data-testid="card"]').first();
+      const card = page.locator('[data-testid="card-1"]').first();
       await expect(card).toBeVisible();
     });
   });
