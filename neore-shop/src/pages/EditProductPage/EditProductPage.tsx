@@ -1,5 +1,3 @@
-// This is the full, corrected code for your PARENT page
-
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import type { Product } from '../../types';
@@ -75,7 +73,9 @@ export default function EditProductPage() {
 
   return (
     <div>
-      <h1 className="edit-product-page-title">Edit: {initialProduct.title}</h1>
+      <h1 className="edit-product-page-title" data-testid="edit-product-page-title">
+        Edit: {initialProduct.title}
+      </h1>
       <ProductForm
         initialProduct={initialProduct}
         onSave={handleSave}
