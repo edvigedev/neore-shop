@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useState, useEffect, useRef, type ReactNode, useCallback } from 'react';
 import { AuthContext } from './AuthContext.tsx';
 import type { AuthResponse, AuthenticatedUser } from '../../types';
 
@@ -16,6 +16,10 @@ const decodeJwt = (token: string): AuthResponse | null => {
   }
 };
 
+const IDLE_TIMEOUT =
+  (window as Window & { __TEST_IDLE_TIMEOUT__?: number }).__TEST_IDLE_TIMEOUT__ || 30 * 60 * 1000; // 30 minutes default, configurable for tests
+const activityEvents = ['mousedown', 'mousemove', 'keydown', 'scroll'];
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
 
@@ -23,6 +27,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const savedToken = localStorage.getItem('token');
     return savedToken ? decodeJwt(savedToken) : null;
   });
+
+  const timeoutIdRef = useRef<number | null>(null);
 
   const login = (authData: AuthResponse) => {
     if (!authData.accessToken) {
@@ -42,7 +48,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(userToSet);
   };
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setToken(null);
     setUser(null);
     localStorage.removeItem('token');
@@ -53,7 +59,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // Navigate to login page instead of reloading
     window.location.href = '/neore-shop/login';
-  };
+  }, []);
+
+  const resetTimer = useCallback(() => {
+    if (timeoutIdRef.current) {
+      clearTimeout(timeoutIdRef.current);
+    }
+    timeoutIdRef.current = window.setTimeout(() => {
+      console.log('User inactive, logging out.');
+      logout();
+    }, IDLE_TIMEOUT);
+  }, [logout]);
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    resetTimer();
+
+    activityEvents.forEach((event) => window.addEventListener(event, resetTimer));
+
+    return () => {
+      if (timeoutIdRef.current) {
+        clearTimeout(timeoutIdRef.current);
+      }
+      activityEvents.forEach((event) => window.removeEventListener(event, resetTimer));
+    };
+  }, [user, resetTimer]);
 
   const value = { token, login, logout, user };
 

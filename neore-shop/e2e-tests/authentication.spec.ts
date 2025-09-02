@@ -24,6 +24,11 @@ const mockUser = {
 };
 
 test.beforeEach(async ({ page }) => {
+  // Set the test timeout to 4 seconds before any page loads
+  await page.addInitScript(() => {
+    (window as Window & { __TEST_IDLE_TIMEOUT__?: number }).__TEST_IDLE_TIMEOUT__ = 4000;
+  });
+
   // Mock the login API for consistent testing
   await page.route('https://dummyjson.com/auth/login', async (route) => {
     await route.fulfill({
@@ -152,6 +157,33 @@ test.describe('Authentication System', () => {
     // FIX: Assert that we have been redirected to the login page
     await expect(page).toHaveURL(/.*\/login/);
     await expect(page.locator('[data-testid="login-header"]')).toHaveText('Welcome!');
+  });
+
+  test('should automatically logout the user after a period of inactivity', async ({ page }) => {
+    // 1. Setup: Install a mock clock ---
+    await page.clock.install();
+
+    await page.click('[data-testid="login-submit-button"]');
+    await page.waitForURL('/neore-shop/');
+
+    // 2. Assert that login was successful
+    await expect(page.locator('[data-testid="navbar-logout-li"]')).toBeVisible();
+
+    await page.waitForLoadState('networkidle');
+
+    // 3. --- Fast-forward time instantly ---
+    console.log('TEST LOG: Running clock for 4 seconds.');
+    await page.clock.runFor(5000); // 4 seconds timeout + 1 second buffer
+    console.log('TEST LOG: Clock advanced.');
+
+    // 4. --- Assert the OUTCOME of the automatic logout ---
+    await page.waitForURL(/.*\/login/);
+    await expect(page).toHaveURL(/.*\/login/);
+    await expect(page.locator('[data-testid="login-header"]')).toHaveText('Welcome!');
+
+    // 5. :   Check that the token is gone from localStorage
+    const token = await page.evaluate(() => localStorage.getItem('token'));
+    expect(token).toBeNull();
   });
 
   test('should block access to admin routes for non-admin users', async ({ page }) => {
