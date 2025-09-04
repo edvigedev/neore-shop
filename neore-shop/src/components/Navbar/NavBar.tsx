@@ -1,6 +1,6 @@
 import './NavBar.css';
 import cartImage from '../../assets/cart.png';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { useAuth } from '../../context/AuthContext/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext/CartContext';
@@ -12,6 +12,7 @@ export default function NavBar() {
   const navigate = useNavigate();
   const { totalQuantity } = useCart();
   const { setGlobalSearch } = useSearch();
+  const location = useLocation();
 
   const handleSearch = (query: string) => {
     setGlobalSearch(query);
@@ -22,17 +23,21 @@ export default function NavBar() {
     navigate('/login');
   };
 
+  const shouldShowSearchFilter = location.pathname !== '/cart';
+
   return (
     <nav className="nav-bar" data-testid="navbar">
       <Link to="/" className="no-underline-link" data-testid="navbar-logo-link">
         <div className="neore-logo"> Neore</div>
       </Link>
-      <SearchFilter
-        placeholder="Search"
-        onSearch={handleSearch}
-        className="nav-search-input"
-        data-testid="navbar-search-input"
-      />
+      {shouldShowSearchFilter && (
+        <SearchFilter
+          placeholder="Search"
+          onSearch={handleSearch}
+          className="nav-search-input"
+          data-testid="navbar-search-input"
+        />
+      )}
       <ul className="nav-bar-links">
         <li onClick={handleLogout} className="no-underline-link" data-testid="navbar-logout-li">
           {token ? 'Logout' : 'Login'}
