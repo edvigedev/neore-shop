@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './SearchFilter.css';
+import { useSearch } from '../../context/SearchContext/SearchContext';
 
 interface SearchFilterProps {
   placeholder: string;
@@ -14,7 +15,13 @@ export default function SearchFilter({
   className,
   'data-testid': dataTestId,
 }: SearchFilterProps) {
-  const [searchQuery, setSearchQuery] = useState('');
+  const { globalSearch } = useSearch();
+  const [searchQuery, setSearchQuery] = useState(globalSearch);
+
+  // Sync local state with global search state
+  useEffect(() => {
+    setSearchQuery(globalSearch);
+  }, [globalSearch]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
