@@ -45,15 +45,13 @@ export default function SearchFilter({
         className={className}
         data-testid={dataTestId}
       />
-      {searchQuery && (
-        <button
-          onClick={handleClear}
-          className="clear-search-button"
-          data-testid={dataTestId ? `${dataTestId}-clear` : 'search-clear-button'}
-        >
-          x
-        </button>
-      )}
+      <button
+        onClick={handleClear}
+        className={`clear-search-button ${searchQuery ? 'visible' : ''}`}
+        data-testid={dataTestId ? `${dataTestId}-clear` : 'search-clear-button'}
+      >
+        x
+      </button>
     </div>
   );
 }
